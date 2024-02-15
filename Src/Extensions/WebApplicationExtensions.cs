@@ -20,6 +20,8 @@ public static class WebApplicationExtensions
         builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(builder.Configuration));
 
+        builder.Services.AddUseCases();
+
         builder.Services.AddPresentation();
 
         return builder;
