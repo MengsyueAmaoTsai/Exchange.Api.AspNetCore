@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -50,13 +52,18 @@ public sealed record class EmitSignalRequest
 
 public sealed record class EmitSignalRequestBody
 {
+    [Required]
     public DateTimeOffset Time { get; init; }
 
+    [Required]
     public string TradeType { get; init; } = string.Empty;
 
+    [Required]
     public string Symbol { get; init; } = string.Empty;
 
+    [Required]
     public decimal Volume { get; init; }
 
+    [Required]
     public decimal Price { get; init; }
 }
