@@ -2,15 +2,15 @@
 @BaseAddress = https://richillcapital-exchange-api.azurewebsites.net
 @Localhost = https://localhost:10000
 @Route = api/bots
-@botId = test-33
+@botId = test-44
 
 ### Create Bot
 POST {{Localhost}}/{{Route}}
 Content-Type: application/json
 
 {
-    "id": "test-33",
-    "name": "test-33",
+    "id": "test-44",
+    "name": "test-44",
     "description": "Test http file",
     "platform": "MetaTrader5"
 }
@@ -23,7 +23,7 @@ POST {{Localhost}}/{{Route}}/{{botId}}/signals
 Content-Type: application/json
 
 {
-    "time": "2021-01-01T00:12:05Z",
+    "time": "2021-01-01T00:12:08Z",
     "tradeType": "Buy",
     "symbol": "EURUSD",
     "volume": 0.1,

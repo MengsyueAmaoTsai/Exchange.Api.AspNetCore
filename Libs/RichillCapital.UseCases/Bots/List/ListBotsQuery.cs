@@ -4,7 +4,7 @@ using RichillCapital.UseCases.Common;
 namespace RichillCapital.UseCases.Bots.List;
 
 public sealed record ListBotsQuery() :
-    ICachedQuery<Result<IEnumerable<BotDto>>>
+    IQuery<Result<IEnumerable<BotDto>>>
 {
     public string CacheKey => $"{nameof(ListBotsQuery)}";
 
