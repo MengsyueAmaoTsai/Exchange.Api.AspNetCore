@@ -19,7 +19,7 @@ Content-Type: application/json
 GET {{Localhost}}/{{Route}}
 
 ### Emit signal 
-POST {{Localhost}}/{{Route}}/{{botId}}/trading-signals
+POST {{Localhost}}/{{Route}}/{{botId}}/signals
 Content-Type: application/json
 
 {
@@ -31,4 +31,4 @@ Content-Type: application/json
 }
 
 ### List Trading Signals
-GET {{Localhost}}/{{Route}}/{{botId}}/trading-signals
+GET {{Localhost}}/{{Route}}/{{botId}}/signals

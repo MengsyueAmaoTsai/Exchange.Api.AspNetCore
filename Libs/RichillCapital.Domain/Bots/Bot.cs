@@ -4,6 +4,8 @@ namespace RichillCapital.Domain.Bots;
 
 public sealed class Bot : Entity<BotId>
 {
+    private readonly List<Signal> _signals = new();
+
     private Bot(
         BotId id,
         BotName name,
@@ -21,6 +23,8 @@ public sealed class Bot : Entity<BotId>
     public BotDescription Description { get; private set; }
 
     public TradingPlatform Platform { get; private set; }
+
+    public IReadOnlyList<Signal> Signals => _signals.AsReadOnly();
 
     public static Bot Create(
         BotId id,

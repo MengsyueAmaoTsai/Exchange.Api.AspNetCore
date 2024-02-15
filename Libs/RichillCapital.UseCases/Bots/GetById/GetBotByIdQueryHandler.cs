@@ -1,6 +1,6 @@
+using RichillCapital.Domain;
 using RichillCapital.Domain.Bots;
 using RichillCapital.Domain.Common;
-using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monad;
 using RichillCapital.UseCases.Common;
 
@@ -24,7 +24,7 @@ internal sealed class GetBotByIdQueryHandler(
         var bot = await _botRepository.GetByIdAsync(id.Value, cancellationToken);
 
         return bot.HasNoValue ?
-            Error.NotFound("Bot not found.") :
+            DomainErrors.Bots.NotFound(id.Value) :
             bot.Value.ToDto();
     }
 }
