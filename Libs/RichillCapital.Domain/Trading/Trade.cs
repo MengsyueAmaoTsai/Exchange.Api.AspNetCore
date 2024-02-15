@@ -15,7 +15,8 @@ public sealed class Trade : ValueObject
         decimal exitPrice,
         decimal commission,
         decimal tax,
-        decimal swap)
+        decimal swap,
+        AccountId accountId)
     {
         Side = side;
         Symbol = symbol;
@@ -27,6 +28,7 @@ public sealed class Trade : ValueObject
         Commission = commission;
         Tax = tax;
         Swap = swap;
+        AccountId = accountId;
     }
 
     public Side Side { get; private set; }
@@ -49,6 +51,8 @@ public sealed class Trade : ValueObject
 
     public decimal Swap { get; private set; }
 
+    public AccountId AccountId { get; private set; }
+
     public static ErrorOr<Trade> Create(
         Side side,
         Symbol symbol,
@@ -59,7 +63,8 @@ public sealed class Trade : ValueObject
         decimal exitPrice,
         decimal commission,
         decimal tax,
-        decimal swap)
+        decimal swap,
+        AccountId accountId)
     {
         if (quantity <= 0)
         {
@@ -96,7 +101,8 @@ public sealed class Trade : ValueObject
             exitPrice,
             commission,
             tax,
-            swap);
+            swap,
+            accountId);
     }
 
     protected override IEnumerable<object> GetAtomicValues()
@@ -111,5 +117,6 @@ public sealed class Trade : ValueObject
         yield return Commission;
         yield return Tax;
         yield return Swap;
+        yield return AccountId;
     }
 }
