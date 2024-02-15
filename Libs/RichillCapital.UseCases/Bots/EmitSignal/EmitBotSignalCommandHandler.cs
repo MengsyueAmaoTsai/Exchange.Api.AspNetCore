@@ -16,25 +16,25 @@ internal sealed class EmitBotSignalCommandHandler(
         EmitBotSignalCommand command,
         CancellationToken cancellationToken)
     {
-        var id = BotId.From(command.BotId);
+        var botId = BotId.From(command.BotId);
 
-        if (id.IsError)
+        if (botId.IsError)
         {
-            return id.Error;
+            return botId.Error;
         }
 
-        var bot = await _botRepository.GetByIdAsync(id.Value, cancellationToken);
+        var bot = await _botRepository.GetByIdAsync(botId.Value, cancellationToken);
 
         if (bot.HasNoValue)
         {
-            return DomainErrors.Bots.NotFound(id.Value);
+            return DomainErrors.Bots.NotFound(botId.Value);
         }
 
         var tradeType = TradeType.FromName(command.TradeType);
 
         if (tradeType.HasNoValue)
         {
-            return Error.Invalid("Invalid trade type.");
+            return Error.Invalid($"Invalid trade type {command.TradeType}");
         }
 
         var symbol = Symbol.From(command.Symbol);
@@ -44,16 +44,16 @@ internal sealed class EmitBotSignalCommandHandler(
             return symbol.Error;
         }
 
-        var errorOrSignal = bot.Value.EmitSignal(
+        var signal = bot.Value.EmitSignal(
             command.Time,
             tradeType.Value,
             symbol.Value,
             command.Volume,
             command.Price);
 
-        if (errorOrSignal.IsError)
+        if (signal.IsError)
         {
-            return errorOrSignal.Error;
+            return signal.Error;
         }
 
         _botRepository.Update(bot.Value);

@@ -43,23 +43,21 @@ public sealed class Signal : ValueObject
     {
         if (volume <= decimal.Zero)
         {
-            Error.Invalid("Volume must be greater than 0.");
+            return Error.Invalid("Volume must be greater than 0.");
         }
 
         if (price <= decimal.Zero)
         {
-            Error.Invalid("Price must be greater than 0.");
+            return Error.Invalid("Price must be greater than 0.");
         }
 
-        var signal = new Signal(
+        return new Signal(
             time,
             tradeType,
             symbol,
             volume,
             price,
             botId);
-
-        return signal;
     }
 
     protected override IEnumerable<object> GetAtomicValues()

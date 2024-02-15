@@ -2,7 +2,7 @@
 @BaseAddress = https://richillcapital-exchange-api.azurewebsites.net
 @Localhost = https://localhost:10000
 @Route = api/bots
-@botId = test-id
+@botId = test-33
 
 ### Create Bot
 POST {{Localhost}}/{{Route}}
@@ -23,11 +23,11 @@ POST {{Localhost}}/{{Route}}/{{botId}}/signals
 Content-Type: application/json
 
 {
-    "time": "2021-01-01T00:00:55Z",
+    "time": "2021-01-01T00:12:02Z",
     "tradeType": "Buy",
     "symbol": "EURUSD",
-    "quantity": 1.1234,
-    "price": 0.01
+    "volume": 0,
+    "price": 0
 }
 
 ### List Trading Signals

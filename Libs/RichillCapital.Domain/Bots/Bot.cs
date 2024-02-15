@@ -5,7 +5,7 @@ namespace RichillCapital.Domain.Bots;
 
 public sealed class Bot : Entity<BotId>
 {
-    private readonly List<Signal> _signals = new();
+    private readonly List<Signal> _signals = [];
 
     private Bot(
         BotId id,
@@ -55,13 +55,15 @@ public sealed class Bot : Entity<BotId>
             price,
             Id);
 
-        if (!signal.IsError)
+        if (signal.IsError)
         {
-            _signals.Add(signal.Value);
-
-            RegisterDomainEvent(new SignalEmittedDomainEvent(Id));
+            return signal.Error;
         }
 
-        return signal;
+        _signals.Add(signal.Value);
+
+        RegisterDomainEvent(new SignalEmittedDomainEvent(Id));
+
+        return signal.Map(signal => signal);
     }
 }
