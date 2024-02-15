@@ -25,4 +25,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="Libs\RichillCapital.Persistence\RichillCapital.Persistence.csproj" />
+    <ProjectReference Include="Libs\RichillCapital.Caching\RichillCapital.Caching.csproj" />
+  </ItemGroup>
+
 </Project>

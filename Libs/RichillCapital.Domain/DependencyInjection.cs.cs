@@ -1,6 +1,5 @@
 ﻿namespace RichillCapital.Domain;
 
-public class Class1
+public static class DependencyInjection
 {
-
 }
