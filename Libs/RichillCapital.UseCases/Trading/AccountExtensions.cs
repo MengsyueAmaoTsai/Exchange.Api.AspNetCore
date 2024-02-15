@@ -8,5 +8,7 @@ public static class AccountExtensions
         new(
             account.Id.Value,
             account.Name.Value,
-            account.Currency.Name);
+            account.Currency.Name,
+            account.Balances
+                .Select(balance => balance.ToDto()));
 }

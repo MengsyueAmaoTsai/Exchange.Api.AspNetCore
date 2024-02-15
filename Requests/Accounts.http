@@ -3,7 +3,7 @@
 @Localhost = https://localhost:10000
 @Route = api/accounts
 
-@accountId = 11bbce31-a167-4de4-8287-65d57fca5455
+@accountId = 32fda039-edcf-4f11-a8ce-834e0515d934
 
 ### List Acounts
 GET {{Localhost}}/{{Route}}
@@ -17,5 +17,6 @@ Content-Type: application/json
 
 {
   "name": "Test Account",
-  "currency": "TWD"
+  "currency": "TWD",
+  "initialDeposit": 100000
 }

@@ -25,7 +25,7 @@ internal sealed class AccountBalanceConfiguration : IEntityTypeConfiguration<Acc
             .IsRequired();
 
         builder
-            .Property(balance => balance.Balance)
+            .Property(balance => balance.Amount)
             .HasColumnName("balance")
             .HasColumnType("decimal(18, 6)")
             .IsRequired();

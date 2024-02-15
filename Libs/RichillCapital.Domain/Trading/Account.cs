@@ -1,4 +1,5 @@
 using RichillCapital.SharedKernel;
+using RichillCapital.SharedKernel.Monad;
 
 namespace RichillCapital.Domain.Trading;
 
@@ -34,7 +35,7 @@ public sealed class Account : Entity<AccountId>
 
     public IReadOnlyList<Trade> Trades => _trades.AsReadOnly();
 
-    public static Account Create(
+    public static Result<Account> Create(
         AccountName name,
         Currency currency)
     {
@@ -43,8 +44,40 @@ public sealed class Account : Entity<AccountId>
             name,
             currency);
 
+        foreach (var member in Currency.Members)
+        {
+            var result = account.WithBalance(member, 0);
+
+            if (result.IsFailure)
+            {
+                return result.Error;
+            }
+        }
+
         account.RegisterDomainEvent(new AccountCreatedDomainEvent(account.Id));
 
         return account;
+    }
+
+    public Result WithBalance(Currency currency, decimal amount)
+    {
+        var existingBalance = _balances
+              .SingleOrDefault(balance => balance.Currency == currency);
+
+        if (existingBalance is not null)
+        {
+            _balances.Remove(existingBalance);
+        }
+
+        var balance = AccountBalance.Create(currency, amount, Id);
+
+        if (balance.IsFailure)
+        {
+            return balance.Error;
+        }
+
+        _balances.Add(balance.Value);
+
+        return Result.Success;
     }
 }

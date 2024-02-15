@@ -7,17 +7,17 @@ public sealed class AccountBalance : ValueObject
 {
     private AccountBalance(
         Currency currency,
-        decimal balance,
+        decimal amount,
         AccountId accountId)
     {
         Currency = currency;
-        Balance = balance;
+        Amount = amount;
         AccountId = accountId;
     }
 
     public Currency Currency { get; private set; }
 
-    public decimal Balance { get; private set; }
+    public decimal Amount { get; private set; }
 
     public AccountId AccountId { get; private set; }
 
@@ -40,7 +40,7 @@ public sealed class AccountBalance : ValueObject
     protected override IEnumerable<object> GetAtomicValues()
     {
         yield return Currency;
-        yield return Balance;
+        yield return Amount;
         yield return AccountId;
     }
 }

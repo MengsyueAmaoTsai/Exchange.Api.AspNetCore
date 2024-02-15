@@ -21,8 +21,8 @@ internal sealed class GetAccountByIdQueryHandler(
             return accountId.Error;
         }
 
-        var account = await _accountRepository.GetByIdAsync(
-            accountId.Value,
+        var account = await _accountRepository.FirstOrDefaultAsync(
+            new AccountByIdWithBalanceSpecification(accountId.Value),
             cancellationToken);
 
         return account.HasNoValue ?

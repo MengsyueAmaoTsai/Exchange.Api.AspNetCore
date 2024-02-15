@@ -22,6 +22,13 @@ internal sealed class CreateAccountCommandHandler(
             return name.Error;
         }
 
+        if (await _accountRepository.AnyAsync(
+            account => account.Name == name.Value,
+            cancellationToken))
+        {
+            return Error.Conflict("Account with the same name already exists");
+        }
+
         var currency = Currency.FromName(command.Currency);
 
         if (currency.HasNoValue)
@@ -31,9 +38,16 @@ internal sealed class CreateAccountCommandHandler(
 
         var account = Account.Create(name.Value, currency.Value);
 
-        _accountRepository.Add(account);
+        if (account.IsFailure)
+        {
+            return account.Error;
+        }
+
+        account.Value.WithBalance(currency.Value, command.InitialDeposit);
+
+        _accountRepository.Add(account.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return account.Id;
+        return account.Value.Id;
     }
 }

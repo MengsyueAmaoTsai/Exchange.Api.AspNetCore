@@ -24,7 +24,12 @@ public sealed class Create(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<CreateAccountResponse>> HandleAsync(
         [FromBody] CreateAccountRequest request,
         CancellationToken cancellationToken = default) =>
-        (await _sender.Send(new CreateAccountCommand(request.Name, request.Currency), cancellationToken))
+        (await _sender.Send(
+            new CreateAccountCommand(
+                request.Name,
+                request.Currency,
+                request.InitialDeposit),
+            cancellationToken))
             .Map(id => new CreateAccountResponse(id.Value))
             .Match(HandleError, Ok);
 }
@@ -34,6 +39,8 @@ public sealed record class CreateAccountRequest
     public string Name { get; init; } = string.Empty;
 
     public string Currency { get; init; } = string.Empty;
+
+    public decimal InitialDeposit { get; init; }
 }
 
 public sealed record CreateAccountResponse(string AccountId);

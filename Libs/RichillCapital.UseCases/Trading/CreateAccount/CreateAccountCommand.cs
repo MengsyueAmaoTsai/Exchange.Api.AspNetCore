@@ -6,5 +6,6 @@ namespace RichillCapital.UseCases.Trading.CreateAccount;
 
 public sealed record CreateAccountCommand(
     string Name,
-    string Currency) :
+    string Currency,
+    decimal InitialDeposit) :
     ICommand<ErrorOr<AccountId>>;

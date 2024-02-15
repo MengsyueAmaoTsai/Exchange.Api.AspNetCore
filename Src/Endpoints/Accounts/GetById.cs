@@ -13,7 +13,7 @@ namespace RichillCapital.Exchange.Api.Endpoints.Accounts;
 
 public sealed class GetById(ISender _sender) : AsyncEndpoint
     .WithRequest<GetAccountByIdRequest>
-    .WithActionResult<AccountResponse>
+    .WithActionResult<AccountWithBalancesResponse>
 {
     [HttpGet("/api/accounts/{accountId}")]
     [SwaggerOperation(
@@ -21,16 +21,19 @@ public sealed class GetById(ISender _sender) : AsyncEndpoint
         Description = "Retrieves an account by its unique identifier.",
         OperationId = "Accounts.GetById",
         Tags = ["Accounts"])]
-    public override async Task<ActionResult<AccountResponse>> HandleAsync(
+    public override async Task<ActionResult<AccountWithBalancesResponse>> HandleAsync(
         [FromRoute] GetAccountByIdRequest request,
         CancellationToken cancellationToken = default) =>
         (await _sender.Send(new GetAccountByIdQuery(request.AccountId), cancellationToken))
-            .Map(account => new AccountResponse(
+            .Map(account => new AccountWithBalancesResponse(
                 account.Id,
                 account.Name,
-                account.Currency))
+                account.Currency,
+                account.Balance
+                    .Select(balance => new AccountBalanceResponse(
+                        balance.Currency,
+                        balance.Amount))))
             .Match(HandleError, Ok);
-
 }
 
 public sealed record class GetAccountByIdRequest
