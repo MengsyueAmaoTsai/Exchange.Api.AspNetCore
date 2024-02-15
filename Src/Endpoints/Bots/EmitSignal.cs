@@ -1,12 +1,17 @@
+using MediatR;
+
 using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Exchange.Api.Common;
+using RichillCapital.Exchange.Api.Extensions;
+using RichillCapital.SharedKernel.Monad;
+using RichillCapital.UseCases.Bots.EmitSignal;
 
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace RichillCapital.Exchange.Api.Endpoints.Bots;
 
-public sealed class EmitSignal : AsyncEndpoint
+public sealed class EmitSignal(ISender _sender) : AsyncEndpoint
     .WithRequest<EmitSignalRequest>
     .WithActionResult<EmitSignalResponse>
 {
@@ -19,7 +24,17 @@ public sealed class EmitSignal : AsyncEndpoint
     public override async Task<ActionResult<EmitSignalResponse>> HandleAsync(
         [FromRoute] EmitSignalRequest request,
         CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        (await _sender.Send(
+            new EmitBotSignalCommand(
+                request.Body.Time,
+                request.Body.TradeType,
+                request.Body.Symbol,
+                request.Body.Volume,
+                request.Body.Price,
+                request.BotId),
+            cancellationToken))
+            .Map(id => new EmitSignalResponse(id.Value))
+            .Match(HandleError, Ok);
 }
 
 public sealed record EmitSignalResponse(string BotId);

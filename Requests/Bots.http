@@ -9,8 +9,8 @@ POST {{Localhost}}/{{Route}}
 Content-Type: application/json
 
 {
-    "id": "test-id",
-    "name": "<name>",
+    "id": "test-33",
+    "name": "test-33",
     "description": "Test http file",
     "platform": "MetaTrader5"
 }
@@ -23,7 +23,7 @@ POST {{Localhost}}/{{Route}}/{{botId}}/signals
 Content-Type: application/json
 
 {
-    "time": "2021-01-01T00:00:00Z",
+    "time": "2021-01-01T00:00:55Z",
     "tradeType": "Buy",
     "symbol": "EURUSD",
     "quantity": 1.1234,

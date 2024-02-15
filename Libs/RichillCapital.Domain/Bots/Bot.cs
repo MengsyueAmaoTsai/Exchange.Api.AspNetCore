@@ -1,4 +1,5 @@
 using RichillCapital.SharedKernel;
+using RichillCapital.SharedKernel.Monad;
 
 namespace RichillCapital.Domain.Bots;
 
@@ -37,5 +38,30 @@ public sealed class Bot : Entity<BotId>
         bot.RegisterDomainEvent(new BotCreatedDomainEvent(id));
 
         return bot;
+    }
+
+    public ErrorOr<Signal> EmitSignal(
+        DateTimeOffset time,
+        TradeType tradeType,
+        Symbol symbol,
+        decimal volume,
+        decimal price)
+    {
+        var signal = Signal.Create(
+            time,
+            tradeType,
+            symbol,
+            volume,
+            price,
+            Id);
+
+        if (!signal.IsError)
+        {
+            _signals.Add(signal.Value);
+
+            RegisterDomainEvent(new SignalEmittedDomainEvent(Id));
+        }
+
+        return signal;
     }
 }

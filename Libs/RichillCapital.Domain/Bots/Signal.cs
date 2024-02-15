@@ -1,4 +1,5 @@
 using RichillCapital.SharedKernel;
+using RichillCapital.SharedKernel.Monad;
 
 namespace RichillCapital.Domain.Bots;
 
@@ -32,19 +33,29 @@ public sealed class Signal : ValueObject
 
     public BotId BotId { get; private set; }
 
-    public static Signal Create(
+    public static ErrorOr<Signal> Create(
         DateTimeOffset time,
         TradeType tradeType,
         Symbol symbol,
-        decimal quantity,
+        decimal volume,
         decimal price,
         BotId botId)
     {
+        if (volume <= decimal.Zero)
+        {
+            Error.Invalid("Volume must be greater than 0.");
+        }
+
+        if (price <= decimal.Zero)
+        {
+            Error.Invalid("Price must be greater than 0.");
+        }
+
         var signal = new Signal(
             time,
             tradeType,
             symbol,
-            quantity,
+            volume,
             price,
             botId);
 
