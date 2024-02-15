@@ -6,10 +6,11 @@ using RichillCapital.UseCases.Common;
 namespace RichillCapital.UseCases.Bots.Create;
 
 internal sealed class BotCreatedDomainEventHandler(
-    ILogger<BotCreatedDomainEventHandler> _logger) :
+    ILogger<BotCreatedDomainEventHandler> _logger,
+    INotificationService _notificationService) :
     IDomainEventHandler<BotCreatedDomainEvent>
 {
-    public Task Handle(
+    public async Task Handle(
         BotCreatedDomainEvent domainEvent,
         CancellationToken cancellationToken)
     {
@@ -17,6 +18,7 @@ internal sealed class BotCreatedDomainEventHandler(
             "Bot with id {BotId} created.",
             domainEvent.BotId);
 
-        return Task.CompletedTask;
+        await _notificationService.SendLineNotificationAsync(
+            $"Bot with id {domainEvent.BotId} created.");
     }
 }

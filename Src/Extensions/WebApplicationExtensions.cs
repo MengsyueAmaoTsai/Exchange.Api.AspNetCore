@@ -1,6 +1,7 @@
 using RichillCapital.Caching;
 using RichillCapital.Exchange.Api.Middlewares;
 using RichillCapital.UseCases;
+using RichillCapital.Notifications;
 using RichillCapital.Persistence;
 
 using Serilog;
@@ -18,6 +19,7 @@ public static class WebApplicationExtensions
 
         builder.Services.AddPersistence();
         builder.Services.AddCaching();
+        builder.Services.AddNotifications();
 
         builder.Services.AddPresentation();
 

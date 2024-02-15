@@ -6,10 +6,11 @@ using RichillCapital.UseCases.Common;
 namespace RichillCapital.UseCases.Bots.EmitSignal;
 
 internal sealed class SignalEmittedDomainEventHandler(
-    ILogger<SignalEmittedDomainEventHandler> _logger) :
+    ILogger<SignalEmittedDomainEventHandler> _logger,
+    INotificationService _notificationService) :
     IDomainEventHandler<SignalEmittedDomainEvent>
 {
-    public Task Handle(
+    public async Task Handle(
         SignalEmittedDomainEvent domainEvent,
         CancellationToken cancellationToken)
     {
@@ -17,6 +18,7 @@ internal sealed class SignalEmittedDomainEventHandler(
             "Signal emitted for bot with id {BotId}.",
             domainEvent.BotId);
 
-        return Task.CompletedTask;
+        await _notificationService.SendLineNotificationAsync(
+            $"Signal emitted for bot with id {domainEvent.BotId}.");
     }
 }
