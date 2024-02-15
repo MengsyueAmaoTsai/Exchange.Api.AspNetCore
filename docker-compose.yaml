@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # exchange-api:
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile  
+
+  #   container_name: exchange-api
+
+  #   ports:
+  #     - 443:443
+  #     - 80:80
+    
+  #   environment:
+  #     ASPNETCORE_URLS: https://+;http://+
+  #     ASPNETCORE_HTTPS_PORT: 443
+  #     ASPNETCORE_ENVIRONMENT: Development
+  #     ASPNETCORE_Kestrel__Certificates__Default__Path: /root/.aspnet/https/Exchange.Api.pfx
+  #     ASPNETCORE_Kestrel__Certificates__Default__Password: pa55w0rd!
+    
+  #   volumes:
+  #     - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+  #     - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
+
+  postgresql:
+    image: postgres:latest
+    container_name: postgresql
+    ports:
+      - 5432:5432
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: richillcapital
+    
+    volumes:
+      - ./.containers/postgresql:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+    restart: always      
+
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - 5341:5431
+      - 5342:80
+    environment:
+      ACCEPT_EULA: Y
+      API_KEY: admin
+    volumes:
+      - ./.containers/seq:/data
+
+  # influxdb:
+  #   image: influxdb:latest
+  #   container_name: influxdb
+  #   ports:
+  #     - 8086:8086
+  #   environment:
+  #     INFLUXDB_DB: richillcapital
+  #     INFLUXDB_ADMIN_USER: admin
+  #     INFLUXDB_ADMIN_PASSWORD: admin
+  #     INFLUXDB_USER: admin
+  #     INFLUXDB_USER_PASSWORD: admin
+  #   volumes:
+  #     - ./.containers/influxdb:/var/lib/influxdb
+  
+  # mongodb:
+  #   image: mongo:latest
+  #   container_name: mongodb
+  #   ports:
+  #     - 27017:27017
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: root
+  #   volumes:
+  #     - ./.containers/mongodb:/data/db
+
+  # cassandra:
+  #   image: cassandra:latest
+  #   container_name: cassandra
+  #   ports:
+  #     - 9042:9042
+  #   environment:
+  #     CASSANDRA_CLUSTER_NAME: "Cassandra Cluster"
+  #     CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+  #   volumes:
+  #     - ./.containers/cassandra:/var/lib/cassandra
+
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+  #   container_name: elasticsearch
+  #   ports:
+  #     - 9200:9200
+  #     - 9300:9300
+  #   environment:
+  #     discovery.type: single-node
+  #   volumes:
+  #     - ./.containers/elasticsearch:/usr/share/elasticsearch/data
