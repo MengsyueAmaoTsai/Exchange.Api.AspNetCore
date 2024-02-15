@@ -1,3 +1,4 @@
+using RichillCapital.Caching;
 using RichillCapital.Exchange.Api.Middlewares;
 using RichillCapital.UseCases;
 using RichillCapital.Persistence;
@@ -16,6 +17,7 @@ public static class WebApplicationExtensions
         builder.Services.AddUseCases();
 
         builder.Services.AddPersistence();
+        builder.Services.AddCaching();
 
         builder.Services.AddPresentation();
 
