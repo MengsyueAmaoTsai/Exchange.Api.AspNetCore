@@ -1,0 +1,21 @@
+
+@BaseAddress = https://richillcapital-exchange-api.azurewebsites.net
+@Localhost = https://localhost:10000
+@Route = api/accounts
+
+@accountId = 11bbce31-a167-4de4-8287-65d57fca5455
+
+### List Acounts
+GET {{Localhost}}/{{Route}}
+
+### Get Account by Id
+GET {{Localhost}}/{{Route}}/{{accountId}}
+
+### Create Account
+POST {{Localhost}}/{{Route}}
+Content-Type: application/json
+
+{
+  "name": "Test Account",
+  "currency": "TWD"
+}
