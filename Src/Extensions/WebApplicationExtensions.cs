@@ -12,11 +12,6 @@ public static class WebApplicationExtensions
 {
     public static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
     {
-        // builder.Configuration.AddJsonFile(
-        //     $"appsettings.{builder.Environment.EnvironmentName}.json",
-        //     optional: false,
-        //     reloadOnChange: true);
-
         builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(builder.Configuration));
 
