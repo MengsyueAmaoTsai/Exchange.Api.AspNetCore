@@ -1,6 +1,6 @@
 using RichillCapital.SharedKernel;
 
-namespace RichillCapital.Domain.Bots;
+namespace RichillCapital.Domain.Trading;
 
 public sealed record class TradeType : Enumeration<TradeType>
 {

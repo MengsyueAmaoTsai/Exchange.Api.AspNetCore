@@ -1,7 +1,7 @@
 using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monad;
 
-namespace RichillCapital.Domain.Bots;
+namespace RichillCapital.Domain.Trading;
 
 public sealed class Symbol : SingleValueObject<string>
 {

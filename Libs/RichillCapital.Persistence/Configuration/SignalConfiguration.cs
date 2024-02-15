@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using RichillCapital.Domain.Bots;
+using RichillCapital.Domain.Trading;
 using RichillCapital.SharedKernel.EntityFrameworkCore;
 
 namespace RichillCapital.Persistence.Configurations;
