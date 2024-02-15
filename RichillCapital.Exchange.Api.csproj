@@ -15,7 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove=".gitignore" />
     <None Remove="LICENSE" />
+    <None Remove="Solution.ruleset" />
   </ItemGroup>
 
   <ItemGroup>
