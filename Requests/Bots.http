@@ -23,11 +23,11 @@ POST {{Localhost}}/{{Route}}/{{botId}}/signals
 Content-Type: application/json
 
 {
-    "time": "2021-01-01T00:12:02Z",
+    "time": "2021-01-01T00:12:05Z",
     "tradeType": "Buy",
     "symbol": "EURUSD",
-    "volume": 0,
-    "price": 0
+    "volume": 0.1,
+    "price": 0.1
 }
 
 ### List Trading Signals

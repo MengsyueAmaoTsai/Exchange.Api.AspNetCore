@@ -29,13 +29,7 @@ internal sealed class ListBotSignalsQueryHandler(
         return bot.HasNoValue ?
         DomainErrors.Bots.NotFound(id.Value) :
         bot.Value.Signals
-            .Select(signal => new SignalDto(
-                signal.Time,
-                signal.TradeType.Name,
-                signal.Symbol.Value,
-                signal.Quantity,
-                signal.Price,
-                signal.BotId.Value))
+            .Select(signal => signal.ToDto())
             .ToList()
             .AsReadOnly();
     }
