@@ -1,5 +1,6 @@
 using RichillCapital.Exchange.Api.Middlewares;
 using RichillCapital.UseCases;
+using RichillCapital.Persistence;
 
 using Serilog;
 
@@ -14,6 +15,8 @@ public static class WebApplicationExtensions
 
         builder.Services.AddUseCases();
 
+        builder.Services.AddPersistence();
+
         builder.Services.AddPresentation();
 
         return builder;
@@ -24,7 +27,7 @@ public static class WebApplicationExtensions
         app.UseRequestContextLogging();
         app.UseSerilogRequestLogging();
 
-        // app.InitializeSeeds();
+        app.InitializeSeeds();
         // await app.InitializeDataFeedsAsync();
 
         app.UseCors("default");
@@ -45,28 +48,28 @@ public static class WebApplicationExtensions
         return app;
     }
 
-    // private static WebApplication InitializeSeeds(this WebApplication app)
-    // {
-    //     using var scope = app.Services.CreateScope();
-    //     var services = scope.ServiceProvider;
-    //     var logger = services.GetRequiredService<ILogger<Program>>();
+    private static WebApplication InitializeSeeds(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var logger = services.GetRequiredService<ILogger<Program>>();
 
-    //     try
-    //     {
-    //         var context = services.GetRequiredService<PostgreSqlOptionsDbContext>();
-    //         context.Database.EnsureDeleted();
-    //         context.Database.EnsureCreated();
-    //         Seeds.Initialize(services);
+        try
+        {
+            var context = services.GetRequiredService<PostgreSqlOptionsDbContext>();
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            Seeds.Initialize(services);
 
-    //         logger.LogInformation("Seed populated successfully.");
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         logger.LogError(ex, "An error occurred seeding the database. {exceptionMessage}", ex.Message);
-    //     }
+            logger.LogInformation("Seed populated successfully.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred seeding the database. {exceptionMessage}", ex.Message);
+        }
 
-    //     return app;
-    // }
+        return app;
+    }
 
     // private static async Task<WebApplication> InitializeDataFeedsAsync(this WebApplication app)
     // {
