@@ -1,7 +1,4 @@
-using RichillCapital.Caching;
 using RichillCapital.Exchange.Api.Middlewares;
-using RichillCapital.Notifications;
-using RichillCapital.Persistence;
 using RichillCapital.UseCases;
 
 using Serilog;

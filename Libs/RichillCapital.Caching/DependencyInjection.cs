@@ -1,4 +1,4 @@
-﻿namespace RichillCapital.Persistence;
+﻿namespace RichillCapital.Caching;
 
 public static class DependencyInjection
 {
