@@ -4,6 +4,7 @@ namespace RichillCapital.Domain.Trading;
 
 public sealed class Account : Entity<AccountId>
 {
+    private readonly List<AccountBalance> _balances = [];
     private readonly List<Order> _orders = [];
     private readonly List<Execution> _executions = [];
     private readonly List<Position> _positions = [];
@@ -22,6 +23,8 @@ public sealed class Account : Entity<AccountId>
     public AccountName Name { get; private set; }
 
     public Currency Currency { get; private set; }
+
+    public IReadOnlyList<AccountBalance> Balances => _balances.AsReadOnly();
 
     public IReadOnlyList<Order> Orders => _orders.AsReadOnly();
 
