@@ -5,6 +5,9 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Exchange.Api.Common;
+using RichillCapital.Exchange.Api.Extensions;
+using RichillCapital.SharedKernel.Monad;
+using RichillCapital.UseCases.Bots.Create;
 
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -20,12 +23,18 @@ public sealed class Create(ISender _sender) : AsyncEndpoint
         Description = "Creates a new bot.",
         OperationId = "Bots.Create",
         Tags = ["Bots"])]
-    public override Task<ActionResult<CreateBotResponse>> HandleAsync(
+    public override async Task<ActionResult<CreateBotResponse>> HandleAsync(
         [FromBody] CreateBotRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+        CancellationToken cancellationToken = default) =>
+        (await _sender.Send(
+            new CreateBotCommand(
+                request.Id,
+                request.Name,
+                request.Description,
+                request.Platform),
+            cancellationToken))
+            .Map(id => new CreateBotResponse(id.Value))
+            .Match(HandleError, Ok);
 }
 
 public sealed record class CreateBotRequest
