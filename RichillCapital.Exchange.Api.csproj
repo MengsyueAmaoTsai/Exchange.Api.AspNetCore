@@ -8,6 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Libs\**" />
+    <Content Remove="Libs\**" />
+    <EmbeddedResource Remove="Libs\**" />
+    <None Remove="Libs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="LICENSE" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
