@@ -32,6 +32,7 @@ public static class DependencyInjection
     {
         services.AddControllers();
         services.AddProblemDetails();
+        services.AddHealthChecks();
 
         return services;
     }
@@ -53,6 +54,11 @@ public static class DependencyInjection
                 options.EnableAnnotations();
             });
 
+        return services;
+    }
+
+    public static IServiceCollection AddHealthChecks(this IServiceCollection services)
+    {
         return services;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using RichillCapital.UseCases.Common;
 
@@ -32,7 +33,7 @@ public static class DependencyInjection
     {
         services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = "127.0.0.1:6379";
+            options.Configuration = "localhost:6379";
             options.InstanceName = "richillcapital";
         });
 
