@@ -12,7 +12,7 @@ Content-Type: application/json
     "id": "test-id",
     "name": "<name>",
     "description": "Test http file",
-    "platform": "XQ"
+    "platform": "MetaTrader5"
 }
 
 ### List Bots

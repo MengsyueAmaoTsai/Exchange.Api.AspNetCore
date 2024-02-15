@@ -22,11 +22,25 @@ internal sealed class CreateBotCommandHandler(
             return id.Error;
         }
 
+        if (await _botRepository.AnyAsync(
+            bot => bot.Id == id.Value,
+            cancellationToken))
+        {
+            return Error.Conflict("Bot with the same id already exists.");
+        }
+
         var name = BotName.From(command.Name);
 
         if (name.IsError)
         {
             return name.Error;
+        }
+
+        if (await _botRepository.AnyAsync(
+            bot => bot.Name == name.Value,
+            cancellationToken))
+        {
+            return Error.Conflict("Bot with the same name already exists.");
         }
 
         var description = BotDescription.From(command.Description);
