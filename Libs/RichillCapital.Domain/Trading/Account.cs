@@ -23,11 +23,13 @@ public sealed class Account : Entity<AccountId>
     public IReadOnlyList<Trade> Trades => _trades.AsReadOnly();
 
     public static Account Create(
-        AccountId id,
         AccountName name,
         Currency currency)
     {
-        var account = new Account(id, name, currency);
+        var account = new Account(
+            AccountId.NewAccountId(),
+            name,
+            currency);
 
         account.RegisterDomainEvent(new AccountCreatedDomainEvent(account.Id));
 

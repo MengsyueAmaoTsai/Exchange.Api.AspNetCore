@@ -27,4 +27,9 @@ public sealed class AccountId : SingleValueObject<string>
 
         return new AccountId(id);
     }
+
+    public static AccountId NewAccountId()
+    {
+        return From(Guid.NewGuid().ToString()).Value;
+    }
 }
