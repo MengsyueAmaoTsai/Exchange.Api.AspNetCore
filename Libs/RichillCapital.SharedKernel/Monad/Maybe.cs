@@ -21,3 +21,7 @@ public readonly record struct Maybe<TValue>
     public static implicit operator Maybe<TValue>(TValue? value) =>
         value is null ? Maybe<TValue>.Null : From(value);
 }
+
+public readonly record struct Maybe
+{
+}
