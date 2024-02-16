@@ -36,6 +36,12 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
             .IsRequired();
 
         builder
+            .Property(order => order.RemainingQuantity)
+            .HasColumnName("remaining_quantity")
+            .HasColumnType("decimal(18, 8)")
+            .IsRequired();
+
+        builder
             .Property(order => order.Symbol)
             .HasColumnName("symbol")
             .HasConversion(

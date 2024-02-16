@@ -10,6 +10,7 @@ public sealed class Order : Entity<OrderId>
         OrderId id,
         TradeType tradeType,
         decimal quantity,
+        decimal remainingQuantity,
         Symbol symbol,
         OrderType type,
         TimeInForce timeInForce,
@@ -19,6 +20,7 @@ public sealed class Order : Entity<OrderId>
     {
         TradeType = tradeType;
         Quantity = quantity;
+        RemainingQuantity = remainingQuantity;
         Symbol = symbol;
         Type = type;
         TimeInForce = timeInForce;
@@ -29,6 +31,8 @@ public sealed class Order : Entity<OrderId>
     public TradeType TradeType { get; private set; }
 
     public decimal Quantity { get; private set; }
+
+    public decimal RemainingQuantity { get; private set; }
 
     public Symbol Symbol { get; private set; }
 
@@ -61,6 +65,7 @@ public sealed class Order : Entity<OrderId>
         var order = new Order(
             OrderId.NewOrderId(),
             tradeType,
+            quantity,
             quantity,
             symbol,
             type,
@@ -111,5 +116,45 @@ public sealed class Order : Entity<OrderId>
         RegisterDomainEvent(new AccountOrderCancelledDomainEvent(Id));
 
         return Result.Success;
+    }
+
+    public ErrorOr<Execution> Execute(
+        decimal executionQuantity,
+        decimal executionPrice,
+        decimal commission,
+        decimal tax)
+    {
+        if (Status != OrderStatus.Pending)
+        {
+            return Error.Conflict("Only pending orders can be executed.");
+        }
+
+        if (executionQuantity > Quantity)
+        {
+            return Error.Invalid("Execution quantity cannot be greater than order quantity.");
+        }
+
+        var execution = Execution.Create(
+            TradeType,
+            Symbol,
+            executionQuantity,
+            executionPrice,
+            commission,
+            tax,
+            AccountId,
+            Id);
+
+        Quantity -= executionQuantity;
+
+        Status = Quantity == decimal.Zero ?
+            OrderStatus.Executed :
+            OrderStatus.PartiallyFilled;
+
+        if (execution.IsFailure)
+        {
+            return execution.Error;
+        }
+
+        return execution.Value;
     }
 }
