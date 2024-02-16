@@ -1,3 +1,4 @@
+using RichillCapital.Domain;
 using RichillCapital.Domain.Bots;
 using RichillCapital.Domain.Common;
 using RichillCapital.SharedKernel;
@@ -26,7 +27,7 @@ internal sealed class CreateBotCommandHandler(
             bot => bot.Id == id.Value,
             cancellationToken))
         {
-            return Error.Conflict("Bot with the same id already exists.");
+            return DomainErrors.Bots.AlreadyExists(id.Value);
         }
 
         var name = BotName.From(command.Name);

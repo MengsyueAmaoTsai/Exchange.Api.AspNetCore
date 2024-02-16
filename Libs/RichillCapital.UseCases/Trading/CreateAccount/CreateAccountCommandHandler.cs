@@ -1,3 +1,4 @@
+using RichillCapital.Domain;
 using RichillCapital.Domain.Common;
 using RichillCapital.Domain.Trading;
 using RichillCapital.SharedKernel;
@@ -26,7 +27,7 @@ internal sealed class CreateAccountCommandHandler(
             account => account.Name == name.Value,
             cancellationToken))
         {
-            return Error.Conflict("Account with the same name already exists");
+            return DomainErrors.Accounts.AlreadyExists(name.Value); ;
         }
 
         var currency = Currency.FromName(command.Currency);

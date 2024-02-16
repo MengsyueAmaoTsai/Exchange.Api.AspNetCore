@@ -23,7 +23,9 @@ internal sealed class CreateAccountOrderCommandHandler(
             return id.Error;
         }
 
-        var account = await _accountRepository.GetByIdAsync(id.Value, cancellationToken);
+        var account = await _accountRepository.GetByIdAsync(
+            id.Value,
+            cancellationToken);
 
         if (account.HasNoValue)
         {
