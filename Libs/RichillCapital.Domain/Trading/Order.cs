@@ -53,6 +53,11 @@ public sealed class Order : Entity<OrderId>
             return Error.Invalid("Quantity must be greater than 0.");
         }
 
+        if (type == OrderType.Market && timeInForce == TimeInForce.Day)
+        {
+            return DomainErrors.Orders.InvalidTimeInForce(type, timeInForce);
+        }
+
         var order = new Order(
             OrderId.NewOrderId(),
             tradeType,
