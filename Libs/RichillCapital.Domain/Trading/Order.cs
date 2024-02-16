@@ -1,3 +1,4 @@
+using RichillCapital.Domain.Trading.Events;
 using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monad;
 
@@ -63,5 +64,33 @@ public sealed class Order : Entity<OrderId>
             accountId);
 
         return order;
+    }
+
+    public Result Reject()
+    {
+        if (Status != OrderStatus.New)
+        {
+            return Error.Conflict("Only new orders can be rejected.");
+        }
+
+        Status = OrderStatus.Rejected;
+
+        RegisterDomainEvent(new AccountOrderRejectedDomainEvent(Id));
+
+        return Result.Success;
+    }
+
+    public Result Accept()
+    {
+        if (Status != OrderStatus.New)
+        {
+            return Error.Conflict("Only new orders can be accepted.");
+        }
+
+        Status = OrderStatus.Pending;
+
+        RegisterDomainEvent(new AccountOrderAcceptedDomainEvent(Id));
+
+        return Result.Success;
     }
 }

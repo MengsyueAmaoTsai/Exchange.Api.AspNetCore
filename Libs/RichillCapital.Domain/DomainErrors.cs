@@ -17,4 +17,10 @@ public static class DomainErrors
         public static Error NotFound(AccountId id) =>
             Error.NotFound($"Account with specified id '{id.Value}' not found.");
     }
+
+    public static class Orders
+    {
+        public static Error NotFound(OrderId id) =>
+            Error.NotFound($"Order with specified id '{id.Value}' not found.");
+    }
 }

@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
 
+using RichillCapital.Domain;
+using RichillCapital.Domain.Common;
 using RichillCapital.Domain.Trading;
 using RichillCapital.Domain.Trading.Events;
 using RichillCapital.UseCases.Common;
@@ -8,7 +10,9 @@ namespace RichillCapital.UseCases.Trading.CreateAccountOrder;
 
 internal sealed class AccountOrderCreatedDomainEventHandler(
     ILogger<AccountOrderCreatedDomainEventHandler> _logger,
-    INotificationService _notificationService) :
+    INotificationService _notificationService,
+    IRepository<Order> _orderRepository,
+    IUnitOfWork _unitOfWork) :
     IDomainEventHandler<AccountOrderCreatedDomainEvent>
 {
     public async Task Handle(
@@ -21,5 +25,23 @@ internal sealed class AccountOrderCreatedDomainEventHandler(
 
         await _notificationService.SendLineNotificationAsync(
             $"Account order created: {domainEvent.OrderId.Value}");
+
+        var order = await _orderRepository.GetByIdAsync(domainEvent.OrderId, cancellationToken);
+
+        if (order.HasNoValue)
+        {
+            var error = DomainErrors.Orders.NotFound(domainEvent.OrderId);
+            throw new InvalidOperationException(error.Message);
+        }
+
+        var result = order.Value.Accept();
+
+        if (result.IsFailure)
+        {
+            throw new InvalidOperationException(result.Error.Message);
+        }
+
+        _orderRepository.Update(order.Value);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }
