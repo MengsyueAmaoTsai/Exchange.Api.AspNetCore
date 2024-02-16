@@ -13,19 +13,42 @@ public sealed class OrderMatchingService(
         Order order,
         CancellationToken cancellationToken = default)
     {
-        var executionQuantity = order.RemainingQuantity;
+        var orderbook = GetHardCodeOrderBook();
+        var entries = orderbook.GetOppositeEntries(order.TradeType);
 
-        var executionResult = order.Execute(executionQuantity, 17000, 0, 0);
-
-        if (executionResult.IsError)
+        foreach (var entry in entries)
         {
-            _logger.LogError(
-                "Failed to execute order {OrderId} {Status}. Reason: {Reason}",
-                order.Id,
-                order.Status.Name,
-                executionResult.Error);
+            var entryQuantity = entry.Quantity;
 
-            return;
+            var executionQuantity = entry.CanSatisfyOrder(order)
+                ? order.RemainingQuantity
+                : entryQuantity;
+
+            while (order.Status != OrderStatus.Executed)
+            {
+                var executionResult = order.Execute(
+                               executionQuantity,
+                               entry.Price,
+                               0,
+                               0);
+
+                if (executionResult.IsError)
+                {
+                    return;
+                }
+
+                entryQuantity -= executionQuantity;
+
+                if (entryQuantity == decimal.Zero)
+                {
+                    break;
+                }
+            }
+
+            if (entryQuantity == decimal.Zero)
+            {
+                continue;
+            }
         }
 
         _orderRepository.Update(order);

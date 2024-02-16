@@ -56,7 +56,7 @@ public sealed class OrderBookEntry : ValueObject
 
 public static class OrderBookExtensions
 {
-    public static bool IsEnoughLiquidity(this IEnumerable<OrderBookEntry> entries, Order order)
+    public static bool CanSatisfyOrder(this IEnumerable<OrderBookEntry> entries, Order order)
     {
         if (order.Type == OrderType.Market && order.TimeInForce == TimeInForce.IOC)
         {
@@ -70,4 +70,7 @@ public static class OrderBookExtensions
 
         return false;
     }
+
+    public static bool CanSatisfyOrder(this OrderBookEntry entry, Order order) =>
+        entry.Quantity >= order.RemainingQuantity;
 }
