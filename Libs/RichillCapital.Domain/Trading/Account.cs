@@ -130,7 +130,7 @@ public sealed class Account : Entity<AccountId>
 
         _positions.Add(position.Value);
 
-        RegisterDomainEvent(new AccountPositionOpenedDomainEvent(position.Value.Id));
+        RegisterDomainEvent(new AccountPositionOpenedDomainEvent(position.Value.Id, Id));
 
         return ErrorOr.NoError;
     }
