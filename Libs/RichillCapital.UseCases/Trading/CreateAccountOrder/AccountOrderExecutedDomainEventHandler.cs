@@ -1,14 +1,12 @@
 using Microsoft.Extensions.Logging;
 
-using RichillCapital.Domain.Trading;
 using RichillCapital.Domain.Trading.Events;
 using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Trading.CreateAccountOrder;
 
 internal sealed class AccountOrderExecutedDomainEventHandler(
-    ILogger<AccountOrderExecutedDomainEventHandler> _logger,
-    INotificationService _notificationService) :
+    ILogger<AccountOrderExecutedDomainEventHandler> _logger) :
     IDomainEventHandler<AccountOrderExecutedDomainEvent>
 {
     public async Task Handle(
@@ -16,10 +14,7 @@ internal sealed class AccountOrderExecutedDomainEventHandler(
         CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-            "Account order executed: {OrderId}",
+            "AccountOrderExecuted. Id={id}",
             domainEvent.OrderId.Value);
-
-        await _notificationService.SendLineNotificationAsync(
-            $"Account order executed: {domainEvent.OrderId.Value}");
     }
 }

@@ -19,13 +19,6 @@ internal sealed class BotCreatedDomainEventHandler(
         BotCreatedDomainEvent domainEvent,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation(
-            "Bot with id {BotId} created.",
-            domainEvent.BotId.Value);
-
-        await _notificationService.SendLineNotificationAsync(
-            $"Bot with id {domainEvent.BotId.Value} created.");
-
         var bot = await _botRepository
             .GetByIdAsync(domainEvent.BotId, cancellationToken);
 
@@ -34,6 +27,13 @@ internal sealed class BotCreatedDomainEventHandler(
             var error = DomainErrors.Bots.NotFound(domainEvent.BotId);
             throw new InvalidOperationException(error.Message);
         }
+
+        _logger.LogInformation(
+            "BotCreated. Id={id}, Name={name}, Description={description}, Platform={platform}",
+            bot.Value.Id.Value,
+            bot.Value.Name.Value,
+            bot.Value.Description.Value,
+            bot.Value.Platform.Name);
 
         var errorOr = await _botAccountsService
             .CreateSimulatedAccountAsync(

@@ -16,9 +16,6 @@ internal sealed class AccountOrderCreatedDomainEventHandler(
         AccountOrderCreatedDomainEvent domainEvent,
         CancellationToken cancellationToken)
     {
-        await _notificationService.SendLineNotificationAsync(
-            $"Account order created: {domainEvent.OrderId.Value}");
-
         var order = await _orderRepository.GetByIdAsync(domainEvent.OrderId, cancellationToken);
 
         if (order.HasNoValue)
@@ -26,6 +23,9 @@ internal sealed class AccountOrderCreatedDomainEventHandler(
             var error = DomainErrors.Orders.NotFound(domainEvent.OrderId);
             throw new InvalidOperationException(error.Message);
         }
+
+        await _notificationService.SendLineNotificationAsync(
+            $"AccountOrderCreated. {domainEvent.OrderId.Value}");
 
         var result = order.Value.Accept();
 
