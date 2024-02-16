@@ -1,8 +1,6 @@
-using System.Collections.ObjectModel;
-
 using RichillCapital.SharedKernel;
 
-namespace RichillCapital.Domain.Trading;
+namespace RichillCapital.Domain.Shared;
 
 public sealed record class Currency : Enumeration<Currency>
 {

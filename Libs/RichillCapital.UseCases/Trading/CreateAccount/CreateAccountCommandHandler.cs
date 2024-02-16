@@ -1,5 +1,6 @@
 using RichillCapital.Domain;
 using RichillCapital.Domain.Common;
+using RichillCapital.Domain.Shared;
 using RichillCapital.Domain.Trading;
 using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monad;
