@@ -110,4 +110,27 @@ public sealed class Account : Entity<AccountId>
 
         return order.Value.Id;
     }
+
+    public ErrorOr OpenPosition(Execution execution)
+    {
+        var position = Position.Open(
+            execution.TradeType == TradeType.Buy ? Side.Long : Side.Short,
+            execution.Symbol,
+            execution.Quantity,
+            execution.Price,
+            execution.Commission,
+            execution.Tax,
+            Id);
+
+        if (position.IsError)
+        {
+            return position.Error;
+        }
+
+        _positions.Add(position.Value);
+
+        RegisterDomainEvent(new AccountPositionOpenedDomainEvent(position.Value.Id));
+
+        return ErrorOr.NoError;
+    }
 }

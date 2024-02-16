@@ -162,7 +162,7 @@ public sealed class Order : Entity<OrderId>
 
         _executions.Add(execution.Value);
 
-        RegisterDomainEvent(new AccountOrderExecutedDomainEvent(Id));
+        RegisterDomainEvent(new AccountOrderExecutedDomainEvent(execution.Value));
 
         return ErrorOr.NoError;
     }

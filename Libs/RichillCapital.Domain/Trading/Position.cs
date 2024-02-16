@@ -50,7 +50,6 @@ public sealed class Position : Entity<PositionId>
         decimal price,
         decimal commission,
         decimal tax,
-        decimal swap,
         AccountId accountId)
     {
         if (quantity <= 0)
@@ -68,11 +67,6 @@ public sealed class Position : Entity<PositionId>
             return Error.Invalid("Tax must be greater than or equal to 0.");
         }
 
-        if (swap < 0)
-        {
-            return Error.Invalid("Swap must be greater than or equal to 0.");
-        }
-
         var position = new Position(
             PositionId.NewPositionId(),
             side,
@@ -81,7 +75,7 @@ public sealed class Position : Entity<PositionId>
             price,
             commission,
             tax,
-            swap,
+            decimal.Zero,
             accountId);
 
         return position;
