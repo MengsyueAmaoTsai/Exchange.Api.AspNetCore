@@ -30,6 +30,7 @@ public sealed class ListOrders(ISender _sender) : AsyncEndpoint
                     order.Id,
                     order.TradeType,
                     order.Quantity,
+                    order.RemainingQuantity,
                     order.Symbol,
                     order.Type,
                     order.TimeInForce,

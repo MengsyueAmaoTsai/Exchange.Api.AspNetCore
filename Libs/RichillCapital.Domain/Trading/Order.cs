@@ -6,6 +6,8 @@ namespace RichillCapital.Domain.Trading;
 
 public sealed class Order : Entity<OrderId>
 {
+    private readonly List<Execution> _executions = [];
+
     private Order(
         OrderId id,
         TradeType tradeType,
@@ -43,6 +45,8 @@ public sealed class Order : Entity<OrderId>
     public OrderStatus Status { get; private set; }
 
     public AccountId AccountId { get; private set; }
+
+    public IReadOnlyList<Execution> Executions => _executions.AsReadOnly();
 
     public static ErrorOr<Order> Create(
         TradeType tradeType,
@@ -118,15 +122,16 @@ public sealed class Order : Entity<OrderId>
         return Result.Success;
     }
 
-    public ErrorOr<Execution> Execute(
+    public ErrorOr Execute(
         decimal executionQuantity,
         decimal executionPrice,
         decimal commission,
         decimal tax)
     {
-        if (Status != OrderStatus.Pending)
+        if (Status != OrderStatus.Pending ||
+            Status != OrderStatus.PartiallyFilled)
         {
-            return Error.Conflict("Only pending orders can be executed.");
+            return Error.Invalid("Only pending or partially filled orders can be executed.");
         }
 
         if (executionQuantity > Quantity)
@@ -155,6 +160,10 @@ public sealed class Order : Entity<OrderId>
             return execution.Error;
         }
 
-        return execution.Value;
+        _executions.Add(execution.Value);
+
+        RegisterDomainEvent(new AccountOrderExecutedDomainEvent(Id));
+
+        return ErrorOr.NoError;
     }
 }

@@ -9,6 +9,7 @@ public static class OrderExtensions
             order.Id.Value,
             order.TradeType.Name,
             order.Quantity,
+            order.RemainingQuantity,
             order.Symbol.Value,
             order.Type.Name,
             order.TimeInForce.Name,

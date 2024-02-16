@@ -28,6 +28,7 @@ public sealed class GetById(ISender _sender) : AsyncEndpoint
             .Map(account => new AccountWithBalancesResponse(
                 account.Id,
                 account.Name,
+                account.PositionMode,
                 account.Currency,
                 account.Balance
                     .Select(balance => new AccountBalanceResponse(

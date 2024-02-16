@@ -29,6 +29,7 @@ public sealed class List(ISender _sender) : AsyncEndpoint
                 .Select(account => new AccountResponse(
                     account.Id,
                     account.Name,
+                    account.PositionMode,
                     account.Currency)))
             .Match(Ok, HandleError);
 }
