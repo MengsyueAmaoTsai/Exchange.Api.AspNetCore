@@ -93,4 +93,18 @@ public sealed class Order : Entity<OrderId>
 
         return Result.Success;
     }
+
+    public Result Cancel()
+    {
+        if (Status != OrderStatus.Pending)
+        {
+            return Error.Conflict("Only pending orders can be cancelled.");
+        }
+
+        Status = OrderStatus.Cancelled;
+
+        RegisterDomainEvent(new AccountOrderCancelledDomainEvent(Id));
+
+        return Result.Success;
+    }
 }
