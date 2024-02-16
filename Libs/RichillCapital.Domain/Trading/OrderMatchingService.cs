@@ -1,11 +1,8 @@
-using Microsoft.Extensions.Logging;
-
 using RichillCapital.Domain.Common;
 
 namespace RichillCapital.Domain.Trading;
 
 public sealed class OrderMatchingService(
-    ILogger<OrderMatchingService> _logger,
     IRepository<Order> _orderRepository,
     IUnitOfWork _unitOfWork)
 {
@@ -13,8 +10,26 @@ public sealed class OrderMatchingService(
         Order order,
         CancellationToken cancellationToken = default)
     {
+        if (order.Type == OrderType.Market)
+        {
+            await MatchMarketOrderOrCancelAsync(order, cancellationToken);
+        }
+    }
+
+    private async Task MatchMarketOrderOrCancelAsync(
+        Order order,
+        CancellationToken cancellationToken)
+    {
         var orderbook = GetHardCodeOrderBook();
         var entries = orderbook.GetOppositeEntries(order.TradeType);
+
+        if (!entries.CanSatisfyOrder(order))
+        {
+            order.Cancel();
+            _orderRepository.Update(order);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return;
+        }
 
         foreach (var entry in entries)
         {
