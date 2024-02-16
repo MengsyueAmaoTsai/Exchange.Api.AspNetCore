@@ -34,6 +34,6 @@ internal sealed class AccountOrderAcceptedDomainEventHandler(
             throw new InvalidOperationException(error.Message);
         }
 
-        await _orderMatchingService.MatchOrderAsync(order.Value);
+        await _orderMatchingService.MatchOrderAsync(order.Value, cancellationToken);
     }
 }

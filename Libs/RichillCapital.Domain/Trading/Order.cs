@@ -128,7 +128,7 @@ public sealed class Order : Entity<OrderId>
         decimal commission,
         decimal tax)
     {
-        if (Status != OrderStatus.Pending ||
+        if (Status != OrderStatus.Pending &&
             Status != OrderStatus.PartiallyFilled)
         {
             return Error.Invalid("Only pending or partially filled orders can be executed.");

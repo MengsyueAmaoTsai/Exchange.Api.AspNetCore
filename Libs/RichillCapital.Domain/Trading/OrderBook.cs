@@ -23,6 +23,9 @@ public sealed class OrderBook : ValueObject
             Error.Invalid("Order book must contain at least one bid or ask.") :
             new OrderBook(bids, asks);
 
+    public IReadOnlyCollection<OrderBookEntry> GetOppositeEntries(TradeType tradeType) =>
+        tradeType == TradeType.Buy ? Asks : Bids;
+
     protected override IEnumerable<object> GetAtomicValues()
     {
         yield return Bids;
@@ -48,5 +51,23 @@ public sealed class OrderBookEntry : ValueObject
     {
         yield return Price;
         yield return Quantity;
+    }
+}
+
+public static class OrderBookExtensions
+{
+    public static bool IsEnoughLiquidity(this IEnumerable<OrderBookEntry> entries, Order order)
+    {
+        if (order.Type == OrderType.Market && order.TimeInForce == TimeInForce.IOC)
+        {
+            return entries.Any(entry => entry.Quantity > decimal.Zero);
+        }
+
+        if (order.Type == OrderType.Market && order.TimeInForce == TimeInForce.FOK)
+        {
+            return entries.Sum(entry => entry.Quantity) >= order.Quantity;
+        }
+
+        return false;
     }
 }
