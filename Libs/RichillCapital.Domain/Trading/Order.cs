@@ -149,16 +149,16 @@ public sealed class Order : Entity<OrderId>
             AccountId,
             Id);
 
+        if (execution.IsFailure)
+        {
+            return execution.Error;
+        }
+
         Quantity -= executionQuantity;
 
         Status = Quantity == decimal.Zero ?
             OrderStatus.Executed :
             OrderStatus.PartiallyFilled;
-
-        if (execution.IsFailure)
-        {
-            return execution.Error;
-        }
 
         _executions.Add(execution.Value);
 
