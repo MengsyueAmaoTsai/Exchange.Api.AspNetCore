@@ -1,5 +1,3 @@
-using RichillCapital.Domain.Trading;
-
 namespace RichillCapital.Exchange.Api.Endpoints.Accounts;
 
 public sealed record AccountWithBalancesResponse(
