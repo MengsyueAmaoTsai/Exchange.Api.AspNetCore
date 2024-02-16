@@ -5,20 +5,20 @@ using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Trading.CreateAccountOrder;
 
-internal sealed class AccountOrderCreatedDomainEventHandler(
-    ILogger<AccountOrderCreatedDomainEventHandler> _logger,
+internal sealed class AccountOrderExecutedDomainEventHandler(
+    ILogger<AccountOrderExecutedDomainEventHandler> _logger,
     INotificationService _notificationService) :
-    IDomainEventHandler<AccountOrderCreatedDomainEvent>
+    IDomainEventHandler<AccountOrderExecutedDomainEvent>
 {
     public async Task Handle(
-        AccountOrderCreatedDomainEvent domainEvent,
+        AccountOrderExecutedDomainEvent domainEvent,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-            "Account order created: {OrderId}",
+            "Account order executed: {OrderId}",
             domainEvent.OrderId.Value);
 
         await _notificationService.SendLineNotificationAsync(
-            $"Account order created: {domainEvent.OrderId.Value}");
+            $"Account order executed: {domainEvent.OrderId.Value}");
     }
 }
