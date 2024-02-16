@@ -19,6 +19,6 @@ internal sealed class BotCreatedDomainEventHandler(
             domainEvent.BotId);
 
         await _notificationService.SendLineNotificationAsync(
-            $"Bot with id {domainEvent.BotId} created.");
+            $"Bot with id {domainEvent.BotId.Value} created.");
     }
 }
