@@ -1,6 +1,6 @@
 using RichillCapital.SharedKernel.Specifications;
 
-namespace RichillCapital.Domain.Trading;
+namespace RichillCapital.Domain.Trading.Specifications;
 
 public sealed class AccountByIdWithExecutionsSpecification :
     Specification<Account>

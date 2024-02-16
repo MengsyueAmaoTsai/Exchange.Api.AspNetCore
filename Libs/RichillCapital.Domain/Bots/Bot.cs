@@ -1,3 +1,4 @@
+using RichillCapital.Domain.Bots.Events;
 using RichillCapital.Domain.Trading;
 using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monad;
@@ -63,7 +64,7 @@ public sealed class Bot : Entity<BotId>
 
         _signals.Add(signal.Value);
 
-        RegisterDomainEvent(new SignalEmittedDomainEvent(Id));
+        RegisterDomainEvent(new BotSignalEmittedDomainEvent(Id));
 
         return signal.Map(signal => signal);
     }

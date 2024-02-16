@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 
 using RichillCapital.Domain.Trading;
+using RichillCapital.Domain.Trading.Events;
 using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Trading.CreateAccountOrder;

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 
 using RichillCapital.Domain.Bots;
+using RichillCapital.Domain.Bots.Events;
 using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Bots.Create;
