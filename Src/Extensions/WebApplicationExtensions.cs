@@ -16,15 +16,20 @@ public static class WebApplicationExtensions
         builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(builder.Configuration));
 
+        // Core
         builder.Services.AddDomainServices();
-
         builder.Services.AddUseCases();
 
+        // Infrastructure
         builder.Services.AddPersistence();
         builder.Services.AddCaching();
         builder.Services.AddNotifications();
 
-        builder.Services.AddPresentation();
+        // Presentation
+        builder.Services.AddMiddlewares();
+        builder.Services.AddEndpoints();
+        builder.Services.AddOpenApiDocumentation();
+        builder.Services.AddCustomCorsPolicy();
 
         return builder;
     }
@@ -37,7 +42,8 @@ public static class WebApplicationExtensions
         app.InitializeSeeds();
         // await app.InitializeDataFeedsAsync();
 
-        app.UseCors("default");
+        app.UseCustomCorsPolicy();
+
         app.UseSwagger();
         app.UseSwaggerUI();
 
@@ -74,6 +80,13 @@ public static class WebApplicationExtensions
         {
             logger.LogError(ex, "An error occurred seeding the database. {exceptionMessage}", ex.Message);
         }
+
+        return app;
+    }
+
+    private static WebApplication UseCustomCorsPolicy(this WebApplication app)
+    {
+        app.UseCors("default");
 
         return app;
     }
