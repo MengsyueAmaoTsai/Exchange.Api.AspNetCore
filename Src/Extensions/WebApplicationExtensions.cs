@@ -1,8 +1,9 @@
 using RichillCapital.Caching;
+using RichillCapital.Domain;
 using RichillCapital.Exchange.Api.Middlewares;
-using RichillCapital.UseCases;
 using RichillCapital.Notifications;
 using RichillCapital.Persistence;
+using RichillCapital.UseCases;
 
 using Serilog;
 
@@ -14,6 +15,8 @@ public static class WebApplicationExtensions
     {
         builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(builder.Configuration));
+
+        builder.Services.AddDomainServices();
 
         builder.Services.AddUseCases();
 
