@@ -3,22 +3,34 @@
 @Localhost = https://localhost:10000
 @Route = api/accounts
 
-@accountId = 513229cc-4dc4-45dd-901b-1e283bafa6ac
+@accountId = 1d1dea70-3eb1-4dfc-be58-fe692b53d51a
 
 ### List Acounts
 GET {{Localhost}}/{{Route}}
-
-### Get Account by Id
-GET {{Localhost}}/{{Route}}/{{accountId}}
 
 ### Create Account
 POST {{Localhost}}/{{Route}}
 Content-Type: application/json
 
 {
-  "name": "Test Account",
+  "name": "Test d",
   "currency": "TWD",
   "initialDeposit": 100000
+}
+
+### Get Account by Id
+GET {{Localhost}}/{{Route}}/{{accountId}}
+
+### Create Account Order
+POST {{Localhost}}/{{Route}}/{{accountId}}/orders
+Content-Type: application/json
+
+{
+  "tradeType": "Buy",
+  "quantity": 100,
+  "symbol": "AAPL",
+  "orderType": "Market",
+  "timeInForce": "IOC"
 }
 
 ### Get Account Orders

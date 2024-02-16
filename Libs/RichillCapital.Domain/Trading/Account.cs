@@ -104,6 +104,8 @@ public sealed class Account : Entity<AccountId>
 
         _orders.Add(order.Value);
 
+        RegisterDomainEvent(new AccountOrderCreatedDomainEvent(order.Value.Id));
+
         return order.Value.Id;
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 
-using RichillCapital.Domain.Bots;
 using RichillCapital.Domain.Bots.Events;
 using RichillCapital.UseCases.Common;
 
@@ -17,7 +16,7 @@ internal sealed class BotCreatedDomainEventHandler(
     {
         _logger.LogInformation(
             "Bot with id {BotId} created.",
-            domainEvent.BotId);
+            domainEvent.BotId.Value);
 
         await _notificationService.SendLineNotificationAsync(
             $"Bot with id {domainEvent.BotId.Value} created.");
