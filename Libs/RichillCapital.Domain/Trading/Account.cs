@@ -80,4 +80,29 @@ public sealed class Account : Entity<AccountId>
 
         return Result.Success;
     }
+
+    public ErrorOr<OrderId> CreateOrder(
+        TradeType tradeType,
+        decimal quantity,
+        Symbol symbol,
+        OrderType orderType,
+        TimeInForce timeInForce)
+    {
+        var order = Order.Create(
+            tradeType,
+            quantity,
+            symbol,
+            orderType,
+            timeInForce,
+            Id);
+
+        if (order.IsError)
+        {
+            return order.Error;
+        }
+
+        _orders.Add(order.Value);
+
+        return order.Value.Id;
+    }
 }
