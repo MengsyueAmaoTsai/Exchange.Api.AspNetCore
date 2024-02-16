@@ -3,7 +3,7 @@
 @Localhost = https://localhost:10000
 @Route = api/accounts
 
-@accountId = 32fda039-edcf-4f11-a8ce-834e0515d934
+@accountId = 513229cc-4dc4-45dd-901b-1e283bafa6ac
 
 ### List Acounts
 GET {{Localhost}}/{{Route}}
@@ -20,3 +20,15 @@ Content-Type: application/json
   "currency": "TWD",
   "initialDeposit": 100000
 }
+
+### Get Account Orders
+GET {{Localhost}}/{{Route}}/{{accountId}}/orders
+
+### Get Account Executions
+GET {{Localhost}}/{{Route}}/{{accountId}}/executions
+
+### Get Account Positions
+GET {{Localhost}}/{{Route}}/{{accountId}}/positions
+
+### Get Account Trades
+GET {{Localhost}}/{{Route}}/{{accountId}}/trades
