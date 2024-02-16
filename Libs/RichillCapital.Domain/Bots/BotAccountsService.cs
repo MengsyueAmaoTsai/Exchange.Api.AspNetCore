@@ -20,7 +20,10 @@ public sealed class BotAccountsService(
             return accountName.Error;
         }
 
-        var account = Account.Create(accountName.Value, Currency.TWD);
+        var account = Account.Create(
+            accountName.Value,
+            PositionMode.Hedging,
+            Currency.TWD);
 
         if (account.IsFailure)
         {

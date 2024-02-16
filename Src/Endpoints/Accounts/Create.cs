@@ -27,6 +27,7 @@ public sealed class Create(ISender _sender) : AsyncEndpoint
         (await _sender.Send(
             new CreateAccountCommand(
                 request.Name,
+                request.PositionMode,
                 request.Currency,
                 request.InitialDeposit),
             cancellationToken))
@@ -37,6 +38,8 @@ public sealed class Create(ISender _sender) : AsyncEndpoint
 public sealed record class CreateAccountRequest
 {
     public string Name { get; init; } = string.Empty;
+
+    public string PositionMode { get; init; } = string.Empty;
 
     public string Currency { get; init; } = string.Empty;
 

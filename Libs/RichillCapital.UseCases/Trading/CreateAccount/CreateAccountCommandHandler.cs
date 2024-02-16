@@ -30,6 +30,13 @@ internal sealed class CreateAccountCommandHandler(
             return DomainErrors.Accounts.AlreadyExists(name.Value); ;
         }
 
+        var positionMode = PositionMode.FromName(command.PositionMode);
+
+        if (positionMode.HasNoValue)
+        {
+            return Error.Invalid("Position mode is invalid");
+        }
+
         var currency = Currency.FromName(command.Currency);
 
         if (currency.HasNoValue)
@@ -37,7 +44,10 @@ internal sealed class CreateAccountCommandHandler(
             return Error.Invalid("Currency is invalid");
         }
 
-        var account = Account.Create(name.Value, currency.Value);
+        var account = Account.Create(
+            name.Value,
+            positionMode.Value,
+            currency.Value);
 
         if (account.IsFailure)
         {

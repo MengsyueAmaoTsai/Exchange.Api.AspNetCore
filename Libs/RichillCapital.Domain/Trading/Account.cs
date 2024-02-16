@@ -15,14 +15,14 @@ public sealed class Account : Entity<AccountId>
     private Account(
         AccountId id,
         AccountName name,
+        PositionMode positionMode,
         Currency currency)
-        : base(id)
-    {
-        Name = name;
-        Currency = currency;
-    }
+        : base(id) =>
+        (Name, PositionMode, Currency) = (name, positionMode, currency);
 
     public AccountName Name { get; private set; }
+
+    public PositionMode PositionMode { get; private set; }
 
     public Currency Currency { get; private set; }
 
@@ -38,11 +38,13 @@ public sealed class Account : Entity<AccountId>
 
     public static Result<Account> Create(
         AccountName name,
+        PositionMode positionMode,
         Currency currency)
     {
         var account = new Account(
             AccountId.NewAccountId(),
             name,
+            positionMode,
             currency);
 
         foreach (var member in Currency.Members)

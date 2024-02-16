@@ -33,6 +33,12 @@ internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
             .IsRequired();
 
         builder
+            .Property(account => account.PositionMode)
+            .HasColumnName("position_mode")
+            .HasEnumerationValueConversion()
+            .IsRequired();
+
+        builder
             .Property(account => account.Currency)
             .HasColumnName("currency")
             .HasEnumerationValueConversion()
