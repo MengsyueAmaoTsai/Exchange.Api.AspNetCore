@@ -21,5 +21,8 @@ internal sealed class BotCreatedDomainEventHandler(
 
         await _notificationService.SendLineNotificationAsync(
             $"Bot with id {domainEvent.BotId.Value} created.");
+
+        // TODO: Create simulated account and mock account with initial deposit for bot.
+        // Initial deposit based on default value of currency or from back test result drawdown.
     }
 }
