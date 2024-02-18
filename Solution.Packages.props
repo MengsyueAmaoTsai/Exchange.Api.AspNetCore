@@ -3,6 +3,7 @@
     <ProjectReference Include="Libs\RichillCapital.Persistence\RichillCapital.Persistence.csproj" />
     <ProjectReference Include="Libs\RichillCapital.Caching\RichillCapital.Caching.csproj" />
     <ProjectReference Include="Libs\RichillCapital.Notifications\RichillCapital.Notifications.csproj" />
+    <ProjectReference Include="Libs\RichillCapital.DataFeeds\RichillCapital.DataFeeds.csproj" />
   </ItemGroup>
   
   <ItemGroup>
