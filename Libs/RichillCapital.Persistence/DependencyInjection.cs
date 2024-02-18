@@ -11,13 +11,20 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPersistence(this IServiceCollection services)
     {
+        services.AddPersistenceOptions();
+
+        services.AddPostgreSql();
+
+        return services;
+    }
+
+    private static IServiceCollection AddPersistenceOptions(this IServiceCollection services)
+    {
         services
             .AddOptions<PersistenceOptions>()
             .BindConfiguration(nameof(PersistenceOptions))
             .ValidateDataAnnotations()
             .ValidateOnStart();
-
-        services.AddPostgreSql();
 
         return services;
     }

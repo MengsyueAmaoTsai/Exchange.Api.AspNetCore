@@ -9,14 +9,21 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddCaching(this IServiceCollection services)
     {
+        services.AddCachingOptions();
+
+        services.AddInMemoryCache();
+        services.AddDistributedCache();
+
+        return services;
+    }
+
+    private static IServiceCollection AddCachingOptions(this IServiceCollection services)
+    {
         services
             .AddOptions<CachingOptions>()
             .BindConfiguration(nameof(CachingOptions))
             .ValidateDataAnnotations()
             .ValidateOnStart();
-
-        services.AddInMemoryCache();
-        services.AddDistributedCache();
 
         return services;
     }
