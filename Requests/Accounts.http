@@ -3,7 +3,7 @@
 @Localhost = https://localhost:10000
 @Route = api/accounts
 
-@accountId = 3a53a02b-d1a8-423c-93f9-e13db5f8fa27
+@accountId = fc88cf7c-2d4c-4c15-b67e-1082865b0b77
 
 ### Create Account
 POST {{Localhost}}/{{Route}}
@@ -45,3 +45,6 @@ GET {{Localhost}}/{{Route}}/{{accountId}}/positions
 
 ### Get Account Trades
 GET {{Localhost}}/{{Route}}/{{accountId}}/trades
+
+### Get Account Performance
+GET {{Localhost}}/{{Route}}/{{accountId}}/performance
