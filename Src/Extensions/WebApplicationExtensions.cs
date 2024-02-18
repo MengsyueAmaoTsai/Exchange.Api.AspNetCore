@@ -42,7 +42,7 @@ public static class WebApplicationExtensions
         app.UseSerilogRequestLogging();
 
         app.InitializeSeeds();
-        // await app.InitializeDataFeedsAsync();
+        await app.InitializeDataFeedsAsync();
 
         app.UseCustomCorsPolicy();
 
@@ -93,12 +93,13 @@ public static class WebApplicationExtensions
         return app;
     }
 
-    // private static async Task<WebApplication> InitializeDataFeedsAsync(this WebApplication app)
-    // {
-    //     using var scope = app.Services.CreateScope();
+    private static async Task<WebApplication> InitializeDataFeedsAsync(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
 
-    //     var dataFeedService = scope.ServiceProvider.GetRequiredService<DataFeedProvider>();
-    //     await dataFeedService.InitializeAsync();
-    //     return app;
-    // }
+        var dataFeedService = scope.ServiceProvider.GetRequiredService<DataFeedProvider>();
+        await dataFeedService.InitializeAsync();
+
+        return app;
+    }
 }
