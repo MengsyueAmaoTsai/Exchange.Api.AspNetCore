@@ -2,6 +2,7 @@ using RichillCapital.Domain;
 using RichillCapital.Domain.Common;
 using RichillCapital.Domain.Trading;
 using RichillCapital.Domain.Trading.Events;
+using RichillCapital.SharedKernel.Monad;
 using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Trading.CreateAccountOrder;
@@ -29,10 +30,7 @@ internal sealed class AccountOrderCreatedDomainEventHandler(
 
         var result = order.Value.Accept();
 
-        if (result.IsFailure)
-        {
-            throw new InvalidOperationException(result.Error.Message);
-        }
+        result.ThrowIfFailure();
 
         _orderRepository.Update(order.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

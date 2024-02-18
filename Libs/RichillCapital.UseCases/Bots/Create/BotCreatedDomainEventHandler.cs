@@ -4,6 +4,7 @@ using RichillCapital.Domain;
 using RichillCapital.Domain.Bots;
 using RichillCapital.Domain.Bots.Events;
 using RichillCapital.Domain.Common;
+using RichillCapital.SharedKernel.Monad;
 using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Bots.Create;
@@ -40,9 +41,6 @@ internal sealed class BotCreatedDomainEventHandler(
                 domainEvent.BotId,
                 cancellationToken);
 
-        if (errorOr.IsError)
-        {
-            throw new InvalidOperationException(errorOr.Error.Message);
-        }
+        errorOr.ThrowIfError();
     }
 }
