@@ -9,6 +9,7 @@ public sealed class Order : Entity<OrderId>
     private readonly List<Execution> _executions = [];
 
     private Order(
+        DateTimeOffset time,
         OrderId id,
         TradeType tradeType,
         decimal quantity,
@@ -20,6 +21,7 @@ public sealed class Order : Entity<OrderId>
         AccountId accountId)
         : base(id)
     {
+        Time = time;
         TradeType = tradeType;
         Quantity = quantity;
         RemainingQuantity = remainingQuantity;
@@ -29,6 +31,8 @@ public sealed class Order : Entity<OrderId>
         Status = status;
         AccountId = accountId;
     }
+
+    public DateTimeOffset Time { get; private set; }
 
     public TradeType TradeType { get; private set; }
 
@@ -67,6 +71,7 @@ public sealed class Order : Entity<OrderId>
         }
 
         var order = new Order(
+            DateTimeOffset.UtcNow,
             OrderId.NewOrderId(),
             tradeType,
             quantity,

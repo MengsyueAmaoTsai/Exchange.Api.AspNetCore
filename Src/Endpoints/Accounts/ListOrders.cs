@@ -28,6 +28,7 @@ public sealed class ListOrders(ISender _sender) : AsyncEndpoint
             .Map(orders => orders
                 .Select(order => new OrderResponse(
                     order.Id,
+                    order.Time,
                     order.TradeType,
                     order.Quantity,
                     order.RemainingQuantity,

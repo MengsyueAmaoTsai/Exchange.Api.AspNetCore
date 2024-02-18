@@ -15,6 +15,12 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasKey(order => order.Id);
 
         builder
+            .Property(order => order.Time)
+            .HasColumnName("time")
+            .HasColumnType("timestamp with time zone")
+            .IsRequired();
+
+        builder
             .Property(order => order.Id)
             .HasColumnName("id")
             .HasMaxLength(OrderId.MaxLength)

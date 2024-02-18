@@ -7,6 +7,7 @@ public static class OrderExtensions
     public static OrderDto ToDto(this Order order) =>
         new(
             order.Id.Value,
+            order.Time,
             order.TradeType.Name,
             order.Quantity,
             order.RemainingQuantity,

@@ -2,6 +2,7 @@ namespace RichillCapital.UseCases.Trading;
 
 public sealed record OrderDto(
     string Id,
+    DateTimeOffset Time,
     string TradeType,
     decimal Quantity,
     decimal RemainingQuantity,
