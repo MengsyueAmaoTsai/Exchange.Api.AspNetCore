@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RichillCapital.UseCases\RichillCapital.UseCases.csproj" />
-    <ProjectReference Include="..\RichillCapital.SharedKernel.EntityFrameworkCore\RichillCapital.SharedKernel.EntityFrameworkCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

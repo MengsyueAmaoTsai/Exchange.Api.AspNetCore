@@ -2,7 +2,7 @@ using RichillCapital.SharedKernel;
 
 namespace RichillCapital.Domain.Trading;
 
-public sealed record class Side : Enumeration<Side>
+public sealed class Side : Enumeration<Side>
 {
     public static readonly Side Long = new(nameof(Long), 1);
 

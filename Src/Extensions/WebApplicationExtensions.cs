@@ -69,7 +69,7 @@ public static class WebApplicationExtensions
 
         try
         {
-            var context = services.GetRequiredService<PostgreSqlOptionsDbContext>();
+            var context = services.GetRequiredService<PostgreSqlDbContext>();
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             Seeds.Initialize(services);

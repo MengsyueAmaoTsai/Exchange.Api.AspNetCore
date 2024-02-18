@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 
 using RichillCapital.Domain.Common;
+using RichillCapital.SharedKernel.Specifications.Evaluators;
 
 namespace RichillCapital.Persistence;
 
@@ -23,7 +24,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddPostgreSql(this IServiceCollection services)
     {
-        services.AddDbContext<PostgreSqlOptionsDbContext>((servicesProvider, options) =>
+        services.AddDbContext<PostgreSqlDbContext>((servicesProvider, options) =>
         {
             var postgreSqlOptions = servicesProvider
                 .GetRequiredService<IOptions<PersistenceOptions>>()
@@ -35,8 +36,9 @@ public static class DependencyInjection
         services.AddScoped(typeof(IRepository<>), typeof(PostgresRepository<>));
         services.AddScoped(typeof(IReadOnlyRepository<>), typeof(PostgresRepository<>));
         services.AddScoped<IUnitOfWork>(serviceProvider =>
-                serviceProvider.GetRequiredService<PostgreSqlOptionsDbContext>());
+                serviceProvider.GetRequiredService<PostgreSqlDbContext>());
 
+        services.AddScoped<IInMemorySpecificationEvaluator, InMemorySpecificationEvaluator>();
         return services;
     }
 

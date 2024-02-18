@@ -2,7 +2,7 @@ using RichillCapital.SharedKernel;
 
 namespace RichillCapital.Domain.Trading;
 
-public sealed record class TradeType : Enumeration<TradeType>
+public sealed class TradeType : Enumeration<TradeType>
 {
     public static readonly TradeType Buy = new TradeType(nameof(Buy), 1);
     public static readonly TradeType Sell = new TradeType(nameof(Sell), -1);

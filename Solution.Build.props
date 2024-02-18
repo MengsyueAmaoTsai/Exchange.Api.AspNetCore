@@ -1,0 +1,32 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup>
+      <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+      <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)Solution.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>    
+  
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory).editorconfig')" >
+      <AdditionalFiles Include="$(MSBuildThisFileDirectory).editorconfig" />
+  </ItemGroup>
+    
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)stylecop.json')" >
+      <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" />
+  </ItemGroup>  
+  
+</Project>

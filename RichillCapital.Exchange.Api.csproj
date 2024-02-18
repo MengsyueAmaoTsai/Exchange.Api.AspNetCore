@@ -1,11 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>true</InvariantGlobalization>
-  </PropertyGroup>
+  <Import Project="./Solution.Build.props"/>
+  <Import Project="./Solution.Packages.props"/>
 
   <ItemGroup>
     <Compile Remove="Libs\**" />
@@ -18,18 +13,5 @@
     <None Remove=".gitignore" />
     <None Remove="LICENSE" />
     <None Remove="Solution.ruleset" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="Libs\RichillCapital.Persistence\RichillCapital.Persistence.csproj" />
-    <ProjectReference Include="Libs\RichillCapital.Caching\RichillCapital.Caching.csproj" />
-    <ProjectReference Include="Libs\RichillCapital.Notifications\RichillCapital.Notifications.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
-    <PackageReference Include="Serilog.Sinks.Seq" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 </Project>

@@ -6,8 +6,8 @@ using RichillCapital.SharedKernel;
 
 namespace RichillCapital.Persistence;
 
-public sealed class PostgreSqlOptionsDbContext(
-    DbContextOptions<PostgreSqlOptionsDbContext> options,
+public sealed class PostgreSqlDbContext(
+    DbContextOptions<PostgreSqlDbContext> options,
     IDomainEventDispatcher _domainEventDispatcher) :
     DbContext(options), IUnitOfWork
 {
@@ -36,6 +36,6 @@ public sealed class PostgreSqlOptionsDbContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PostgreSqlOptionsDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PostgreSqlDbContext).Assembly);
     }
 }

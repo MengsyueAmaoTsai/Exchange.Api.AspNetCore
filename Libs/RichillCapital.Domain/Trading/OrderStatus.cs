@@ -2,7 +2,7 @@ using RichillCapital.SharedKernel;
 
 namespace RichillCapital.Domain.Trading;
 
-public sealed record class OrderStatus : Enumeration<OrderStatus>
+public sealed class OrderStatus : Enumeration<OrderStatus>
 {
     public static readonly OrderStatus New = new(nameof(New), 1);
     public static readonly OrderStatus Rejected = new(nameof(Rejected), 2);

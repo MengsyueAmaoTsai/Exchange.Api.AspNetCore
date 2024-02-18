@@ -1,6 +1,10 @@
+using RichillCapital.SharedKernel.Specifications;
+
 namespace RichillCapital.Domain.Common;
 
-public interface IRepository<TEntity> : IReadOnlyRepository<TEntity>
+public interface IRepository<TEntity> :
+    IReadOnlyRepository<TEntity>,
+    ISpecificationRepository<TEntity>
     where TEntity : class
 {
     void Add(TEntity entity);

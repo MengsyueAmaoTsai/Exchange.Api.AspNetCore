@@ -2,7 +2,7 @@ using RichillCapital.SharedKernel;
 
 namespace RichillCapital.Domain.Trading;
 
-public sealed record class OrderType : Enumeration<OrderType>
+public sealed class OrderType : Enumeration<OrderType>
 {
     public static readonly OrderType Market = new(nameof(Market), 1);
     public static readonly OrderType Limit = new(nameof(Limit), 2);

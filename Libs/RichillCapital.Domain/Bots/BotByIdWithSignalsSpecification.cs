@@ -1,4 +1,5 @@
 using RichillCapital.SharedKernel.Specifications;
+using RichillCapital.SharedKernel.Specifications.Builders;
 
 namespace RichillCapital.Domain.Bots;
 

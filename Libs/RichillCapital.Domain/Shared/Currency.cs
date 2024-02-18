@@ -2,7 +2,7 @@ using RichillCapital.SharedKernel;
 
 namespace RichillCapital.Domain.Shared;
 
-public sealed record class Currency : Enumeration<Currency>
+public sealed class Currency : Enumeration<Currency>
 {
     public static readonly Currency TWD = new(nameof(TWD), 1);
     public static readonly Currency USD = new(nameof(USD), 2);
