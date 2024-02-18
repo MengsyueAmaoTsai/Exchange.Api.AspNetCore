@@ -30,6 +30,7 @@ internal sealed class ListAccountExecutionsQueryHandler(
             DomainErrors.Accounts.NotFound(id.Value) :
             account.Value.Executions
                 .Select(execution => execution.ToDto())
+                .OrderByDescending(execution => execution.Time)
                 .ToList()
                 .AsReadOnly();
     }
