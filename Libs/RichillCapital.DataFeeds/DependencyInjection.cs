@@ -6,6 +6,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddDataFeeds(this IServiceCollection services)
     {
+        services.AddSingleton<DataFeedProvider>();
+
         return services;
     }
 }
