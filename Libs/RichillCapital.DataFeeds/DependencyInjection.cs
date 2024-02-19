@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
+using RichillCapital.DataFeeds.Binance;
 using RichillCapital.DataFeeds.Exceptions;
 using RichillCapital.DataFeeds.Extensions;
 using RichillCapital.DataFeeds.Max;

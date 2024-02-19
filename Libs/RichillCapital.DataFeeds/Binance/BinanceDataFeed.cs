@@ -1,7 +1,6 @@
-
 using RichillCapital.DataFeeds.Abstractions;
 
-namespace RichillCapital.DataFeeds;
+namespace RichillCapital.DataFeeds.Binance;
 
 public sealed class BinanceDataFeed : DataFeed
 {
