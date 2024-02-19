@@ -22,4 +22,14 @@ internal static class IServiceCollectionExtensions
             .BuildServiceProvider()
             .GetRequiredService<IOptions<DataFeedOptions>>().Value
             .Configurations;
+
+    public static DataFeedOptions GetDataFeedOptions(this IServiceProvider serviceProvider) =>
+        serviceProvider
+            .GetRequiredService<IOptions<DataFeedOptions>>().Value;
+
+    public static IDataFeed GetDataFeed(
+        this IServiceProvider serviceProvider,
+        string connectionName) =>
+        serviceProvider
+            .GetRequiredKeyedService<IDataFeed>(connectionName);
 }

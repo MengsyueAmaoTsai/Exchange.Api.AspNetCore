@@ -12,7 +12,7 @@ public static class DependencyInjection
     {
         services.AddDataFeedOptions();
 
-        services.AddSingleton<DataFeedProvider>();
+        services.AddScoped<DataFeedProvider>();
 
         services.AddDataFeedsFromConfiguration();
 
