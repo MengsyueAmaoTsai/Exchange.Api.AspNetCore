@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 using RichillCapital.DataFeeds.Exceptions;
+using RichillCapital.DataFeeds.Extensions;
 using RichillCapital.DataFeeds.Max;
 
 namespace RichillCapital.DataFeeds;
@@ -30,20 +30,6 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection EnsureNotDuplicateConnectionName(
-        this IServiceCollection services,
-        string providerName,
-        string connectionName) =>
-        services.Any(
-            service => service.ServiceType == typeof(IDataFeed) &&
-            service.ServiceKey?.ToString() == connectionName &&
-            service.IsKeyedService) ?
-            throw new DuplicateConnectionNameException(providerName, connectionName) :
-            services;
-
-    private static DataFeedOptions GetDataFeedOptions(this IServiceProvider serviceProvider) =>
-        serviceProvider.GetRequiredService<IOptions<DataFeedOptions>>().Value;
-
     private static IServiceCollection AddDataFeedsFromConfiguration(this IServiceCollection services)
     {
         var options = services
@@ -62,7 +48,7 @@ public static class DependencyInjection
 
             foreach (var connectionName in connectionNames)
             {
-                services.EnsureNotDuplicateConnectionName(providerName, connectionName);
+                services.EnsureIsConnectionNameUnique(connectionName);
 
                 switch (providerName)
                 {
