@@ -1,13 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
+using RichillCapital.DataFeeds.Abstractions;
 using RichillCapital.DataFeeds.Exceptions;
 
 namespace RichillCapital.DataFeeds.Extensions;
 
 internal static class IServiceCollectionExtensions
 {
-    public static IServiceCollection EnsureIsConnectionNameUnique(
+    public static IServiceCollection EnsureIsUniqueConnection(
         this IServiceCollection services,
         string connectionName) =>
         services.Any(
@@ -24,12 +25,10 @@ internal static class IServiceCollectionExtensions
             .Configurations;
 
     public static DataFeedOptions GetDataFeedOptions(this IServiceProvider serviceProvider) =>
-        serviceProvider
-            .GetRequiredService<IOptions<DataFeedOptions>>().Value;
+        serviceProvider.GetRequiredService<IOptions<DataFeedOptions>>().Value;
 
     public static IDataFeed GetDataFeed(
         this IServiceProvider serviceProvider,
         string connectionName) =>
-        serviceProvider
-            .GetRequiredKeyedService<IDataFeed>(connectionName);
+        serviceProvider.GetRequiredKeyedService<IDataFeed>(connectionName);
 }

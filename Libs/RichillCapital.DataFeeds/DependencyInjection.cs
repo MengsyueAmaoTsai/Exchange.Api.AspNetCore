@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
+using RichillCapital.DataFeeds.Abstractions;
 using RichillCapital.DataFeeds.Binance;
 using RichillCapital.DataFeeds.Exceptions;
 using RichillCapital.DataFeeds.Extensions;
@@ -59,15 +60,15 @@ public static class DependencyInjection
         string providerName,
         string connectionName)
     {
-        services.EnsureIsConnectionNameUnique(connectionName);
+        services.EnsureIsUniqueConnection(connectionName);
 
         switch (providerName)
         {
-            case DataFeedProviders.Max:
+            case DataFeedProviderNames.Max:
                 services.AddKeyedSingleton<IDataFeed, MaxDataFeed>(connectionName);
                 break;
 
-            case DataFeedProviders.Binance:
+            case DataFeedProviderNames.Binance:
                 services.AddKeyedSingleton<IDataFeed, BinanceDataFeed>(connectionName);
                 break;
 

@@ -1,6 +1,4 @@
-using RichillCapital.DataFeeds.Abstractions;
-
-namespace RichillCapital.DataFeeds;
+namespace RichillCapital.DataFeeds.Abstractions;
 
 public interface IDataFeed
 {

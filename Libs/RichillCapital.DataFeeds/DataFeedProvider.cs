@@ -2,6 +2,7 @@ using System.Reflection;
 
 using Microsoft.Extensions.Logging;
 
+using RichillCapital.DataFeeds.Abstractions;
 using RichillCapital.DataFeeds.Extensions;
 
 namespace RichillCapital.DataFeeds;
@@ -10,8 +11,6 @@ public sealed class DataFeedProvider(
     ILogger<DataFeedProvider> _logger,
     IServiceProvider _serviceProvider)
 {
-    private readonly Dictionary<string, IDataFeed> _dataFeeds = [];
-
     public async Task InitializeAsync()
     {
         var options = _serviceProvider.GetDataFeedOptions();
@@ -27,14 +26,14 @@ public sealed class DataFeedProvider(
                 await dataFeed.ConnectAsync();
             }
 
-            _dataFeeds.Add(dataFeed.ConnectionName, dataFeed);
-
             _logger.LogInformation(
                 "Connection with name '{ConnectionName}' initialized. ProviderName: '{ProviderName}'.",
                 dataFeed.ConnectionName,
                 dataFeed.ProviderName);
         }
     }
+
+    public IDataFeed GetDataFeed(string connectionName) => _serviceProvider.GetDataFeed(connectionName);
 
     public static IEnumerable<Type> GetDataFeedTypes() =>
         AppDomain.CurrentDomain
