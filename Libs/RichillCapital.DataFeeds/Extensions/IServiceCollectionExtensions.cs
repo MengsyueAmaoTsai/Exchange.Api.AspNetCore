@@ -17,6 +17,9 @@ internal static class IServiceCollectionExtensions
             throw new DuplicateConnectionNameException(connectionName) :
             services;
 
-    public static DataFeedOptions GetDataFeedOptions(this IServiceProvider serviceProvider) =>
-        serviceProvider.GetRequiredService<IOptions<DataFeedOptions>>().Value;
+    public static IEnumerable<DataFeedConfiguration> GetConfigurations(this IServiceCollection services) =>
+        services
+            .BuildServiceProvider()
+            .GetRequiredService<IOptions<DataFeedOptions>>().Value
+            .Configurations;
 }

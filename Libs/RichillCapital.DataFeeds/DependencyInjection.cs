@@ -32,38 +32,46 @@ public static class DependencyInjection
 
     private static IServiceCollection AddDataFeedsFromConfiguration(this IServiceCollection services)
     {
-        var options = services
-            .BuildServiceProvider()
-            .GetDataFeedOptions();
+        var configurations = services.GetConfigurations();
 
-        var providerNames = options.Configurations
+        var providerNames = configurations
             .Select(configuration => configuration.ProviderName)
             .Distinct();
 
         foreach (var providerName in providerNames)
         {
-            var connectionNames = options.Configurations
+            var connectionNames = configurations
                 .Where(configuration => configuration.ProviderName == providerName)
                 .Select(configuration => configuration.ConnectionName);
 
             foreach (var connectionName in connectionNames)
             {
-                services.EnsureIsConnectionNameUnique(connectionName);
-
-                switch (providerName)
-                {
-                    case "Max":
-                        services.AddKeyedSingleton<IDataFeed, MaxDataFeed>(connectionName);
-                        break;
-
-                    case "Binance":
-                        services.AddKeyedSingleton<IDataFeed, BinanceDataFeed>(connectionName);
-                        break;
-
-                    default:
-                        throw new DataFeedNotSupportedException(connectionName, providerName);
-                }
+                services.AddConnection(providerName, connectionName);
             }
+        }
+
+        return services;
+    }
+
+    private static IServiceCollection AddConnection(
+        this IServiceCollection services,
+        string providerName,
+        string connectionName)
+    {
+        services.EnsureIsConnectionNameUnique(connectionName);
+
+        switch (providerName)
+        {
+            case DataFeedProviders.Max:
+                services.AddKeyedSingleton<IDataFeed, MaxDataFeed>(connectionName);
+                break;
+
+            case DataFeedProviders.Binance:
+                services.AddKeyedSingleton<IDataFeed, BinanceDataFeed>(connectionName);
+                break;
+
+            default:
+                throw new DataFeedNotSupportedException(connectionName, providerName);
         }
 
         return services;
