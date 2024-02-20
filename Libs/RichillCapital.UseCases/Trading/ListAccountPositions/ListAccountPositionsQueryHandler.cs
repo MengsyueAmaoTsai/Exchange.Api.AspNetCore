@@ -30,7 +30,7 @@ internal sealed class ListAccountPositionsQueryHandler(
         return account.HasNoValue ?
             DomainErrors.Accounts.NotFound(id.Value) :
             account.Value.Positions
-                .Select(position => position.ToDto())
+                .Select(PositionDto.From)
                 .ToList()
                 .AsReadOnly();
     }

@@ -28,8 +28,6 @@ internal sealed class GetAccountPerformanceQueryHandler(
 
         return account.HasNoValue ?
             DomainErrors.Accounts.NotFound(id.Value) :
-            AccountPerformance
-                .GenerateFromClosedTrades(account.Value.Trades)
-                .ToDto();
+            AccountPerformanceDto.From(AccountPerformance.GenerateFromClosedTrades(account.Value.Trades));
     }
 }

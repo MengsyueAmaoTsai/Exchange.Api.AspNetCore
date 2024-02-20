@@ -29,7 +29,7 @@ internal sealed class ListAccountTradesQueryHandler(
         return account.HasNoValue ?
             DomainErrors.Accounts.NotFound(id.Value) :
             account.Value.Trades
-                .Select(trade => trade.ToDto())
+                .Select(TradeDto.From)
                 .OrderByDescending(trade => trade.ExitTime)
                 .ToList()
                 .AsReadOnly();

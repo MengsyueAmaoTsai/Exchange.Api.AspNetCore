@@ -28,6 +28,6 @@ internal sealed class GetAccountByIdQueryHandler(
 
         return account.HasNoValue ?
             DomainErrors.Accounts.NotFound(accountId.Value) :
-            account.Value.ToDto();
+            AccountDto.From(account.Value);
     }
 }

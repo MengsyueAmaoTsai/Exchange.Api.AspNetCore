@@ -15,7 +15,7 @@ internal sealed class ListAccountsQueryHandler(
         ListAccountsQuery query,
         CancellationToken cancellationToken) =>
         (await _accountRepository.ListAsync(cancellationToken))
-            .Select(account => account.ToDto())
+            .Select(AccountDto.From)
             .ToList()
             .AsReadOnly();
 }

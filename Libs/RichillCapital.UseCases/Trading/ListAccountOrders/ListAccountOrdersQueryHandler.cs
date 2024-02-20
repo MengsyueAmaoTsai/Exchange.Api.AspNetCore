@@ -29,7 +29,7 @@ internal sealed class ListAccountOrdersQueryHandler(
         return account.HasNoValue ?
             DomainErrors.Accounts.NotFound(id.Value) :
             account.Value.Orders
-                .Select(order => order.ToDto())
+                .Select(OrderDto.From)
                 .OrderByDescending(order => order.Time)
                 .ToList()
                 .AsReadOnly();
