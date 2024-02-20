@@ -2,6 +2,7 @@ using RichillCapital.Caching;
 using RichillCapital.DataFeeds;
 using RichillCapital.Domain;
 using RichillCapital.Exchange.Api.Middlewares;
+using RichillCapital.Messaging;
 using RichillCapital.Notifications;
 using RichillCapital.Persistence;
 using RichillCapital.UseCases;
@@ -24,6 +25,7 @@ public static class WebApplicationExtensions
         // Infrastructure
         builder.Services.AddPersistence();
         builder.Services.AddCaching();
+        builder.Services.AddMessaging();
         builder.Services.AddNotifications();
         builder.Services.AddDataFeeds();
 
