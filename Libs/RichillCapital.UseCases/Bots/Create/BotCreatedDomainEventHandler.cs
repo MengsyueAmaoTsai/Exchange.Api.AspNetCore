@@ -11,7 +11,6 @@ namespace RichillCapital.UseCases.Bots.Create;
 
 internal sealed class BotCreatedDomainEventHandler(
     ILogger<BotCreatedDomainEventHandler> _logger,
-    INotificationService _notificationService,
     IReadOnlyRepository<Bot> _botRepository,
     BotAccountsService _botAccountsService) :
     IDomainEventHandler<BotCreatedDomainEvent>
