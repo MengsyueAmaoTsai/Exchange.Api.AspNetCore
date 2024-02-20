@@ -1,3 +1,5 @@
+using RichillCapital.Domain.Bots;
+
 namespace RichillCapital.UseCases.Bots;
 
 public sealed record SignalDto(
@@ -6,4 +8,14 @@ public sealed record SignalDto(
     string Symbol,
     decimal Volume,
     decimal Price,
-    string BotId);
+    string BotId)
+{
+    internal static SignalDto From(Signal signal) =>
+        new(
+            signal.Time,
+            signal.TradeType.Name,
+            signal.Symbol.Value,
+            signal.Quantity,
+            signal.Price,
+            signal.BotId.Value);
+}

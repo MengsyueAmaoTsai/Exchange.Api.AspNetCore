@@ -25,6 +25,6 @@ internal sealed class GetBotByIdQueryHandler(
 
         return bot.HasNoValue ?
             DomainErrors.Bots.NotFound(id.Value) :
-            bot.Value.ToDto();
+            BotDto.From(bot.Value);
     }
 }

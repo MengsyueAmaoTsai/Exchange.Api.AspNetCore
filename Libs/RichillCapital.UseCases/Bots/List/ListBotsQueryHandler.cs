@@ -13,7 +13,7 @@ internal sealed class ListBotsQueryHandler(
         ListBotsQuery query,
         CancellationToken cancellationToken) =>
         (await _botRepository.ListAsync(cancellationToken))
-            .Select(bot => bot.ToDto())
+            .Select(BotDto.From)
             .ToList()
             .AsReadOnly();
 }
