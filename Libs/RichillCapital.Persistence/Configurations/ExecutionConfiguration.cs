@@ -17,6 +17,10 @@ internal sealed class ExecutionConfiguration : IEntityTypeConfiguration<Executio
                 execution.Time,
                 execution.TradeType,
                 execution.Symbol,
+                execution.Quantity,
+                execution.Price,
+                execution.Commission,
+                execution.Tax,
                 execution.OrderId,
                 execution.AccountId,
             });
