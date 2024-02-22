@@ -20,7 +20,7 @@ internal sealed class CreateAccountOrderCommandHandler(
 
         if (id.IsError)
         {
-            return id.Error;
+            return id.Errors.ToList();
         }
 
         var account = await _accountRepository.GetByIdAsync(
@@ -43,7 +43,7 @@ internal sealed class CreateAccountOrderCommandHandler(
 
         if (symbol.IsError)
         {
-            return symbol.Error;
+            return symbol.Errors.ToList();
         }
 
         var orderType = OrderType.FromName(command.OrderType);
@@ -71,7 +71,7 @@ internal sealed class CreateAccountOrderCommandHandler(
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return orderId.IsError ?
-            orderId.Error :
+            orderId.Errors.ToList() :
             orderId.Value;
     }
 }

@@ -59,13 +59,13 @@ public sealed class Bot : Entity<BotId>
 
         if (signal.IsError)
         {
-            return signal.Error;
+            return signal.Errors.ToList();
         }
 
         _signals.Add(signal.Value);
 
         RegisterDomainEvent(new BotSignalEmittedDomainEvent(Id));
 
-        return signal.Map(signal => signal);
+        return signal;
     }
 }

@@ -20,7 +20,7 @@ internal sealed class ListAccountPositionsQueryHandler(
 
         if (id.IsError)
         {
-            return id.Error;
+            return id.Errors.ToList();
         }
 
         var account = await _accountRepository.FirstOrDefaultAsync(

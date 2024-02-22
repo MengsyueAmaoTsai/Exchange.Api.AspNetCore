@@ -40,6 +40,9 @@ internal sealed class BotCreatedDomainEventHandler(
                 domainEvent.BotId,
                 cancellationToken);
 
-        errorOr.ThrowIfError();
+        if (errorOr.IsError)
+        {
+            throw new InvalidOperationException(errorOr.FirstError.Message);
+        }
     }
 }

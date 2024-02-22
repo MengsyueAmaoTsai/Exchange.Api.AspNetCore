@@ -19,7 +19,7 @@ internal sealed class ClosePositionCommandHandler(
 
         if (positionId.IsError)
         {
-            return positionId.Error;
+            return positionId.Errors.ToList();
         }
 
         var position = await _positionRepository

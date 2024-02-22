@@ -9,7 +9,7 @@ public sealed class BotAccountsService(
     IRepository<Account> _accountRepository,
     IUnitOfWork _unitOfWork)
 {
-    public async Task<ErrorOr> CreateSimulatedAccountAsync(
+    public async Task<ErrorOr<AccountId>> CreateSimulatedAccountAsync(
         BotId botId,
         CancellationToken cancellationToken = default)
     {
@@ -18,7 +18,7 @@ public sealed class BotAccountsService(
 
         if (accountName.IsError)
         {
-            return accountName.Error;
+            return accountName.Errors.ToList();
         }
 
         var account = Account.Create(
@@ -34,6 +34,6 @@ public sealed class BotAccountsService(
         _accountRepository.Add(account.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return ErrorOr.NoError;
+        return account.Value.Id;
     }
 }

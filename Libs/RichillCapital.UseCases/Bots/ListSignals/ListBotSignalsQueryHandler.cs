@@ -19,7 +19,7 @@ internal sealed class ListBotSignalsQueryHandler(
 
         if (id.IsError)
         {
-            return id.Error;
+            return id.Errors.ToList();
         }
 
         var bot = await _botRepository.FirstOrDefaultAsync(

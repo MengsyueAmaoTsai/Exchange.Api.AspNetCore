@@ -96,7 +96,7 @@ public sealed class Order : Entity<OrderId>
 
         RegisterDomainEvent(new AccountOrderRejectedDomainEvent(Id));
 
-        return Result.Success;
+        return Result.Success();
     }
 
     public Result Accept()
@@ -110,7 +110,7 @@ public sealed class Order : Entity<OrderId>
 
         RegisterDomainEvent(new AccountOrderAcceptedDomainEvent(Id));
 
-        return Result.Success;
+        return Result.Success();
     }
 
     public Result Cancel()
@@ -124,10 +124,10 @@ public sealed class Order : Entity<OrderId>
 
         RegisterDomainEvent(new AccountOrderCancelledDomainEvent(Id));
 
-        return Result.Success;
+        return Result.Success();
     }
 
-    public ErrorOr Execute(
+    public ErrorOr<Execution> Execute(
         decimal executionQuantity,
         decimal executionPrice,
         decimal commission,
@@ -169,6 +169,6 @@ public sealed class Order : Entity<OrderId>
 
         RegisterDomainEvent(new AccountOrderExecutedDomainEvent(execution.Value));
 
-        return ErrorOr.NoError;
+        return execution.Value;
     }
 }

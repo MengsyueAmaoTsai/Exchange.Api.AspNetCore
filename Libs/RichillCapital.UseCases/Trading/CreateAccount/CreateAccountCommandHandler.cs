@@ -21,7 +21,7 @@ internal sealed class CreateAccountCommandHandler(
 
         if (name.IsError)
         {
-            return name.Error;
+            return name.Errors.ToList();
         }
 
         if (await _accountRepository.AnyAsync(

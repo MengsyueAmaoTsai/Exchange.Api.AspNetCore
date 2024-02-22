@@ -20,7 +20,7 @@ internal sealed class CreateBotCommandHandler(
 
         if (id.IsError)
         {
-            return id.Error;
+            return id.Errors.ToList();
         }
 
         if (await _botRepository.AnyAsync(
@@ -34,7 +34,7 @@ internal sealed class CreateBotCommandHandler(
 
         if (name.IsError)
         {
-            return name.Error;
+            return name.Errors.ToList();
         }
 
         if (await _botRepository.AnyAsync(
@@ -48,7 +48,7 @@ internal sealed class CreateBotCommandHandler(
 
         if (description.IsError)
         {
-            return description.Error;
+            return description.Errors.ToList();
         }
 
         var platform = TradingPlatform.FromName(command.Platform);

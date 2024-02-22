@@ -30,7 +30,10 @@ internal sealed class AccountOrderCreatedDomainEventHandler(
 
         var result = order.Value.Accept();
 
-        result.ThrowIfFailure();
+        if (result.IsFailure)
+        {
+            throw new InvalidOperationException(result.Error.Message);
+        }
 
         _orderRepository.Update(order.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

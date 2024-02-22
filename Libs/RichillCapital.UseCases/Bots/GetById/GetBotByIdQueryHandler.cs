@@ -18,7 +18,7 @@ internal sealed class GetBotByIdQueryHandler(
 
         if (id.IsError)
         {
-            return id.Error;
+            return id.Errors.ToList();
         }
 
         var bot = await _botRepository.GetByIdAsync(id.Value, cancellationToken);

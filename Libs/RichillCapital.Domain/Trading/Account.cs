@@ -82,7 +82,7 @@ public sealed class Account : Entity<AccountId>
 
         _balances.Add(balance.Value);
 
-        return Result.Success;
+        return Result.Success();
     }
 
     public ErrorOr<OrderId> CreateOrder(
@@ -102,7 +102,7 @@ public sealed class Account : Entity<AccountId>
 
         if (order.IsError)
         {
-            return order.Error;
+            return order.Errors.ToList();
         }
 
         _orders.Add(order.Value);
@@ -112,7 +112,7 @@ public sealed class Account : Entity<AccountId>
         return order.Value.Id;
     }
 
-    public ErrorOr OpenPosition(Execution execution)
+    public ErrorOr<PositionId> OpenPosition(Execution execution)
     {
         var position = Position.Open(
             execution.TradeType == TradeType.Buy ? Side.Long : Side.Short,
@@ -125,13 +125,13 @@ public sealed class Account : Entity<AccountId>
 
         if (position.IsError)
         {
-            return position.Error;
+            return position.Errors.ToList();
         }
 
         _positions.Add(position.Value);
 
         RegisterDomainEvent(new AccountPositionOpenedDomainEvent(position.Value.Id, Id));
 
-        return ErrorOr.NoError;
+        return position.Value.Id;
     }
 }
