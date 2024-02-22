@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using RichillCapital.SharedKernel;
 
@@ -7,6 +8,13 @@ namespace RichillCapital.Exchange.Api.Common;
 [ApiController]
 public abstract class Endpoint : ControllerBase
 {
+    protected virtual ActionResult HandleError(IEnumerable<Error> errors) =>
+       !errors.Any() ?
+           HandleError(Error.Null) :
+           errors.All(error => error.Type == ErrorType.Validation) ?
+               HandleErrors(errors) :
+               HandleError(errors.First());
+
     protected virtual ActionResult HandleError(Error error)
     {
         return Problem(
@@ -47,5 +55,17 @@ public abstract class Endpoint : ControllerBase
                 ErrorType.Conflict => "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8",
                 _ => "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
             };
+    }
+
+    private ActionResult HandleErrors(IEnumerable<Error> errors)
+    {
+        var modelStateDictionary = new ModelStateDictionary();
+
+        foreach (var error in errors)
+        {
+            modelStateDictionary.AddModelError(error.Message, error.Message);
+        }
+
+        return ValidationProblem(modelStateDictionary);
     }
 }
