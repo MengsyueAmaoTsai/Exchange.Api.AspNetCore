@@ -1,7 +1,7 @@
 using RichillCapital.Domain.Common;
 using RichillCapital.Domain.Shared;
 using RichillCapital.Domain.Trading;
-using RichillCapital.SharedKernel.Monad;
+using RichillCapital.SharedKernel.Monads;
 
 namespace RichillCapital.Domain.Bots;
 

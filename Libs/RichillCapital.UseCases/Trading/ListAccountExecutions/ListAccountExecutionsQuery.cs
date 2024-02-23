@@ -1,4 +1,4 @@
-using RichillCapital.SharedKernel.Monad;
+using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Trading.ListAccountExecutions;

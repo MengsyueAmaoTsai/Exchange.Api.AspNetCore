@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Exchange.Api.Common;
 using RichillCapital.Exchange.Api.Extensions;
-using RichillCapital.SharedKernel.Monad;
+using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Bots.EmitSignal;
 
 using Swashbuckle.AspNetCore.Annotations;

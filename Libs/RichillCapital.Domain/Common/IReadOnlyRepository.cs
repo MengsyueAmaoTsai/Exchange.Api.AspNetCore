@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-using RichillCapital.SharedKernel.Monad;
+using RichillCapital.SharedKernel.Monads;
 using RichillCapital.SharedKernel.Specifications;
 
 namespace RichillCapital.Domain.Common;

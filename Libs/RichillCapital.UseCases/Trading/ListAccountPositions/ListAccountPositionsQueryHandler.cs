@@ -3,7 +3,7 @@ using RichillCapital.Domain.Common;
 using RichillCapital.Domain.Trading;
 using RichillCapital.Domain.Trading.Specifications;
 using RichillCapital.SharedKernel;
-using RichillCapital.SharedKernel.Monad;
+using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Trading.ListAccountPositions;

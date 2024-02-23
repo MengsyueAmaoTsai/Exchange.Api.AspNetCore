@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
 using RichillCapital.Domain.Common;
-using RichillCapital.SharedKernel.Monad;
+using RichillCapital.SharedKernel.Monads;
 using RichillCapital.SharedKernel.Specifications;
 using RichillCapital.SharedKernel.Specifications.Evaluators;
 

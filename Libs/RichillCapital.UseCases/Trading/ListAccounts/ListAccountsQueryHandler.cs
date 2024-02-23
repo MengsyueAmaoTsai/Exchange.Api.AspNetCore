@@ -2,7 +2,7 @@ using MediatR;
 
 using RichillCapital.Domain.Common;
 using RichillCapital.Domain.Trading;
-using RichillCapital.SharedKernel.Monad;
+using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Trading.ListAccounts;

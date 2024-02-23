@@ -1,5 +1,5 @@
 using RichillCapital.Domain.Bots;
-using RichillCapital.SharedKernel.Monad;
+using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Bots.Create;

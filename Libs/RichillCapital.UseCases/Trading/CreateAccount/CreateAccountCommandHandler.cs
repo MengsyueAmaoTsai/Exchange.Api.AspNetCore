@@ -3,7 +3,7 @@ using RichillCapital.Domain.Common;
 using RichillCapital.Domain.Shared;
 using RichillCapital.Domain.Trading;
 using RichillCapital.SharedKernel;
-using RichillCapital.SharedKernel.Monad;
+using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Trading.CreateAccount;
