@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Exchange.Api.Common;
 using RichillCapital.Exchange.Api.Extensions;
-using RichillCapital.SharedKernel.Monad;
 using RichillCapital.UseCases.Trading.GetAccountPerformance;
 
 using Swashbuckle.AspNetCore.Annotations;

@@ -17,9 +17,9 @@ public sealed class CloseAccountPosition(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<ClosePositionResponse>> HandleAsync(
         [FromRoute] ClosePositionRequest request,
         CancellationToken cancellationToken = default) =>
-        (await _sender.Send(
-            new ClosePositionCommand(request.PositionId),
-            cancellationToken))
+        await ErrorOr.Is(request)
+            .Map(request => new ClosePositionCommand(request.PositionId))
+            .Then(command => _sender.Send(command, cancellationToken))
             .Map(id => new ClosePositionResponse(id.Value))
             .Match(HandleError, Ok);
 }

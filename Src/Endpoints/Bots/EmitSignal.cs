@@ -26,15 +26,15 @@ public sealed class EmitSignal(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<EmitSignalResponse>> HandleAsync(
         [FromRoute] EmitSignalRequest request,
         CancellationToken cancellationToken = default) =>
-        (await _sender.Send(
-            new EmitBotSignalCommand(
+        await ErrorOr.Is(request)
+            .Map(request => new EmitBotSignalCommand(
                 request.Body.Time,
                 request.Body.TradeType,
                 request.Body.Symbol,
                 request.Body.Volume,
                 request.Body.Price,
-                request.BotId),
-            cancellationToken))
+                request.BotId))
+            .Then(command => _sender.Send(command, cancellationToken))
             .Map(id => new EmitSignalResponse(id.Value))
             .Match(HandleError, Ok);
 }

@@ -23,16 +23,16 @@ public sealed class ListSignals(ISender _sender) : AsyncEndpoint
         Tags = ["Bots"])]
     public override async Task<ActionResult<IEnumerable<SignalResponse>>> HandleAsync(
         [FromRoute] ListBotSignalsRequest request,
-        CancellationToken cancellationToken = default) =>
-        (await _sender.Send(new ListBotSignalsQuery(request.BotId), cancellationToken))
-            .Map(signals => signals
-                .Select(signal => new SignalResponse(
-                    signal.Time,
-                    signal.TradeType,
-                    signal.Symbol,
-                    signal.Volume,
-                    signal.Price)))
-            .Match(HandleError, Ok);
+        CancellationToken cancellationToken = default) => throw new NotImplementedException();
+    // (await _sender.Send(new ListBotSignalsQuery(request.BotId), cancellationToken))
+    //     .Map(signals => signals
+    //         .Select(signal => new SignalResponse(
+    //             signal.Time,
+    //             signal.TradeType,
+    //             signal.Symbol,
+    //             signal.Volume,
+    //             signal.Price)))
+    //     .Match(HandleError, Ok);
 }
 
 public sealed record class ListBotSignalsRequest

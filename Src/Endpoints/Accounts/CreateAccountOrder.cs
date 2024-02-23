@@ -24,15 +24,15 @@ public sealed class CreateAccountOrder(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<CreateAccountOrderResponse>> HandleAsync(
         [FromRoute] CreateAccountOrderRequest request,
         CancellationToken cancellationToken = default) =>
-        (await _sender.Send(
-            new CreateAccountOrderCommand(
+        await ErrorOr.Is(request)
+            .Map(request => new CreateAccountOrderCommand(
                 request.Body.TradeType,
                 request.Body.Quantity,
                 request.Body.Symbol,
                 request.Body.OrderType,
                 request.Body.TimeInForce,
-                request.AccountId),
-            cancellationToken))
+                request.AccountId))
+            .Then(command => _sender.Send(command, cancellationToken))
             .Map(id => new CreateAccountOrderResponse(id.Value))
             .Match(HandleError, Ok);
 }
