@@ -24,20 +24,7 @@ public sealed class ListTrades(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<IEnumerable<TradeResponse>>> HandleAsync(
         [FromRoute] ListAccountTradesRequest request,
         CancellationToken cancellationToken = default) =>
-        (await _sender.Send(new ListAccountTradesQuery(request.AccountId), cancellationToken))
-            .Map(trades => trades
-                .Select(trade => new TradeResponse(
-                    trade.Side,
-                    trade.Symbol,
-                    trade.Quantity,
-                    trade.EntryTime,
-                    trade.EntryPrice,
-                    trade.ExitTime,
-                    trade.ExitPrice,
-                    trade.Commission,
-                    trade.Tax,
-                    trade.Swap)))
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
 }
 
 public sealed record class ListAccountTradesRequest

@@ -3,9 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Exchange.Api.Common;
-using RichillCapital.Exchange.Api.Extensions;
-using RichillCapital.SharedKernel.Monad;
-using RichillCapital.UseCases.Trading.ClosePosition;
 
 namespace RichillCapital.Exchange.Api.Endpoints.Accounts;
 
@@ -17,11 +14,7 @@ public sealed class CloseAccountPosition(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<ClosePositionResponse>> HandleAsync(
         [FromRoute] ClosePositionRequest request,
         CancellationToken cancellationToken = default) =>
-        await ErrorOr.Is(request)
-            .Map(request => new ClosePositionCommand(request.PositionId))
-            .Then(command => _sender.Send(command, cancellationToken))
-            .Map(id => new ClosePositionResponse(id.Value))
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
 }
 
 public sealed record class ClosePositionRequest

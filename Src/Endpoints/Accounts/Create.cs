@@ -24,15 +24,7 @@ public sealed class Create(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<CreateAccountResponse>> HandleAsync(
         [FromBody] CreateAccountRequest request,
         CancellationToken cancellationToken = default) =>
-        await ErrorOr.Is(request)
-            .Map(request => new CreateAccountCommand(
-                request.Name,
-                request.PositionMode,
-                request.Currency,
-                request.InitialDeposit))
-            .Then(command => _sender.Send(command, cancellationToken))
-            .Map(id => new CreateAccountResponse(id.Value))
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
 }
 
 public sealed record class CreateAccountRequest

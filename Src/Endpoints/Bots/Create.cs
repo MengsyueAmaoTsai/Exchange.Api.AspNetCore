@@ -26,15 +26,8 @@ public sealed class Create(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<CreateBotResponse>> HandleAsync(
         [FromBody] CreateBotRequest request,
         CancellationToken cancellationToken = default) =>
-        await ErrorOr.Is(request)
-            .Map(request => new CreateBotCommand(
-                request.Id,
-                request.Name,
-                request.Description,
-                request.Platform))
-            .Then(command => _sender.Send(command, cancellationToken))
-            .Map(id => new CreateBotResponse(id.Value))
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
+
 }
 
 public sealed record class CreateBotRequest

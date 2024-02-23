@@ -24,17 +24,7 @@ public sealed class GetById(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<AccountWithBalancesResponse>> HandleAsync(
         [FromRoute] GetAccountByIdRequest request,
         CancellationToken cancellationToken = default) =>
-        (await _sender.Send(new GetAccountByIdQuery(request.AccountId), cancellationToken))
-            .Map(account => new AccountWithBalancesResponse(
-                account.Id,
-                account.Name,
-                account.PositionMode,
-                account.Currency,
-                account.Balance
-                    .Select(balance => new AccountBalanceResponse(
-                        balance.Currency,
-                        balance.Amount))))
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
 }
 
 public sealed record class GetAccountByIdRequest

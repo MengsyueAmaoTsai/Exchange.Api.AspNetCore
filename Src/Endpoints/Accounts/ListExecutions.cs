@@ -24,19 +24,7 @@ public sealed class ListExecutions(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<IEnumerable<ExecutionResponse>>> HandleAsync(
         [FromRoute] ListExecutionsRequest request,
         CancellationToken cancellationToken = default) =>
-        (await _sender.Send(
-            new ListAccountExecutionsQuery(request.AccountId),
-            cancellationToken))
-            .Map(executions => executions
-                .Select(execution => new ExecutionResponse(
-                    execution.Time,
-                    execution.TradeType,
-                    execution.Symbol,
-                    execution.Quantity,
-                    execution.Price,
-                    execution.Commission,
-                    execution.Tax)))
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
 }
 
 public sealed record class ListExecutionsRequest

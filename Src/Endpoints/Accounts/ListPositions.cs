@@ -24,18 +24,7 @@ public sealed class ListPositions(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<IEnumerable<PositionResponse>>> HandleAsync(
         [FromRoute] ListAccountPositionsRequest request,
         CancellationToken cancellationToken = default) =>
-        (await _sender.Send(new ListAccountPositionsQuery(request.AccountId), cancellationToken))
-            .Map(positions => positions
-                .Select(position => new PositionResponse(
-                    position.Id,
-                    position.Side,
-                    position.Symbol,
-                    position.Quantity,
-                    position.Price,
-                    position.Commission,
-                    position.Tax,
-                    position.Swap)))
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
 }
 
 public class ListAccountPositionsRequest

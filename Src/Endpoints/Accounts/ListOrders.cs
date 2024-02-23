@@ -24,19 +24,7 @@ public sealed class ListOrders(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<IEnumerable<OrderResponse>>> HandleAsync(
         [FromRoute] ListOrdersRequest request,
         CancellationToken cancellationToken = default) =>
-        (await _sender.Send(new ListAccountOrdersQuery(request.AccountId), cancellationToken))
-            .Map(orders => orders
-                .Select(order => new OrderResponse(
-                    order.Id,
-                    order.Time,
-                    order.TradeType,
-                    order.Quantity,
-                    order.RemainingQuantity,
-                    order.Symbol,
-                    order.Type,
-                    order.TimeInForce,
-                    order.Status)))
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
 }
 
 public sealed record class ListOrdersRequest

@@ -23,13 +23,8 @@ public sealed class GetAccountPerformance(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<AccountPerformanceResponse>> HandleAsync(
         [FromRoute] GetAccountPerformanceRequest request,
         CancellationToken cancellationToken = default) =>
-        (await _sender.Send(new GetAccountPerformanceQuery(request.AccountId), cancellationToken))
-            .Map(performance => new AccountPerformanceResponse(
-                new AccountPerformanceMetricsResponse(
-                    decimal.Zero,
-                    decimal.Zero,
-                    decimal.Zero)))
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
+
 }
 
 public sealed record class GetAccountPerformanceRequest

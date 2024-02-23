@@ -24,15 +24,7 @@ public sealed class GetById(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<BotResponse>> HandleAsync(
         [FromRoute] GetBotByIdRequest request,
         CancellationToken cancellationToken = default) =>
-        await ErrorOr.Is(request)
-            .Map(request => new GetBotByIdQuery(request.BotId))
-            .Then(query => _sender.Send(query, cancellationToken))
-            .Map(bot => new BotResponse(
-                bot.Id,
-                bot.Name,
-                bot.Description,
-                bot.Platform))
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
 }
 
 public sealed record class GetBotByIdRequest
