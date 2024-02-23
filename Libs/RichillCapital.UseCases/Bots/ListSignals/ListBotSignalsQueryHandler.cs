@@ -1,7 +1,6 @@
 using RichillCapital.Domain;
 using RichillCapital.Domain.Bots;
 using RichillCapital.Domain.Common;
-using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Common;
 

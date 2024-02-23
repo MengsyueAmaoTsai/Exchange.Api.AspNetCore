@@ -42,7 +42,7 @@ internal sealed class BotCreatedDomainEventHandler(
 
         if (errorOr.IsError)
         {
-            throw new InvalidOperationException(errorOr.FirstError.Message);
+            throw new InvalidOperationException(errorOr.Errors.First().Message);
         }
     }
 }

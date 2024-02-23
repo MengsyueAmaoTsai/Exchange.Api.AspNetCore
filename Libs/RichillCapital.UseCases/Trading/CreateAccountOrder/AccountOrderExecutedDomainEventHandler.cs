@@ -47,7 +47,7 @@ internal sealed class AccountOrderExecutedDomainEventHandler(
 
         if (errorOr.IsError)
         {
-            throw new InvalidOperationException(errorOr.FirstError.Message);
+            throw new InvalidOperationException(errorOr.Errors.First().Message);
         }
 
         _accountRepository.Update(account.Value);
