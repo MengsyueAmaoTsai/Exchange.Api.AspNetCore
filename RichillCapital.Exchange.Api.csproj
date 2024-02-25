@@ -14,8 +14,4 @@
     <None Remove="LICENSE" />
     <None Remove="Solution.ruleset" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="Libs\RichillCapital.Messaging\RichillCapital.Messaging.csproj" />
-  </ItemGroup>
 </Project>

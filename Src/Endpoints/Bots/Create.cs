@@ -1,5 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
+using Mapster;
+
+using MapsterMapper;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +16,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace RichillCapital.Exchange.Api.Endpoints.Bots;
 
-public sealed class Create(ISender _sender) : AsyncEndpoint
+public sealed class Create(
+    ISender _sender,
+    IMapper _mapper) : AsyncEndpoint
     .WithRequest<CreateBotRequest>
     .WithActionResult<CreateBotResponse>
 {

@@ -5,6 +5,7 @@
     "aspnet",
     "ASPNETCORE",
     "datetimeoffset",
+    "Mapster",
     "Mediat",
     "Quantower",
     "Serilog",

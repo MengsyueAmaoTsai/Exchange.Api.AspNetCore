@@ -4,6 +4,7 @@
     <ProjectReference Include="Libs\RichillCapital.Caching\RichillCapital.Caching.csproj" />
     <ProjectReference Include="Libs\RichillCapital.Notifications\RichillCapital.Notifications.csproj" />
     <ProjectReference Include="Libs\RichillCapital.DataFeeds\RichillCapital.DataFeeds.csproj" />
+    <ProjectReference Include="Libs\RichillCapital.Messaging\RichillCapital.Messaging.csproj" />
   </ItemGroup>
   
   <ItemGroup>
@@ -12,5 +13,6 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
   </ItemGroup>
 </Project>
