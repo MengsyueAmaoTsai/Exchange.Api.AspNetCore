@@ -49,7 +49,7 @@ public sealed class Bot : Entity<BotId>
         decimal volume,
         decimal price)
     {
-        var signal = Signal.Create(
+        var errorOrSignal = Signal.Create(
             time,
             tradeType,
             symbol,
@@ -57,15 +57,15 @@ public sealed class Bot : Entity<BotId>
             price,
             Id);
 
-        if (signal.IsError)
+        if (errorOrSignal.IsError)
         {
-            return signal.Errors;
+            return errorOrSignal.Errors;
         }
 
-        _signals.Add(signal.Value);
+        _signals.Add(errorOrSignal.Value);
 
         RegisterDomainEvent(new BotSignalEmittedDomainEvent(Id));
 
-        return signal;
+        return errorOrSignal;
     }
 }

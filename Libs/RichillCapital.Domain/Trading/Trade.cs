@@ -91,18 +91,19 @@ public sealed class Trade : ValueObject
             return Error.Invalid("Tax cannot be negative.");
         }
 
-        return new Trade(
-            side,
-            symbol,
-            quantity,
-            entryTime,
-            entryPrice,
-            exitTime,
-            exitPrice,
-            commission,
-            tax,
-            swap,
-            accountId);
+        return ErrorOr<Trade>
+            .Is(new Trade(
+                side,
+                symbol,
+                quantity,
+                entryTime,
+                entryPrice,
+                exitTime,
+                exitPrice,
+                commission,
+                tax,
+                swap,
+                accountId));
     }
 
     protected override IEnumerable<object> GetAtomicValues()

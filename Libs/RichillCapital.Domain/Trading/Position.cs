@@ -68,18 +68,17 @@ public sealed class Position : Entity<PositionId>
             return Error.Invalid("Tax must be greater than or equal to 0.");
         }
 
-        var position = new Position(
-            PositionId.NewPositionId(),
-            side,
-            symbol,
-            quantity,
-            price,
-            commission,
-            tax,
-            decimal.Zero,
-            accountId);
-
-        return position;
+        return ErrorOr<Position>
+            .Is(new Position(
+                PositionId.NewPositionId(),
+                side,
+                symbol,
+                quantity,
+                price,
+                commission,
+                tax,
+                decimal.Zero,
+                accountId));
     }
 
     public void Close()

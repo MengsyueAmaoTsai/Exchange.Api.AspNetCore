@@ -45,7 +45,7 @@ public sealed class Execution : ValueObject
 
     public OrderId OrderId { get; private set; }
 
-    public static Result<Execution> Create(
+    public static ErrorOr<Execution> Create(
         TradeType tradeType,
         Symbol symbol,
         decimal quantity,
@@ -60,7 +60,22 @@ public sealed class Execution : ValueObject
             return Error.Invalid("Quantity must be greater than 0.");
         }
 
-        var execution = new Execution(
+        if (price <= 0)
+        {
+            return Error.Invalid("Price must be greater than 0.");
+        }
+
+        if (commission < 0)
+        {
+            return Error.Invalid("Commission must be greater than or equal to 0.");
+        }
+
+        if (tax < 0)
+        {
+            return Error.Invalid("Tax must be greater than or equal to 0.");
+        }
+
+        return ErrorOr<Execution>.Is(new Execution(
             DateTimeOffset.UtcNow,
             tradeType,
             symbol,
@@ -69,9 +84,7 @@ public sealed class Execution : ValueObject
             commission,
             tax,
             accountId,
-            orderId);
-
-        return execution;
+            orderId));
     }
 
     protected override IEnumerable<object> GetAtomicValues()

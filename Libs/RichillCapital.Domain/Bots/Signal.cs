@@ -52,13 +52,14 @@ public sealed class Signal : ValueObject
             return Error.Invalid("Price must be greater than 0.");
         }
 
-        return new Signal(
-            time,
-            tradeType,
-            symbol,
-            volume,
-            price,
-            botId);
+        return ErrorOr<Signal>
+            .Is(new Signal(
+                time,
+                tradeType,
+                symbol,
+                volume,
+                price,
+                botId));
     }
 
     protected override IEnumerable<object> GetAtomicValues()

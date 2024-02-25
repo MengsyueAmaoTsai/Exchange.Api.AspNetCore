@@ -70,7 +70,7 @@ public sealed class Order : Entity<OrderId>
             return DomainErrors.Orders.InvalidTimeInForce(type, timeInForce);
         }
 
-        var order = new Order(
+        return ErrorOr<Order>.Is(new Order(
             DateTimeOffset.UtcNow,
             OrderId.NewOrderId(),
             tradeType,
@@ -80,9 +80,7 @@ public sealed class Order : Entity<OrderId>
             type,
             timeInForce,
             OrderStatus.New,
-            accountId);
-
-        return order;
+            accountId));
     }
 
     public Result Reject()
@@ -154,9 +152,9 @@ public sealed class Order : Entity<OrderId>
             AccountId,
             Id);
 
-        if (execution.IsFailure)
+        if (execution.IsError)
         {
-            return execution.Error;
+            return execution.Errors;
         }
 
         Quantity -= executionQuantity;
