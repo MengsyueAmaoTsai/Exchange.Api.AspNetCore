@@ -31,9 +31,6 @@ public static class DomainErrors
     {
         public static Error NotFound(OrderId id) =>
             Error.NotFound($"Order with specified id '{id.Value}' not found.");
-
-        public static Error InvalidTimeInForce(OrderType type, TimeInForce timeInForce) =>
-            Error.Invalid($"Invalid time in force for order type '{type}' and time in force '{timeInForce}'.");
     }
 
     public static class Positions

@@ -62,12 +62,12 @@ public sealed class Order : Entity<OrderId>
     {
         if (quantity <= 0)
         {
-            return Error.Invalid("Quantity must be greater than 0.");
+            return OrderErrors.InvalidQuantity(quantity);
         }
 
         if (type == OrderType.Market && timeInForce == TimeInForce.Day)
         {
-            return DomainErrors.Orders.InvalidTimeInForce(type, timeInForce);
+            return Error.Invalid("Market orders cannot have time in force set to day.");
         }
 
         return ErrorOr<Order>.Is(new Order(

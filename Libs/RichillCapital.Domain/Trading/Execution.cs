@@ -57,22 +57,22 @@ public sealed class Execution : ValueObject
     {
         if (quantity <= 0)
         {
-            return Error.Invalid("Quantity must be greater than 0.");
+            return ExecutionErrors.InvalidQuantity(quantity);
         }
 
         if (price <= 0)
         {
-            return Error.Invalid("Price must be greater than 0.");
+            return ExecutionErrors.InvalidPrice(price);
         }
 
         if (commission < 0)
         {
-            return Error.Invalid("Commission must be greater than or equal to 0.");
+            return ExecutionErrors.InvalidCommission(commission);
         }
 
         if (tax < 0)
         {
-            return Error.Invalid("Tax must be greater than or equal to 0.");
+            return ExecutionErrors.InvalidTax(tax);
         }
 
         return ErrorOr<Execution>.Is(new Execution(
