@@ -3,7 +3,7 @@ using RichillCapital.SharedKernel.Monads;
 
 namespace RichillCapital.Domain.Trading;
 
-public sealed class Trade : ValueObject
+public sealed partial class Trade : ValueObject
 {
     private Trade(
         Side side,
@@ -68,27 +68,27 @@ public sealed class Trade : ValueObject
     {
         if (quantity <= 0)
         {
-            return Error.Invalid("Quantity must be greater than 0.");
+            return TradeErrors.InvalidQuantity(quantity);
         }
 
         if (entryPrice <= 0)
         {
-            return Error.Invalid("Entry price must be greater than 0.");
+            return TradeErrors.InvalidEntryPrice(entryPrice);
         }
 
         if (exitPrice <= 0)
         {
-            return Error.Invalid("Exit price must be greater than 0.");
+            return TradeErrors.InvalidExitPrice(exitPrice);
         }
 
         if (commission < 0)
         {
-            return Error.Invalid("Commission cannot be negative.");
+            return TradeErrors.InvalidCommission(commission);
         }
 
         if (tax < 0)
         {
-            return Error.Invalid("Tax cannot be negative.");
+            return TradeErrors.InvalidTax(tax);
         }
 
         return ErrorOr<Trade>
