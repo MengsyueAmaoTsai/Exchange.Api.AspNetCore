@@ -21,7 +21,7 @@ internal sealed class EmitBotSignalCommandHandler(
 
         if (botId.IsError)
         {
-            return botId.Errors.ToList();
+            return botId.Errors;
         }
 
         var bot = await _botRepository.GetByIdAsync(botId.Value, cancellationToken);
@@ -42,7 +42,7 @@ internal sealed class EmitBotSignalCommandHandler(
 
         if (symbol.IsError)
         {
-            return symbol.Errors.ToList();
+            return symbol.Errors;
         }
 
         var signal = bot.Value.EmitSignal(
@@ -60,6 +60,6 @@ internal sealed class EmitBotSignalCommandHandler(
         _botRepository.Update(bot.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return bot.Value.Id;
+        return ErrorOr.Is(bot.Value.Id);
     }
 }

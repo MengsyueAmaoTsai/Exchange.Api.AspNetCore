@@ -10,9 +10,6 @@ public static class DomainErrors
     {
         public static Error NotFound(BotId id) =>
             Error.NotFound($"Bot with specified id '{id.Value}' not found.");
-
-        public static Error AlreadyExists(BotId id) =>
-            Error.Conflict($"Bot with specified id '{id.Value}' already exists.");
     }
 
     public static class Accounts

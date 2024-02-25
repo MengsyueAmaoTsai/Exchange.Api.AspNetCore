@@ -23,11 +23,9 @@ internal sealed class CreateBotCommandHandler(
             return id.Errors.ToList();
         }
 
-        if (await _botRepository.AnyAsync(
-            bot => bot.Id == id.Value,
-            cancellationToken))
+        if (await _botRepository.AnyAsync(bot => bot.Id == id.Value, cancellationToken))
         {
-            return DomainErrors.Bots.AlreadyExists(id.Value);
+            return BotErrors.Duplicate(id.Value);
         }
 
         var name = BotName.From(command.Name);
@@ -41,7 +39,7 @@ internal sealed class CreateBotCommandHandler(
             bot => bot.Name == name.Value,
             cancellationToken))
         {
-            return Error.Conflict("Bot with the same name already exists.");
+            return BotErrors.Duplicate(name.Value);
         }
 
         var description = BotDescription.From(command.Description);
@@ -55,7 +53,7 @@ internal sealed class CreateBotCommandHandler(
 
         if (platform.HasNoValue)
         {
-            return Error.Invalid("Invalid platform.");
+            return BotErrors.TradingPlatformNotSupported(command.Platform);
         }
 
         var bot = Bot.Create(
@@ -67,6 +65,7 @@ internal sealed class CreateBotCommandHandler(
         _botRepository.Add(bot);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return bot.Id;
+        return ErrorOr<BotId>.
+            Is(bot.Id);
     }
 }
