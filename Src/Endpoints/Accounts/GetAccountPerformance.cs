@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Exchange.Api.Common;
 using RichillCapital.Exchange.Api.Extensions;
+using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Trading.GetAccountPerformance;
 
 using Swashbuckle.AspNetCore.Annotations;
@@ -22,8 +23,19 @@ public sealed class GetAccountPerformance(ISender _sender) : AsyncEndpoint
         Tags = ["Accounts"])]
     public override async Task<ActionResult<AccountPerformanceResponse>> HandleAsync(
         [FromRoute] GetAccountPerformanceRequest request,
-        CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetAccountPerformanceQuery(request.AccountId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        var response = new AccountPerformanceResponse(
+            new AccountPerformanceMetricsResponse(0, 0, 0));
+
+        return ErrorOr
+            .Is(response)
+            .Match(HandleError, Ok);
+    }
 
 }
 

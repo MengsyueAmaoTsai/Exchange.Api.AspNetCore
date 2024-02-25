@@ -23,8 +23,29 @@ public sealed class ListTrades(ISender _sender) : AsyncEndpoint
         Tags = ["Accounts"])]
     public override async Task<ActionResult<IEnumerable<TradeResponse>>> HandleAsync(
         [FromRoute] ListAccountTradesRequest request,
-        CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        CancellationToken cancellationToken = default)
+    {
+        var query = new ListAccountTradesQuery(request.AccountId);
+
+        var tradesResult = await _sender.Send(query, cancellationToken);
+
+        var response = tradesResult.Value
+            .Select(trade => new TradeResponse(
+                trade.Side,
+                trade.Symbol,
+                trade.Quantity,
+                trade.EntryTime,
+                trade.EntryPrice,
+                trade.ExitTime,
+                trade.ExitPrice,
+                trade.Commission,
+                trade.Tax,
+                trade.Swap));
+
+        return Result
+            .Success(response)
+            .Match(Ok, HandleError);
+    }
 }
 
 public sealed record class ListAccountTradesRequest

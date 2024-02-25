@@ -23,8 +23,24 @@ public sealed class List(ISender _sender) : AsyncEndpoint
         Tags = ["Accounts"])]
     public override async Task<ActionResult<IEnumerable<AccountResponse>>> HandleAsync(
         [FromQuery] ListAccountsRequest request,
-        CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        CancellationToken cancellationToken = default)
+    {
+        var query = new ListAccountsQuery();
+
+        var accountsResult = await _sender.Send(query, cancellationToken);
+
+        var response = accountsResult.Value
+            .Select(account => new AccountResponse(
+                account.Id,
+                account.Name,
+                account.PositionMode,
+                account.Currency));
+
+        return Result
+            .Success(response)
+            .Match(Ok, HandleError);
+
+    }
 }
 
 public sealed record class ListAccountsRequest

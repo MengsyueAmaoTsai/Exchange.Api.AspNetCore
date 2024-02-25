@@ -23,8 +23,23 @@ public sealed class List(ISender _sender) : AsyncEndpoint
         Tags = ["Bots"])]
     public override async Task<ActionResult<IEnumerable<BotResponse>>> HandleAsync(
         [FromQuery] ListBotsRequest request,
-        CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        CancellationToken cancellationToken = default)
+    {
+        var query = new ListBotsQuery();
+
+        var botsResult = await _sender.Send(query, cancellationToken);
+
+        var response = botsResult.Value
+            .Select(bot => new BotResponse(
+                bot.Id,
+                bot.Name,
+                bot.Description,
+                bot.Platform));
+
+        return Result
+            .Success(response)
+            .Match(Ok, HandleError);
+    }
 }
 
 public sealed record class ListBotsRequest

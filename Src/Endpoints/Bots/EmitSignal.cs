@@ -25,8 +25,24 @@ public sealed class EmitSignal(ISender _sender) : AsyncEndpoint
         Tags = ["Bots"])]
     public override async Task<ActionResult<EmitSignalResponse>> HandleAsync(
         [FromRoute] EmitSignalRequest request,
-        CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        CancellationToken cancellationToken = default)
+    {
+        var command = new EmitBotSignalCommand(
+            request.Body.Time,
+            request.Body.TradeType,
+            request.Body.Symbol,
+            request.Body.Volume,
+            request.Body.Price,
+            request.BotId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        var response = new EmitSignalResponse(result.Value.Value);
+
+        return ErrorOr
+            .Is(response)
+            .Match(HandleError, Ok);
+    }
 }
 
 public sealed record EmitSignalResponse(string BotId);

@@ -59,7 +59,7 @@ public sealed class Bot : Entity<BotId>
 
         if (signal.IsError)
         {
-            return signal.Errors.ToList();
+            return signal.Errors;
         }
 
         _signals.Add(signal.Value);

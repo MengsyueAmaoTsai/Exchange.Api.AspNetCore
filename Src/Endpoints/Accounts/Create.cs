@@ -23,8 +23,22 @@ public sealed class Create(ISender _sender) : AsyncEndpoint
         Tags = ["Accounts"])]
     public override async Task<ActionResult<CreateAccountResponse>> HandleAsync(
         [FromBody] CreateAccountRequest request,
-        CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        CancellationToken cancellationToken = default)
+    {
+        var command = new CreateAccountCommand(
+            request.Name,
+            request.PositionMode,
+            request.Currency,
+            request.InitialDeposit);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        var response = new CreateAccountResponse(result.Value.Value);
+
+        return ErrorOr
+            .Is(response)
+            .Match(HandleError, Ok);
+    }
 }
 
 public sealed record class CreateAccountRequest
@@ -39,4 +53,3 @@ public sealed record class CreateAccountRequest
 }
 
 public sealed record CreateAccountResponse(string AccountId);
-

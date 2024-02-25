@@ -23,8 +23,22 @@ public sealed class GetById(ISender _sender) : AsyncEndpoint
         Tags = ["Bots"])]
     public override async Task<ActionResult<BotResponse>> HandleAsync(
         [FromRoute] GetBotByIdRequest request,
-        CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetBotByIdQuery(request.BotId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        var response = new BotResponse(
+            result.Value.Id,
+            result.Value.Name,
+            result.Value.Description,
+            result.Value.Platform);
+
+        return ErrorOr
+            .Is(response)
+            .Match(HandleError, Ok);
+    }
 }
 
 public sealed record class GetBotByIdRequest

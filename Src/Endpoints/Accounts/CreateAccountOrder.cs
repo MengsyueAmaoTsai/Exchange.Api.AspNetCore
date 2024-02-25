@@ -23,8 +23,24 @@ public sealed class CreateAccountOrder(ISender _sender) : AsyncEndpoint
         Tags = ["Accounts"])]
     public override async Task<ActionResult<CreateAccountOrderResponse>> HandleAsync(
         [FromRoute] CreateAccountOrderRequest request,
-        CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        CancellationToken cancellationToken = default)
+    {
+        var command = new CreateAccountOrderCommand(
+            request.Body.TradeType,
+            request.Body.Quantity,
+            request.Body.Symbol,
+            request.Body.OrderType,
+            request.Body.TimeInForce,
+            request.AccountId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        var response = new CreateAccountOrderResponse(result.Value.Value);
+
+        return ErrorOr
+            .Is(response)
+            .Match(HandleError, Ok);
+    }
 }
 
 public sealed record class CreateAccountOrderRequest
