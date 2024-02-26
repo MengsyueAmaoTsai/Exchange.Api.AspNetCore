@@ -12,22 +12,20 @@ public sealed class BotDescription : SingleValueObject<string>
     {
     }
 
-    public static ErrorOr<BotDescription> From(string description)
-    {
-        if (string.IsNullOrWhiteSpace(description))
-        {
-            return Error
-                .Invalid("Bot description cannot be empty.")
-                .ToErrorOr<BotDescription>();
-        }
+    public static Result<BotDescription> From(string description) =>
+        Result<string>.Success(description)
+            .Ensure(BotDescriptionRules.IsNotEmpty)
+            .Ensure(BotDescriptionRules.IsNotLongerThan)
+            .Map(value => new BotDescription(value));
+}
 
-        if (description.Length > MaxLength)
-        {
-            return Error
-                .Invalid($"Bot description cannot be longer than {MaxLength} characters.")
-                .ToErrorOr<BotDescription>();
-        }
+internal static class BotDescriptionRules
+{
+    public static readonly (Func<string, bool> predicate, Error error) IsNotEmpty = (
+        description => !string.IsNullOrWhiteSpace(description),
+        Error.Invalid("Bot description cannot be empty."));
 
-        return new BotDescription(description).ToErrorOr();
-    }
+    internal static readonly (Func<string, bool> predicate, Error error) IsNotLongerThan = (
+        description => description.Length <= BotDescription.MaxLength,
+        Error.Invalid($"Bot description cannot be longer than {BotDescription.MaxLength} characters."));
 }

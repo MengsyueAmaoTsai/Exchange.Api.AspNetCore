@@ -1,7 +1,5 @@
-using RichillCapital.Domain;
 using RichillCapital.Domain.Bots;
 using RichillCapital.Domain.Common;
-using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Common;
 
@@ -16,48 +14,48 @@ internal sealed class CreateBotCommandHandler(
         CreateBotCommand command,
         CancellationToken cancellationToken)
     {
-        var id = BotId.From(command.Id);
+        var idResult = BotId.From(command.Id);
 
-        if (id.IsError)
+        if (idResult.IsFailure)
         {
-            return id.Errors.ToErrorOr<BotId>();
+            return idResult.Error.ToErrorOr<BotId>();
         }
 
-        if (await _botRepository.AnyAsync(bot => bot.Id == id.Value, cancellationToken))
+        if (await _botRepository.AnyAsync(bot => bot.Id == idResult.Value, cancellationToken))
         {
             return BotErrors
-                .Duplicate(id.Value)
+                .Duplicate(idResult.Value)
                 .ToErrorOr<BotId>();
         }
 
-        var name = BotName.From(command.Name);
+        var nameResult = BotName.From(command.Name);
 
-        if (name.IsError)
+        if (nameResult.IsFailure)
         {
-            return name.Errors
+            return nameResult.Error
                 .ToErrorOr<BotId>();
         }
 
         if (await _botRepository.AnyAsync(
-            bot => bot.Name == name.Value,
+            bot => bot.Name == nameResult.Value,
             cancellationToken))
         {
             return BotErrors
-                .Duplicate(name.Value)
+                .Duplicate(nameResult.Value)
                 .ToErrorOr<BotId>();
         }
 
         var description = BotDescription.From(command.Description);
 
-        if (description.IsError)
+        if (description.IsFailure)
         {
-            return description.Errors
+            return description.Error
                 .ToErrorOr<BotId>();
         }
 
-        var platform = TradingPlatform.FromName(command.Platform);
+        var platformMaybe = TradingPlatform.FromName(command.Platform);
 
-        if (platform.HasNoValue)
+        if (platformMaybe.HasNoValue)
         {
             return BotErrors
                 .TradingPlatformNotSupported(command.Platform)
@@ -65,10 +63,10 @@ internal sealed class CreateBotCommandHandler(
         }
 
         var bot = Bot.Create(
-            id.Value,
-            name.Value,
+            idResult.Value,
+            nameResult.Value,
             description.Value,
-            platform.Value);
+            platformMaybe.Value);
 
         _botRepository.Add(bot);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
