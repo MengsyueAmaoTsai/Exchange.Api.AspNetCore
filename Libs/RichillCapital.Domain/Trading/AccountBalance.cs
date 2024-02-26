@@ -25,20 +25,14 @@ public sealed class AccountBalance : ValueObject
     public static Result<AccountBalance> Create(
         Currency currency,
         decimal initialDeposit,
-        AccountId accountId)
-    {
-        if (initialDeposit < 0)
-        {
-            return Error
-                .Invalid("Initial deposit cannot be negative.")
-                .ToResult<AccountBalance>();
-        }
-
-        return new AccountBalance(
-            currency,
-            initialDeposit,
-            accountId).ToResult();
-    }
+        AccountId accountId) =>
+        Result<decimal>
+            .Success(initialDeposit)
+            .Ensure(AccountBalanceRules.NotNegative)
+            .Then(() => new AccountBalance(
+                currency,
+                initialDeposit,
+                accountId));
 
     protected override IEnumerable<object> GetAtomicValues()
     {
@@ -46,4 +40,11 @@ public sealed class AccountBalance : ValueObject
         yield return Amount;
         yield return AccountId;
     }
+}
+
+internal static class AccountBalanceRules
+{
+    public static readonly (Func<decimal, bool> predicate, Error error) NotNegative = (
+        amount => amount >= decimal.Zero,
+        Error.Invalid("Account balance cannot be negative."));
 }

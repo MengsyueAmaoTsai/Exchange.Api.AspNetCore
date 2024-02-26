@@ -16,9 +16,9 @@ internal sealed class ListBotSignalsQueryHandler(
     {
         var id = BotId.From(query.BotId);
 
-        if (id.IsError)
+        if (id.IsFailure)
         {
-            return id.Errors
+            return id.Error
                 .ToErrorOr<IEnumerable<SignalDto>>();
         }
 

@@ -16,9 +16,9 @@ internal sealed class GetBotByIdQueryHandler(
     {
         var id = BotId.From(query.BotId);
 
-        if (id.IsError)
+        if (id.IsFailure)
         {
-            return id.Errors
+            return id.Error
                 .ToErrorOr<BotDto>();
         }
 
