@@ -18,9 +18,9 @@ internal sealed class CreateAccountOrderCommandHandler(
     {
         var id = AccountId.From(command.AccountId);
 
-        if (id.IsError)
+        if (id.IsFailure)
         {
-            return id.Errors.ToErrorOr<OrderId>();
+            return id.Error.ToErrorOr<OrderId>();
         }
 
         var account = await _accountRepository.GetByIdAsync(
@@ -45,9 +45,9 @@ internal sealed class CreateAccountOrderCommandHandler(
 
         var symbol = Symbol.From(command.Symbol);
 
-        if (symbol.IsError)
+        if (symbol.IsFailure)
         {
-            return symbol.Errors
+            return symbol.Error
                 .ToErrorOr<OrderId>();
         }
 

@@ -17,9 +17,9 @@ internal sealed class ListAccountOrdersQueryHandler(
     {
         var id = AccountId.From(query.AccountId);
 
-        if (id.IsError)
+        if (id.IsFailure)
         {
-            return id.Errors.ToErrorOr<IEnumerable<OrderDto>>();
+            return id.Error.ToErrorOr<IEnumerable<OrderDto>>();
         }
 
         var account = await _accountRepository.FirstOrDefaultAsync(

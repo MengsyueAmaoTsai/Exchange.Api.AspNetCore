@@ -18,9 +18,9 @@ internal sealed class ListAccountPositionsQueryHandler(
     {
         var id = AccountId.From(query.AccountId);
 
-        if (id.IsError)
+        if (id.IsFailure)
         {
-            return id.Errors.ToErrorOr<IEnumerable<PositionDto>>();
+            return id.Error.ToErrorOr<IEnumerable<PositionDto>>();
         }
 
         var account = await _accountRepository.FirstOrDefaultAsync(

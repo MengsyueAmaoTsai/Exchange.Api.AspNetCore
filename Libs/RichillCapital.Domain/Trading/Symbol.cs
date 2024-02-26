@@ -12,10 +12,10 @@ public sealed class Symbol : SingleValueObject<string>
     {
     }
 
-    public static ErrorOr<Symbol> From(string symbol) => ErrorOr<string>.Is(symbol)
+    public static Result<Symbol> From(string symbol) => Result<string>.Success(symbol)
         .Ensure(NotEmpty, SymbolErrors.Empty)
         .Ensure(NotLongerThanMaxLength, SymbolErrors.MaxLengthExceeded)
-        .Map(s => new Symbol(s));
+        .Map(symbol => new Symbol(symbol));
 
     private static bool NotLongerThanMaxLength(string symbol) => symbol.Length <= MaxLength;
 

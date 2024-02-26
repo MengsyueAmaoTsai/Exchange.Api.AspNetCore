@@ -17,9 +17,9 @@ internal sealed class GetAccountPerformanceQueryHandler(
     {
         var id = AccountId.From(query.AccountId);
 
-        if (id.IsError)
+        if (id.IsFailure)
         {
-            return id.Errors.ToErrorOr<AccountPerformanceDto>();
+            return id.Error.ToErrorOr<AccountPerformanceDto>();
         }
 
         var account = await _accountRepository.FirstOrDefaultAsync(

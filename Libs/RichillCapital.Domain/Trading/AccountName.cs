@@ -12,22 +12,19 @@ public sealed class AccountName : SingleValueObject<string>
     {
     }
 
-    public static ErrorOr<AccountName> From(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            return Error
-                .Invalid("Account name cannot be empty.")
-                .ToErrorOr<AccountName>();
-        }
+    public static ErrorOr<AccountName> From(string name) => ErrorOr<string>.Is(name)
+        .Ensure(AccountNameRules.IsNotEmpty)
+        .Ensure(AccountNameRules.IsNotLongerThan)
+        .Map(value => new AccountName(value));
+}
 
-        if (name.Length > MaxLength)
-        {
-            return Error
-                .Invalid($"Account name cannot be longer than {MaxLength} characters.")
-                .ToErrorOr<AccountName>();
-        }
+internal static class AccountNameRules
+{
+    public static readonly (Func<string, bool> predicate, Error error) IsNotEmpty = (
+        id => !string.IsNullOrWhiteSpace(id),
+        Error.Invalid("Account name cannot be empty."));
 
-        return new AccountName(name).ToErrorOr();
-    }
+    internal static readonly (Func<string, bool> predicate, Error error) IsNotLongerThan = (
+        id => id.Length <= AccountName.MaxLength,
+        Error.Invalid($"Account name cannot be longer than {AccountName.MaxLength} characters."));
 }

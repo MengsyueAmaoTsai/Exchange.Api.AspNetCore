@@ -45,9 +45,9 @@ internal sealed class EmitBotSignalCommandHandler(
 
         var symbol = Symbol.From(command.Symbol);
 
-        if (symbol.IsError)
+        if (symbol.IsFailure)
         {
-            return symbol.Errors
+            return symbol.Error
                 .ToErrorOr<BotId>();
         }
 

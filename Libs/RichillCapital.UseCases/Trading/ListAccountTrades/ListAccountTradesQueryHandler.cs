@@ -17,9 +17,9 @@ internal sealed class ListAccountTradesQueryHandler(
     {
         var id = AccountId.From(query.AccountId);
 
-        if (id.IsError)
+        if (id.IsFailure)
         {
-            return id.Errors.ToErrorOr<IEnumerable<TradeDto>>();
+            return id.Error.ToErrorOr<IEnumerable<TradeDto>>();
         }
 
         var account = await _accountRepository.FirstOrDefaultAsync(

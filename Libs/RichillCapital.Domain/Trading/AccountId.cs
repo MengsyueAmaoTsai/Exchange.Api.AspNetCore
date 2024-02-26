@@ -12,27 +12,21 @@ public sealed class AccountId : SingleValueObject<string>
     {
     }
 
-    public static ErrorOr<AccountId> From(string id)
-    {
-        if (string.IsNullOrWhiteSpace(id))
-        {
-            return Error
-                .Invalid("Account id cannot be empty.")
-                .ToErrorOr<AccountId>();
-        }
+    public static Result<AccountId> From(string id) => Result<string>.Success(id)
+        .Ensure(AccountIdRules.IsNotEmpty)
+        .Ensure(AccountIdRules.IsNotLongerThan)
+        .Map(value => new AccountId(value));
 
-        if (id.Length > MaxLength)
-        {
-            return Error
-                .Invalid($"Account id cannot be longer than {MaxLength} characters.")
-                .ToErrorOr<AccountId>();
-        }
+    public static AccountId NewAccountId() => From(Guid.NewGuid().ToString()).Value;
+}
 
-        return new AccountId(id).ToErrorOr();
-    }
+internal static class AccountIdRules
+{
+    public static readonly (Func<string, bool> predicate, Error error) IsNotEmpty = (
+        id => !string.IsNullOrWhiteSpace(id),
+        Error.Invalid("Account id cannot be empty."));
 
-    public static AccountId NewAccountId()
-    {
-        return From(Guid.NewGuid().ToString()).Value;
-    }
+    internal static readonly (Func<string, bool> predicate, Error error) IsNotLongerThan = (
+        id => id.Length <= AccountId.MaxLength,
+        Error.Invalid($"Account id cannot be longer than {AccountId.MaxLength} characters."));
 }

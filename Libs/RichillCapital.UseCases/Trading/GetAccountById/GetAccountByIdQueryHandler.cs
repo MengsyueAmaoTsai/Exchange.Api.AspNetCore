@@ -17,9 +17,9 @@ internal sealed class GetAccountByIdQueryHandler(
     {
         var accountId = AccountId.From(query.AccountId);
 
-        if (accountId.IsError)
+        if (accountId.IsFailure)
         {
-            return accountId.Errors.ToErrorOr<AccountDto>();
+            return accountId.Error.ToErrorOr<AccountDto>();
         }
 
         var account = await _accountRepository.FirstOrDefaultAsync(
