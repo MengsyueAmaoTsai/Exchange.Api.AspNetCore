@@ -1,11 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 
+using MapsterMapper;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
 
+using RichillCapital.Domain.Bots;
 using RichillCapital.Exchange.Api.Common;
-using RichillCapital.Exchange.Api.Extensions;
 using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Bots.EmitSignal;
 
@@ -13,7 +15,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace RichillCapital.Exchange.Api.Endpoints.Bots;
 
-public sealed class EmitSignal(ISender _sender) : AsyncEndpoint
+public sealed class EmitSignal(
+    ISender _sender,
+    IMapper _mapper) : AsyncEndpoint
     .WithRequest<EmitSignalRequest>
     .WithActionResult<EmitSignalResponse>
 {
@@ -25,24 +29,18 @@ public sealed class EmitSignal(ISender _sender) : AsyncEndpoint
         Tags = ["Bots"])]
     public override async Task<ActionResult<EmitSignalResponse>> HandleAsync(
         [FromRoute] EmitSignalRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var command = new EmitBotSignalCommand(
-            request.Body.Time,
-            request.Body.TradeType,
-            request.Body.Symbol,
-            request.Body.Volume,
-            request.Body.Price,
-            request.BotId);
-
-        var result = await _sender.Send(command, cancellationToken);
-
-        var response = new EmitSignalResponse(result.Value.Value);
-
-        return ErrorOr<EmitSignalResponse>
-            .Is(response)
+        CancellationToken cancellationToken = default) =>
+        await ErrorOr<EmitSignalRequest>.Is(request)
+            .Map(ToCommand)
+            .Then(command => _sender.Send(command, cancellationToken))
+            .Map(ToResponse)
             .Match(HandleError, Ok);
-    }
+
+    private EmitBotSignalCommand ToCommand(EmitSignalRequest request) =>
+        _mapper.Map<EmitBotSignalCommand>(request);
+
+    private EmitSignalResponse ToResponse(BotId botId) =>
+        _mapper.Map<EmitSignalResponse>(botId);
 }
 
 public sealed record EmitSignalResponse(string BotId);
