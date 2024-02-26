@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Exchange.Api.Common;
-using RichillCapital.Exchange.Api.Extensions;
 using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Bots;
 using RichillCapital.UseCases.Bots.ListSignals;
