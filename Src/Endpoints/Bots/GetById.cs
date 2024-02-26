@@ -3,8 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Exchange.Api.Common;
-using RichillCapital.Exchange.Api.Extensions;
 using RichillCapital.SharedKernel.Monads;
+using RichillCapital.UseCases.Bots;
 using RichillCapital.UseCases.Bots.GetById;
 
 using Swashbuckle.AspNetCore.Annotations;
@@ -23,22 +23,18 @@ public sealed class GetById(ISender _sender) : AsyncEndpoint
         Tags = ["Bots"])]
     public override async Task<ActionResult<BotResponse>> HandleAsync(
         [FromRoute] GetBotByIdRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var query = new GetBotByIdQuery(request.BotId);
-
-        var result = await _sender.Send(query, cancellationToken);
-
-        var response = new BotResponse(
-            result.Value.Id,
-            result.Value.Name,
-            result.Value.Description,
-            result.Value.Platform);
-
-        return ErrorOr<BotResponse>
-            .Is(response)
+        CancellationToken cancellationToken = default) =>
+        await ErrorOr<GetBotByIdRequest>.Is(request)
+            .Map(ToQuery)
+            .Then(query => _sender.Send(query, cancellationToken))
+            .Map(ToResponse)
             .Match(HandleError, Ok);
-    }
+
+    private GetBotByIdQuery ToQuery(GetBotByIdRequest request) =>
+        new(request.BotId);
+
+    private BotResponse ToResponse(BotDto bot) =>
+        new(bot.Id, bot.Name, bot.Description, bot.Platform);
 }
 
 public sealed record class GetBotByIdRequest

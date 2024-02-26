@@ -1,3 +1,5 @@
+using MapsterMapper;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -5,13 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using RichillCapital.Exchange.Api.Common;
 using RichillCapital.Exchange.Api.Extensions;
 using RichillCapital.SharedKernel.Monads;
+using RichillCapital.UseCases.Bots;
 using RichillCapital.UseCases.Bots.ListSignals;
 
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace RichillCapital.Exchange.Api.Endpoints.Bots;
 
-public sealed class ListSignals(ISender _sender) : AsyncEndpoint
+public sealed class ListSignals(
+    ISender _sender,
+    IMapper _mapper) : AsyncEndpoint
     .WithRequest<ListBotSignalsRequest>
     .WithActionResult<IEnumerable<SignalResponse>>
 {
@@ -23,24 +28,18 @@ public sealed class ListSignals(ISender _sender) : AsyncEndpoint
         Tags = ["Bots"])]
     public override async Task<ActionResult<IEnumerable<SignalResponse>>> HandleAsync(
         [FromRoute] ListBotSignalsRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var query = new ListBotSignalsQuery(request.BotId);
+        CancellationToken cancellationToken = default) =>
+        await ErrorOr<ListBotSignalsRequest>.Is(request)
+            .Map(ToQuery)
+            .Then(query => _sender.Send(query, cancellationToken))
+            .Map(ToResponse)
+            .Match(HandleError, Ok);
 
-        var result = await _sender.Send(query, cancellationToken);
+    private ListBotSignalsQuery ToQuery(ListBotSignalsRequest request) =>
+        _mapper.Map<ListBotSignalsQuery>(request);
 
-        var response = result.Value
-            .Select(signal => new SignalResponse(
-                signal.Time,
-                signal.TradeType,
-                signal.Symbol,
-                signal.Volume,
-                signal.Price));
-
-        return Result<IEnumerable<SignalResponse>>
-            .Success(response)
-            .Match(Ok, HandleError);
-    }
+    private IEnumerable<SignalResponse> ToResponse(IEnumerable<SignalDto> signals) =>
+        _mapper.Map<IEnumerable<SignalResponse>>(signals);
 }
 
 public sealed record class ListBotSignalsRequest
