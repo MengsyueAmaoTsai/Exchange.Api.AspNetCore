@@ -12,22 +12,19 @@ public sealed class Symbol : SingleValueObject<string>
     {
     }
 
-    public static ErrorOr<Symbol> From(string symbol)
-    {
-        if (string.IsNullOrWhiteSpace(symbol))
-        {
-            return Error
-                .Invalid("Symbol cannot be empty.")
-                .ToErrorOr<Symbol>();
-        }
+    public static ErrorOr<Symbol> From(string symbol) => ErrorOr<string>.Is(symbol)
+        .Ensure(NotEmpty, SymbolErrors.Empty)
+        .Ensure(NotLongerThanMaxLength, SymbolErrors.MaxLengthExceeded)
+        .Map(s => new Symbol(s));
 
-        if (symbol.Length > MaxLength)
-        {
-            return Error
-                .Invalid($"Symbol cannot be longer than {MaxLength} characters.")
-                .ToErrorOr<Symbol>();
-        }
+    private static bool NotLongerThanMaxLength(string symbol) => symbol.Length <= MaxLength;
 
-        return new Symbol(symbol).ToErrorOr();
-    }
+    private static bool NotEmpty(string symbol) => !string.IsNullOrWhiteSpace(symbol);
+}
+
+internal static class SymbolErrors
+{
+    public static readonly Error Empty = Error.Invalid("Symbol cannot be empty.");
+    public static readonly Error MaxLengthExceeded = Error
+        .Invalid($"Symbol cannot be longer than {Symbol.MaxLength} characters.");
 }
