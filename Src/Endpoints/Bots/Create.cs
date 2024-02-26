@@ -8,6 +8,7 @@ using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
 
+using RichillCapital.Domain.Bots;
 using RichillCapital.Exchange.Api.Common;
 using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Bots.Create;
@@ -30,22 +31,19 @@ public sealed class Create(
         Tags = ["Bots"])]
     public override async Task<ActionResult<CreateBotResponse>> HandleAsync(
         [FromBody] CreateBotRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var createBotCommand = new CreateBotCommand(
-            request.Id,
-            request.Name,
-            request.Description,
-            request.Platform);
-
-        var errorOrBotId = await _sender.Send(createBotCommand, cancellationToken);
-
-        var response = new CreateBotResponse(errorOrBotId.Value.Value);
-
-        return ErrorOr<CreateBotResponse>
-            .Is(response)
+        CancellationToken cancellationToken = default) =>
+        await ErrorOr<CreateBotRequest>
+            .Is(request)
+            .Map(ToCommand)
+            .Then(command => _sender.Send(command, cancellationToken))
+            .Map(ToResponse)
             .Match(HandleError, Ok);
-    }
+
+    private CreateBotCommand ToCommand(CreateBotRequest request) =>
+        _mapper.Map<CreateBotCommand>(request);
+
+    private CreateBotResponse ToResponse(BotId botId) =>
+        _mapper.Map<CreateBotResponse>(botId);
 }
 
 public sealed record class CreateBotRequest
