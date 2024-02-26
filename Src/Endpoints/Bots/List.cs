@@ -36,7 +36,7 @@ public sealed class List(ISender _sender) : AsyncEndpoint
                 bot.Description,
                 bot.Platform));
 
-        return Result
+        return Result<IEnumerable<BotResponse>>
             .Success(response)
             .Match(Ok, HandleError);
     }

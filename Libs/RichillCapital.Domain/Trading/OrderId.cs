@@ -16,20 +16,20 @@ public sealed class OrderId : SingleValueObject<string>
     {
         if (string.IsNullOrWhiteSpace(id))
         {
-            return Error.Invalid("Order id cannot be empty.");
+            return Error
+                .Invalid("Order id cannot be empty.")
+                .ToErrorOr<OrderId>();
         }
 
         if (id.Length > MaxLength)
         {
-            return Error.Invalid(
-                $"Order id cannot be longer than {MaxLength} characters.");
+            return Error
+                .Invalid($"Order id cannot be longer than {MaxLength} characters.")
+                .ToErrorOr<OrderId>();
         }
 
-        return new OrderId(id);
+        return new OrderId(id).ToErrorOr();
     }
 
-    public static OrderId NewOrderId()
-    {
-        return From(Guid.NewGuid().ToString()).Value;
-    }
+    public static OrderId NewOrderId() => From(Guid.NewGuid().ToString()).Value;
 }

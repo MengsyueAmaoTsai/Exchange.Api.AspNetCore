@@ -16,15 +16,18 @@ public sealed class AccountName : SingleValueObject<string>
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            return Error.Invalid("Account name cannot be empty.");
+            return Error
+                .Invalid("Account name cannot be empty.")
+                .ToErrorOr<AccountName>();
         }
 
         if (name.Length > MaxLength)
         {
-            return Error.Invalid(
-                $"Account name cannot be longer than {MaxLength} characters.");
+            return Error
+                .Invalid($"Account name cannot be longer than {MaxLength} characters.")
+                .ToErrorOr<AccountName>();
         }
 
-        return new AccountName(name);
+        return new AccountName(name).ToErrorOr();
     }
 }

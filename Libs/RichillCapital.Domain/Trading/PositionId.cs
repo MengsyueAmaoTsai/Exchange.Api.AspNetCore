@@ -16,16 +16,19 @@ public sealed class PositionId : SingleValueObject<string>
     {
         if (string.IsNullOrWhiteSpace(id))
         {
-            return Error.Invalid("Position id cannot be empty.");
+            return Error
+                .Invalid("Position id cannot be empty.")
+                .ToErrorOr<PositionId>();
         }
 
         if (id.Length > MaxLength)
         {
-            return Error.Invalid(
-                $"Position id cannot be longer than {MaxLength} characters.");
+            return Error
+                .Invalid($"Position id cannot be longer than {MaxLength} characters.")
+                .ToErrorOr<PositionId>();
         }
 
-        return new PositionId(id);
+        return new PositionId(id).ToErrorOr();
     }
 
     public static PositionId NewPositionId()

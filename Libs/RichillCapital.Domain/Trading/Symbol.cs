@@ -16,14 +16,18 @@ public sealed class Symbol : SingleValueObject<string>
     {
         if (string.IsNullOrWhiteSpace(symbol))
         {
-            return Error.Invalid("Symbol cannot be empty.");
+            return Error
+                .Invalid("Symbol cannot be empty.")
+                .ToErrorOr<Symbol>();
         }
 
         if (symbol.Length > MaxLength)
         {
-            return Error.Invalid($"Symbol cannot be longer than {MaxLength} characters.");
+            return Error
+                .Invalid($"Symbol cannot be longer than {MaxLength} characters.")
+                .ToErrorOr<Symbol>();
         }
 
-        return new Symbol(symbol);
+        return new Symbol(symbol).ToErrorOr();
     }
 }

@@ -18,13 +18,14 @@ internal sealed class GetBotByIdQueryHandler(
 
         if (id.IsError)
         {
-            return id.Errors.ToList();
+            return id.Errors
+                .ToErrorOr<BotDto>();
         }
 
         var bot = await _botRepository.GetByIdAsync(id.Value, cancellationToken);
 
         return bot.HasNoValue ?
-            DomainErrors.Bots.NotFound(id.Value) :
-            BotDto.From(bot.Value);
+            DomainErrors.Bots.NotFound(id.Value).ToErrorOr<BotDto>() :
+            BotDto.From(bot.Value).ToErrorOr();
     }
 }

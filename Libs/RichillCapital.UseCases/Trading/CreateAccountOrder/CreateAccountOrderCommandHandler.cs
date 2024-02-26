@@ -20,7 +20,7 @@ internal sealed class CreateAccountOrderCommandHandler(
 
         if (id.IsError)
         {
-            return id.Errors.ToList();
+            return id.Errors.ToErrorOr<OrderId>();
         }
 
         var account = await _accountRepository.GetByIdAsync(
@@ -29,35 +29,44 @@ internal sealed class CreateAccountOrderCommandHandler(
 
         if (account.HasNoValue)
         {
-            return DomainErrors.Accounts.NotFound(id.Value);
+            return DomainErrors.Accounts
+                .NotFound(id.Value)
+                .ToErrorOr<OrderId>();
         }
 
         var tradeType = TradeType.FromName(command.TradeType);
 
         if (tradeType.HasNoValue)
         {
-            return Error.Invalid("Invalid trade type");
+            return Error
+                .Invalid("Invalid trade type")
+                .ToErrorOr<OrderId>();
         }
 
         var symbol = Symbol.From(command.Symbol);
 
         if (symbol.IsError)
         {
-            return symbol.Errors.ToList();
+            return symbol.Errors
+                .ToErrorOr<OrderId>();
         }
 
         var orderType = OrderType.FromName(command.OrderType);
 
         if (orderType.HasNoValue)
         {
-            return Error.Invalid("Invalid order type");
+            return Error
+                .Invalid("Invalid order type")
+                .ToErrorOr<OrderId>();
         }
 
         var timeInForce = TimeInForce.FromName(command.TimeInForce);
 
         if (timeInForce.HasNoValue)
         {
-            return Error.Invalid("Invalid time in force");
+            return Error
+                .Invalid("Invalid time in force")
+                .ToErrorOr<OrderId>();
         }
 
         var orderId = account.Value.CreateOrder(
@@ -71,7 +80,7 @@ internal sealed class CreateAccountOrderCommandHandler(
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return orderId.IsError ?
-            orderId.Errors.ToList() :
-            orderId.Value;
+            orderId.Errors.ToErrorOr<OrderId>() :
+            orderId.Value.ToErrorOr();
     }
 }

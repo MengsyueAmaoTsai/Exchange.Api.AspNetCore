@@ -54,13 +54,14 @@ public sealed class Account : Entity<AccountId>
 
             if (result.IsFailure)
             {
-                return result.Error;
+                return result.Error
+                    .ToResult<Account>();
             }
         }
 
         account.RegisterDomainEvent(new AccountCreatedDomainEvent(account.Id));
 
-        return account;
+        return account.ToResult();
     }
 
     public Result WithBalance(Currency currency, decimal amount)
@@ -77,7 +78,7 @@ public sealed class Account : Entity<AccountId>
 
         if (balance.IsFailure)
         {
-            return balance.Error;
+            return balance.Error.ToResult();
         }
 
         _balances.Add(balance.Value);
@@ -102,14 +103,14 @@ public sealed class Account : Entity<AccountId>
 
         if (order.IsError)
         {
-            return order.Errors.ToList();
+            return order.Errors.ToErrorOr<OrderId>();
         }
 
         _orders.Add(order.Value);
 
         RegisterDomainEvent(new AccountOrderCreatedDomainEvent(order.Value.Id));
 
-        return order.Value.Id;
+        return order.Value.Id.ToErrorOr();
     }
 
     public ErrorOr<PositionId> OpenPosition(Execution execution)
@@ -125,13 +126,13 @@ public sealed class Account : Entity<AccountId>
 
         if (position.IsError)
         {
-            return position.Errors.ToList();
+            return position.Errors.ToErrorOr<PositionId>();
         }
 
         _positions.Add(position.Value);
 
         RegisterDomainEvent(new AccountPositionOpenedDomainEvent(position.Value.Id, Id));
 
-        return position.Value.Id;
+        return position.Value.Id.ToErrorOr();
     }
 }

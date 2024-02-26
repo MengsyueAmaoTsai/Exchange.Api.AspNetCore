@@ -42,7 +42,7 @@ public sealed class ListTrades(ISender _sender) : AsyncEndpoint
                 trade.Tax,
                 trade.Swap));
 
-        return Result
+        return Result<IEnumerable<TradeResponse>>
             .Success(response)
             .Match(Ok, HandleError);
     }

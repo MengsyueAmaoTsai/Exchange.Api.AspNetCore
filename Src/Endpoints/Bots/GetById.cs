@@ -35,7 +35,7 @@ public sealed class GetById(ISender _sender) : AsyncEndpoint
             result.Value.Description,
             result.Value.Platform);
 
-        return ErrorOr
+        return ErrorOr<BotResponse>
             .Is(response)
             .Match(HandleError, Ok);
     }

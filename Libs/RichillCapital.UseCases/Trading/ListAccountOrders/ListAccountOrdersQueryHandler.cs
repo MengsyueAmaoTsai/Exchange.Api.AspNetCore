@@ -19,7 +19,7 @@ internal sealed class ListAccountOrdersQueryHandler(
 
         if (id.IsError)
         {
-            return id.Errors.ToList();
+            return id.Errors.ToErrorOr<IEnumerable<OrderDto>>();
         }
 
         var account = await _accountRepository.FirstOrDefaultAsync(
@@ -27,11 +27,12 @@ internal sealed class ListAccountOrdersQueryHandler(
             cancellationToken);
 
         return account.HasNoValue ?
-            DomainErrors.Accounts.NotFound(id.Value) :
+            DomainErrors.Accounts.NotFound(id.Value).ToErrorOr<IEnumerable<OrderDto>>() :
             account.Value.Orders
                 .Select(OrderDto.From)
                 .OrderByDescending(order => order.Time)
                 .ToList()
-                .AsReadOnly();
+                .AsReadOnly()
+                .ToErrorOr<IEnumerable<OrderDto>>();
     }
 }

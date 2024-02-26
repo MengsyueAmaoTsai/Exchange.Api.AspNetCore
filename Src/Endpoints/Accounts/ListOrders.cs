@@ -41,7 +41,7 @@ public sealed class ListOrders(ISender _sender) : AsyncEndpoint
                 order.TimeInForce,
                 order.Status));
 
-        return Result
+        return Result<IEnumerable<OrderResponse>>
             .Success(response)
             .Match(Ok, HandleError);
     }

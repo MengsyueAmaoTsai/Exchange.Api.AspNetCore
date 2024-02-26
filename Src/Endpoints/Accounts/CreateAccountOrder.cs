@@ -37,7 +37,7 @@ public sealed class CreateAccountOrder(ISender _sender) : AsyncEndpoint
 
         var response = new CreateAccountOrderResponse(result.Value.Value);
 
-        return ErrorOr
+        return ErrorOr<CreateAccountOrderResponse>
             .Is(response)
             .Match(HandleError, Ok);
     }

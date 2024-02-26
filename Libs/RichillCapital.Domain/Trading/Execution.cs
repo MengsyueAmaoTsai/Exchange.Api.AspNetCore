@@ -57,22 +57,30 @@ public sealed class Execution : ValueObject
     {
         if (quantity <= 0)
         {
-            return ExecutionErrors.InvalidQuantity(quantity);
+            return ExecutionErrors
+                .InvalidQuantity(quantity)
+                .ToErrorOr<Execution>();
         }
 
         if (price <= 0)
         {
-            return ExecutionErrors.InvalidPrice(price);
+            return ExecutionErrors
+                .InvalidPrice(price)
+                .ToErrorOr<Execution>();
         }
 
         if (commission < 0)
         {
-            return ExecutionErrors.InvalidCommission(commission);
+            return ExecutionErrors
+                .InvalidCommission(commission)
+                .ToErrorOr<Execution>();
         }
 
         if (tax < 0)
         {
-            return ExecutionErrors.InvalidTax(tax);
+            return ExecutionErrors
+                .InvalidTax(tax)
+                .ToErrorOr<Execution>();
         }
 
         return ErrorOr<Execution>.Is(new Execution(

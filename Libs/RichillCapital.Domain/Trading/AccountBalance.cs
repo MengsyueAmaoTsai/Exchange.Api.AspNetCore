@@ -29,13 +29,15 @@ public sealed class AccountBalance : ValueObject
     {
         if (initialDeposit < 0)
         {
-            return Error.Invalid("Initial deposit cannot be negative.");
+            return Error
+                .Invalid("Initial deposit cannot be negative.")
+                .ToResult<AccountBalance>();
         }
 
         return new AccountBalance(
             currency,
             initialDeposit,
-            accountId);
+            accountId).ToResult();
     }
 
     protected override IEnumerable<object> GetAtomicValues()

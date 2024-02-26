@@ -62,12 +62,16 @@ public sealed class Order : Entity<OrderId>
     {
         if (quantity <= 0)
         {
-            return OrderErrors.InvalidQuantity(quantity);
+            return OrderErrors
+                .InvalidQuantity(quantity)
+                .ToErrorOr<Order>();
         }
 
         if (type == OrderType.Market && timeInForce == TimeInForce.Day)
         {
-            return Error.Invalid("Market orders cannot have time in force set to day.");
+            return Error
+                .Invalid("Market orders cannot have time in force set to day.")
+                .ToErrorOr<Order>();
         }
 
         return ErrorOr<Order>.Is(new Order(
@@ -87,7 +91,9 @@ public sealed class Order : Entity<OrderId>
     {
         if (Status != OrderStatus.New)
         {
-            return Error.Conflict("Only new orders can be rejected.");
+            return Error
+                .Conflict("Only new orders can be rejected.")
+                .ToResult();
         }
 
         Status = OrderStatus.Rejected;
@@ -101,7 +107,9 @@ public sealed class Order : Entity<OrderId>
     {
         if (Status != OrderStatus.New)
         {
-            return Error.Conflict("Only new orders can be accepted.");
+            return Error
+                .Conflict("Only new orders can be accepted.")
+                .ToResult();
         }
 
         Status = OrderStatus.Pending;
@@ -115,7 +123,9 @@ public sealed class Order : Entity<OrderId>
     {
         if (Status != OrderStatus.Pending)
         {
-            return Error.Conflict("Only pending orders can be cancelled.");
+            return Error
+                .Conflict("Only pending orders can be cancelled.")
+                .ToResult();
         }
 
         Status = OrderStatus.Cancelled;
@@ -134,12 +144,16 @@ public sealed class Order : Entity<OrderId>
         if (Status != OrderStatus.Pending &&
             Status != OrderStatus.PartiallyFilled)
         {
-            return Error.Invalid("Only pending or partially filled orders can be executed.");
+            return Error
+                .Invalid("Only pending or partially filled orders can be executed.")
+                .ToErrorOr<Execution>();
         }
 
         if (executionQuantity > Quantity)
         {
-            return Error.Invalid("Execution quantity cannot be greater than order quantity.");
+            return Error
+                .Invalid("Execution quantity cannot be greater than order quantity.")
+                .ToErrorOr<Execution>();
         }
 
         var execution = Execution.Create(
@@ -154,7 +168,7 @@ public sealed class Order : Entity<OrderId>
 
         if (execution.IsError)
         {
-            return execution.Errors;
+            return execution.Errors.ToErrorOr<Execution>();
         }
 
         Quantity -= executionQuantity;
@@ -167,6 +181,6 @@ public sealed class Order : Entity<OrderId>
 
         RegisterDomainEvent(new AccountOrderExecutedDomainEvent(execution.Value));
 
-        return execution.Value;
+        return execution;
     }
 }

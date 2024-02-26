@@ -16,16 +16,19 @@ public sealed class AccountId : SingleValueObject<string>
     {
         if (string.IsNullOrWhiteSpace(id))
         {
-            return Error.Invalid("Account id cannot be empty.");
+            return Error
+                .Invalid("Account id cannot be empty.")
+                .ToErrorOr<AccountId>();
         }
 
         if (id.Length > MaxLength)
         {
-            return Error.Invalid(
-                $"Account id cannot be longer than {MaxLength} characters.");
+            return Error
+                .Invalid($"Account id cannot be longer than {MaxLength} characters.")
+                .ToErrorOr<AccountId>();
         }
 
-        return new AccountId(id);
+        return new AccountId(id).ToErrorOr();
     }
 
     public static AccountId NewAccountId()

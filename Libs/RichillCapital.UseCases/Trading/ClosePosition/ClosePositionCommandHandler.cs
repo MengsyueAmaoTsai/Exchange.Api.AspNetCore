@@ -19,7 +19,7 @@ internal sealed class ClosePositionCommandHandler(
 
         if (positionId.IsError)
         {
-            return positionId.Errors.ToList();
+            return positionId.Errors.ToErrorOr<PositionId>();
         }
 
         var position = await _positionRepository
@@ -27,7 +27,9 @@ internal sealed class ClosePositionCommandHandler(
 
         if (position.HasNoValue)
         {
-            return DomainErrors.Positions.NotFound(positionId.Value);
+            return DomainErrors.Positions
+                .NotFound(positionId.Value)
+                .ToErrorOr<PositionId>();
         }
 
         position.Value.Close();
@@ -35,6 +37,6 @@ internal sealed class ClosePositionCommandHandler(
         _positionRepository.Update(position.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return position.Value.Id;
+        return position.Value.Id.ToErrorOr();
     }
 }

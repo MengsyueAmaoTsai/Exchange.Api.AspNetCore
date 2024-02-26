@@ -36,7 +36,7 @@ public sealed class List(ISender _sender) : AsyncEndpoint
                 account.PositionMode,
                 account.Currency));
 
-        return Result
+        return Result<IEnumerable<AccountResponse>>
             .Success(response)
             .Match(Ok, HandleError);
 

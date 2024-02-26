@@ -39,7 +39,7 @@ public sealed class ListExecutions(ISender _sender) : AsyncEndpoint
                 execution.Commission,
                 execution.Tax));
 
-        return Result
+        return Result<IEnumerable<ExecutionResponse>>
             .Success(response)
             .Match(Ok, HandleError);
 

@@ -20,7 +20,7 @@ internal sealed class ListAccountPositionsQueryHandler(
 
         if (id.IsError)
         {
-            return id.Errors.ToList();
+            return id.Errors.ToErrorOr<IEnumerable<PositionDto>>();
         }
 
         var account = await _accountRepository.FirstOrDefaultAsync(
@@ -28,10 +28,11 @@ internal sealed class ListAccountPositionsQueryHandler(
             cancellationToken);
 
         return account.HasNoValue ?
-            DomainErrors.Accounts.NotFound(id.Value) :
+            DomainErrors.Accounts.NotFound(id.Value).ToErrorOr<IEnumerable<PositionDto>>() :
             account.Value.Positions
                 .Select(PositionDto.From)
                 .ToList()
-                .AsReadOnly();
+                .AsReadOnly()
+                .ToErrorOr<IEnumerable<PositionDto>>();
     }
 }

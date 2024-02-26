@@ -55,17 +55,17 @@ public sealed class Position : Entity<PositionId>
     {
         if (quantity <= 0)
         {
-            return PositionErrors.InvalidQuantity(quantity);
+            return PositionErrors.InvalidQuantity(quantity).ToErrorOr<Position>();
         }
 
         if (commission < 0)
         {
-            return PositionErrors.InvalidCommission(commission);
+            return PositionErrors.InvalidCommission(commission).ToErrorOr<Position>();
         }
 
         if (tax < 0)
         {
-            return PositionErrors.InvalidTax(tax);
+            return PositionErrors.InvalidTax(tax).ToErrorOr<Position>();
         }
 
         return ErrorOr<Position>

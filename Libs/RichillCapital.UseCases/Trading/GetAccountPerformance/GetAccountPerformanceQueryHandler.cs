@@ -19,7 +19,7 @@ internal sealed class GetAccountPerformanceQueryHandler(
 
         if (id.IsError)
         {
-            return id.Errors.ToList();
+            return id.Errors.ToErrorOr<AccountPerformanceDto>();
         }
 
         var account = await _accountRepository.FirstOrDefaultAsync(
@@ -27,7 +27,9 @@ internal sealed class GetAccountPerformanceQueryHandler(
             cancellationToken);
 
         return account.HasNoValue ?
-            DomainErrors.Accounts.NotFound(id.Value) :
-            AccountPerformanceDto.From(AccountPerformance.GenerateFromClosedTrades(account.Value.Trades));
+            DomainErrors.Accounts.NotFound(id.Value).ToErrorOr<AccountPerformanceDto>() :
+            AccountPerformanceDto
+                .From(AccountPerformance.GenerateFromClosedTrades(account.Value.Trades))
+                .ToErrorOr();
     }
 }

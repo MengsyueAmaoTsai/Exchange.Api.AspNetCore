@@ -16,14 +16,19 @@ public sealed class BotName : SingleValueObject<string>
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            Error.Invalid("Bot name cannot be empty.");
+            Error
+                .Invalid("Bot name cannot be empty.")
+                .ToErrorOr<BotName>();
         }
 
         if (name.Length > MaxLength)
         {
-            Error.Invalid("Bot name cannot be longer than 100 characters.");
+            Error
+                .Invalid("Bot name cannot be longer than 100 characters.")
+                .ToErrorOr<BotName>();
         }
 
-        return new BotName(name);
+        return new BotName(name)
+            .ToErrorOr();
     }
 }

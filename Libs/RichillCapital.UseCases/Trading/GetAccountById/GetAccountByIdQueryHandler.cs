@@ -19,7 +19,7 @@ internal sealed class GetAccountByIdQueryHandler(
 
         if (accountId.IsError)
         {
-            return accountId.Errors.ToList();
+            return accountId.Errors.ToErrorOr<AccountDto>();
         }
 
         var account = await _accountRepository.FirstOrDefaultAsync(
@@ -27,7 +27,7 @@ internal sealed class GetAccountByIdQueryHandler(
             cancellationToken);
 
         return account.HasNoValue ?
-            DomainErrors.Accounts.NotFound(accountId.Value) :
-            AccountDto.From(account.Value);
+            DomainErrors.Accounts.NotFound(accountId.Value).ToErrorOr<AccountDto>() :
+            AccountDto.From(account.Value).ToErrorOr();
     }
 }

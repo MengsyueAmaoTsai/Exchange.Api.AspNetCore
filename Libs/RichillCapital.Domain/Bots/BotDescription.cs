@@ -16,14 +16,18 @@ public sealed class BotDescription : SingleValueObject<string>
     {
         if (string.IsNullOrWhiteSpace(description))
         {
-            return Error.Invalid("Bot description cannot be empty.");
+            return Error
+                .Invalid("Bot description cannot be empty.")
+                .ToErrorOr<BotDescription>();
         }
 
         if (description.Length > MaxLength)
         {
-            return Error.Invalid($"Bot description cannot be longer than {MaxLength} characters.");
+            return Error
+                .Invalid($"Bot description cannot be longer than {MaxLength} characters.")
+                .ToErrorOr<BotDescription>();
         }
 
-        return new BotDescription(description);
+        return new BotDescription(description).ToErrorOr();
     }
 }

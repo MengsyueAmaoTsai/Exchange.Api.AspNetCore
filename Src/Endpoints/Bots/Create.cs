@@ -42,7 +42,8 @@ public sealed class Create(
 
         var response = new CreateBotResponse(errorOrBotId.Value.Value);
 
-        return ErrorOr.Is(response)
+        return ErrorOr<CreateBotResponse>
+            .Is(response)
             .Match(HandleError, Ok);
     }
 }

@@ -39,7 +39,7 @@ public sealed class GetById(ISender _sender) : AsyncEndpoint
                     balance.Currency,
                     balance.Amount)));
 
-        return ErrorOr
+        return ErrorOr<AccountWithBalancesResponse>
             .Is(response)
             .Match(HandleError, Ok);
     }

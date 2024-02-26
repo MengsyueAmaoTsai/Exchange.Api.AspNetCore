@@ -35,7 +35,7 @@ public sealed class Create(ISender _sender) : AsyncEndpoint
 
         var response = new CreateAccountResponse(result.Value.Value);
 
-        return ErrorOr
+        return ErrorOr<CreateAccountResponse>
             .Is(response)
             .Match(HandleError, Ok);
     }

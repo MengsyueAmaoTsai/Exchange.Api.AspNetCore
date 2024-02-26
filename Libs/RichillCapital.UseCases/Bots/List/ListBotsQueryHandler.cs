@@ -15,5 +15,6 @@ internal sealed class ListBotsQueryHandler(
         (await _botRepository.ListAsync(cancellationToken))
             .Select(BotDto.From)
             .ToList()
-            .AsReadOnly();
+            .AsReadOnly()
+            .ToResult<IEnumerable<BotDto>>();
 }

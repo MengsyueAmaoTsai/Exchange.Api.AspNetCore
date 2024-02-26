@@ -32,7 +32,7 @@ public sealed class GetAccountPerformance(ISender _sender) : AsyncEndpoint
         var response = new AccountPerformanceResponse(
             new AccountPerformanceMetricsResponse(0, 0, 0));
 
-        return ErrorOr
+        return ErrorOr<AccountPerformanceResponse>
             .Is(response)
             .Match(HandleError, Ok);
     }

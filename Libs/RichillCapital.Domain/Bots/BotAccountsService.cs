@@ -18,7 +18,7 @@ public sealed class BotAccountsService(
 
         if (accountName.IsError)
         {
-            return accountName.Errors.ToList();
+            return accountName.Errors.ToErrorOr<AccountId>();
         }
 
         var account = Account.Create(
@@ -28,12 +28,13 @@ public sealed class BotAccountsService(
 
         if (account.IsFailure)
         {
-            return account.Error;
+            return account.Error.ToErrorOr<AccountId>();
         }
 
         _accountRepository.Add(account.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return account.Value.Id;
+        return ErrorOr<AccountId>
+            .Is(account.Value.Id);
     }
 }

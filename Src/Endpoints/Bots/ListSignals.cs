@@ -37,7 +37,7 @@ public sealed class ListSignals(ISender _sender) : AsyncEndpoint
                 signal.Volume,
                 signal.Price));
 
-        return Result
+        return Result<IEnumerable<SignalResponse>>
             .Success(response)
             .Match(Ok, HandleError);
     }

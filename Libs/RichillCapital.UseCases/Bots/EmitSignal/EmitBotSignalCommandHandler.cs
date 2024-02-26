@@ -21,28 +21,34 @@ internal sealed class EmitBotSignalCommandHandler(
 
         if (botId.IsError)
         {
-            return botId.Errors;
+            return botId.Errors
+                .ToErrorOr<BotId>();
         }
 
         var bot = await _botRepository.GetByIdAsync(botId.Value, cancellationToken);
 
         if (bot.HasNoValue)
         {
-            return DomainErrors.Bots.NotFound(botId.Value);
+            return DomainErrors.Bots
+                .NotFound(botId.Value)
+                .ToErrorOr<BotId>();
         }
 
         var tradeType = TradeType.FromName(command.TradeType);
 
         if (tradeType.HasNoValue)
         {
-            return Error.Invalid($"Invalid trade type {command.TradeType}");
+            return Error
+                .Invalid($"Invalid trade type {command.TradeType}")
+                .ToErrorOr<BotId>();
         }
 
         var symbol = Symbol.From(command.Symbol);
 
         if (symbol.IsError)
         {
-            return symbol.Errors;
+            return symbol.Errors
+                .ToErrorOr<BotId>();
         }
 
         var signal = bot.Value.EmitSignal(
@@ -54,12 +60,12 @@ internal sealed class EmitBotSignalCommandHandler(
 
         if (signal.IsError)
         {
-            return signal.Errors.ToList();
+            return signal.Errors.ToErrorOr<BotId>();
         }
 
         _botRepository.Update(bot.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return ErrorOr.Is(bot.Value.Id);
+        return ErrorOr<BotId>.Is(bot.Value.Id);
     }
 }

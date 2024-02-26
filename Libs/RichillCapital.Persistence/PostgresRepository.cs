@@ -77,26 +77,30 @@ public class PostgresRepository<TEntity> :
         Expression<Func<TEntity, bool>> expression,
         CancellationToken cancellationToken = default) =>
         await _dbContext.Set<TEntity>()
-            .FirstOrDefaultAsync(expression, cancellationToken);
+            .FirstOrDefaultAsync(expression, cancellationToken)
+            .ToMaybe();
 
     public async Task<Maybe<TEntity>> FirstOrDefaultAsync(
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default) =>
         await ApplySpecification(specification)
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken)
+            .ToMaybe();
 
     public async Task<Maybe<TResult>> FirstOrDefaultAsync<TResult>(
         ISpecification<TEntity, TResult> specification,
         CancellationToken cancellationToken = default) =>
         await ApplySpecification(specification)
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken)
+            .ToMaybe();
 
     public async Task<Maybe<TEntity>> GetByIdAsync<TId>(
         TId id,
         CancellationToken cancellationToken = default)
         where TId : notnull =>
         await _dbContext.Set<TEntity>()
-            .FindAsync([id], cancellationToken);
+            .FindAsync([id], cancellationToken)
+            .ToMaybe();
 
     public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default) =>
         _dbContext.Set<TEntity>()
@@ -132,13 +136,15 @@ public class PostgresRepository<TEntity> :
         ISingleResultSpecification<TEntity> specification,
         CancellationToken cancellationToken = default) =>
         await ApplySpecification(specification)
-            .SingleOrDefaultAsync(cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken)
+            .ToMaybe();
 
     public async Task<Maybe<TResult>> SingleOrDefaultAsync<TResult>(
         ISingleResultSpecification<TEntity, TResult> specification,
         CancellationToken cancellationToken = default) =>
         await ApplySpecification(specification)
-            .SingleOrDefaultAsync(cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken)
+            .ToMaybe();
 
     public void Update(TEntity entity) => _dbContext.Set<TEntity>().Update(entity);
 

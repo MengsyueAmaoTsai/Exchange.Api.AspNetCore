@@ -16,14 +16,18 @@ public sealed class BotId : SingleValueObject<string>
     {
         if (string.IsNullOrWhiteSpace(id))
         {
-            return Error.Invalid("Bot id cannot be empty.");
+            return Error
+                .Invalid("Bot id cannot be empty.")
+                .ToErrorOr<BotId>();
         }
 
         if (id.Length > MaxLength)
         {
-            return Error.Invalid("Bot id cannot be longer than 36 characters.");
+            return Error
+                .Invalid("Bot id cannot be longer than 36 characters.")
+                .ToErrorOr<BotId>();
         }
 
-        return new BotId(id);
+        return new BotId(id).ToErrorOr();
     }
 }

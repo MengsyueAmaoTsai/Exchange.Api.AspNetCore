@@ -44,12 +44,16 @@ public sealed class Signal : ValueObject
     {
         if (volume <= decimal.Zero)
         {
-            return SignalErrors.InvalidVolume(volume);
+            return SignalErrors
+                .InvalidVolume(volume)
+                .ToErrorOr<Signal>();
         }
 
         if (price <= decimal.Zero)
         {
-            return SignalErrors.InvalidPrice(price);
+            return SignalErrors
+                .InvalidPrice(price)
+                .ToErrorOr<Signal>();
         }
 
         return ErrorOr<Signal>

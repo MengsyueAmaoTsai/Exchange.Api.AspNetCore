@@ -19,7 +19,7 @@ internal sealed class ListAccountTradesQueryHandler(
 
         if (id.IsError)
         {
-            return id.Errors.ToList();
+            return id.Errors.ToErrorOr<IEnumerable<TradeDto>>();
         }
 
         var account = await _accountRepository.FirstOrDefaultAsync(
@@ -27,11 +27,12 @@ internal sealed class ListAccountTradesQueryHandler(
             cancellationToken);
 
         return account.HasNoValue ?
-            DomainErrors.Accounts.NotFound(id.Value) :
+            DomainErrors.Accounts.NotFound(id.Value).ToErrorOr<IEnumerable<TradeDto>>() :
             account.Value.Trades
                 .Select(TradeDto.From)
                 .OrderByDescending(trade => trade.ExitTime)
                 .ToList()
-                .AsReadOnly();
+                .AsReadOnly()
+                .ToErrorOr<IEnumerable<TradeDto>>();
     }
 }

@@ -68,27 +68,37 @@ public sealed partial class Trade : ValueObject
     {
         if (quantity <= 0)
         {
-            return TradeErrors.InvalidQuantity(quantity);
+            return TradeErrors
+                .InvalidQuantity(quantity)
+                .ToErrorOr<Trade>();
         }
 
         if (entryPrice <= 0)
         {
-            return TradeErrors.InvalidEntryPrice(entryPrice);
+            return TradeErrors
+                .InvalidEntryPrice(entryPrice)
+                .ToErrorOr<Trade>();
         }
 
         if (exitPrice <= 0)
         {
-            return TradeErrors.InvalidExitPrice(exitPrice);
+            return TradeErrors
+                .InvalidExitPrice(exitPrice)
+                .ToErrorOr<Trade>();
         }
 
         if (commission < 0)
         {
-            return TradeErrors.InvalidCommission(commission);
+            return TradeErrors
+                .InvalidCommission(commission)
+                .ToErrorOr<Trade>();
         }
 
         if (tax < 0)
         {
-            return TradeErrors.InvalidTax(tax);
+            return TradeErrors
+                .InvalidTax(tax)
+                .ToErrorOr<Trade>();
         }
 
         return ErrorOr<Trade>

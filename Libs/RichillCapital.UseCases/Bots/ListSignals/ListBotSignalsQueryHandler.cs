@@ -18,7 +18,8 @@ internal sealed class ListBotSignalsQueryHandler(
 
         if (id.IsError)
         {
-            return id.Errors.ToList();
+            return id.Errors
+                .ToErrorOr<IEnumerable<SignalDto>>();
         }
 
         var bot = await _botRepository.FirstOrDefaultAsync(
@@ -26,10 +27,11 @@ internal sealed class ListBotSignalsQueryHandler(
             cancellationToken);
 
         return bot.HasNoValue ?
-        DomainErrors.Bots.NotFound(id.Value) :
+        DomainErrors.Bots.NotFound(id.Value).ToErrorOr<IEnumerable<SignalDto>>() :
         bot.Value.Signals
             .Select(SignalDto.From)
             .ToList()
-            .AsReadOnly();
+            .AsReadOnly()
+            .ToErrorOr<IEnumerable<SignalDto>>();
     }
 }

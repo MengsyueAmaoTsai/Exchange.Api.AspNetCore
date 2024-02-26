@@ -20,40 +20,48 @@ internal sealed class CreateBotCommandHandler(
 
         if (id.IsError)
         {
-            return id.Errors.ToList();
+            return id.Errors.ToErrorOr<BotId>();
         }
 
         if (await _botRepository.AnyAsync(bot => bot.Id == id.Value, cancellationToken))
         {
-            return BotErrors.Duplicate(id.Value);
+            return BotErrors
+                .Duplicate(id.Value)
+                .ToErrorOr<BotId>();
         }
 
         var name = BotName.From(command.Name);
 
         if (name.IsError)
         {
-            return name.Errors.ToList();
+            return name.Errors
+                .ToErrorOr<BotId>();
         }
 
         if (await _botRepository.AnyAsync(
             bot => bot.Name == name.Value,
             cancellationToken))
         {
-            return BotErrors.Duplicate(name.Value);
+            return BotErrors
+                .Duplicate(name.Value)
+                .ToErrorOr<BotId>();
         }
 
         var description = BotDescription.From(command.Description);
 
         if (description.IsError)
         {
-            return description.Errors.ToList();
+            return description.Errors
+                .ToErrorOr<BotId>();
         }
 
         var platform = TradingPlatform.FromName(command.Platform);
 
         if (platform.HasNoValue)
         {
-            return BotErrors.TradingPlatformNotSupported(command.Platform);
+            return BotErrors
+                .TradingPlatformNotSupported(command.Platform)
+                .ToErrorOr<BotId>();
         }
 
         var bot = Bot.Create(

@@ -40,7 +40,7 @@ public sealed class ListPositions(ISender _sender) : AsyncEndpoint
                 position.Tax,
                 position.Swap));
 
-        return Result
+        return Result<IEnumerable<PositionResponse>>
             .Success(response)
             .Match(Ok, HandleError);
     }

@@ -20,8 +20,8 @@ public sealed class OrderBook : ValueObject
         IEnumerable<OrderBookEntry> bids,
         IEnumerable<OrderBookEntry> asks) =>
         !bids.Any() && !asks.Any() ?
-            Error.Invalid("Order book must contain at least one bid or ask.") :
-            new OrderBook(bids, asks);
+            Error.Invalid("Order book must contain at least one bid or ask.").ToResult<OrderBook>() :
+            new OrderBook(bids, asks).ToResult();
 
     public IReadOnlyCollection<OrderBookEntry> GetOppositeEntries(TradeType tradeType) =>
         tradeType == TradeType.Buy ? Asks : Bids;
@@ -44,8 +44,8 @@ public sealed class OrderBookEntry : ValueObject
 
     public static Result<OrderBookEntry> Create(decimal price, decimal quantity) =>
         quantity <= decimal.Zero ?
-            Error.Invalid("Quantity must be greater than 0.") :
-            new OrderBookEntry(price, quantity);
+            Error.Invalid("Quantity must be greater than 0.").ToResult<OrderBookEntry>() :
+            new OrderBookEntry(price, quantity).ToResult();
 
     protected override IEnumerable<object> GetAtomicValues()
     {

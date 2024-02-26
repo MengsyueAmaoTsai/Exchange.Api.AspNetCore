@@ -39,7 +39,7 @@ public sealed class EmitSignal(ISender _sender) : AsyncEndpoint
 
         var response = new EmitSignalResponse(result.Value.Value);
 
-        return ErrorOr
+        return ErrorOr<EmitSignalResponse>
             .Is(response)
             .Match(HandleError, Ok);
     }

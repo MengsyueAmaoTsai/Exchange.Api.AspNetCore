@@ -21,28 +21,34 @@ internal sealed class CreateAccountCommandHandler(
 
         if (name.IsError)
         {
-            return name.Errors.ToList();
+            return name.Errors.ToErrorOr<AccountId>();
         }
 
         if (await _accountRepository.AnyAsync(
             account => account.Name == name.Value,
             cancellationToken))
         {
-            return DomainErrors.Accounts.AlreadyExists(name.Value); ;
+            return DomainErrors.Accounts
+                .AlreadyExists(name.Value)
+                .ToErrorOr<AccountId>();
         }
 
         var positionMode = PositionMode.FromName(command.PositionMode);
 
         if (positionMode.HasNoValue)
         {
-            return Error.Invalid("Position mode is invalid");
+            return Error
+                .Invalid("Position mode is invalid")
+                .ToErrorOr<AccountId>();
         }
 
         var currency = Currency.FromName(command.Currency);
 
         if (currency.HasNoValue)
         {
-            return Error.Invalid("Currency is invalid");
+            return Error
+                .Invalid("Currency is invalid")
+                .ToErrorOr<AccountId>();
         }
 
         var account = Account.Create(
@@ -52,7 +58,7 @@ internal sealed class CreateAccountCommandHandler(
 
         if (account.IsFailure)
         {
-            return account.Error;
+            return account.Error.ToErrorOr<AccountId>();
         }
 
         account.Value.WithBalance(currency.Value, command.InitialDeposit);
@@ -60,6 +66,6 @@ internal sealed class CreateAccountCommandHandler(
         _accountRepository.Add(account.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return account.Value.Id;
+        return account.Value.Id.ToErrorOr();
     }
 }
