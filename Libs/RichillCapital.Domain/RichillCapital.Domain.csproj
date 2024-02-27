@@ -18,6 +18,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="RichillCapital.SharedKernel" Version="1.2.5" />
+    <PackageReference Include="RichillCapital.SharedKernel" Version="1.2.6" />
   </ItemGroup>
 </Project>

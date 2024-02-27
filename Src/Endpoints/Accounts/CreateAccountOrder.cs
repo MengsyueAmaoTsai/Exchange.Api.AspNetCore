@@ -1,7 +1,10 @@
+using MapsterMapper;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
 
+using RichillCapital.Domain.Trading;
 using RichillCapital.Exchange.Api.Common;
 using RichillCapital.Exchange.Api.Extensions;
 using RichillCapital.SharedKernel.Monads;
@@ -11,7 +14,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace RichillCapital.Exchange.Api.Endpoints.Accounts;
 
-public sealed class CreateAccountOrder(ISender _sender) : AsyncEndpoint
+public sealed class CreateAccountOrder(
+    ISender _sender,
+    IMapper _mapper) : AsyncEndpoint
     .WithRequest<CreateAccountOrderRequest>
     .WithActionResult<CreateAccountOrderResponse>
 {
@@ -23,24 +28,18 @@ public sealed class CreateAccountOrder(ISender _sender) : AsyncEndpoint
         Tags = ["Accounts"])]
     public override async Task<ActionResult<CreateAccountOrderResponse>> HandleAsync(
         [FromRoute] CreateAccountOrderRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var command = new CreateAccountOrderCommand(
-            request.Body.TradeType,
-            request.Body.Quantity,
-            request.Body.Symbol,
-            request.Body.OrderType,
-            request.Body.TimeInForce,
-            request.AccountId);
-
-        var result = await _sender.Send(command, cancellationToken);
-
-        var response = new CreateAccountOrderResponse(result.Value.Value);
-
-        return ErrorOr<CreateAccountOrderResponse>
-            .Is(response)
+        CancellationToken cancellationToken = default) =>
+        await ErrorOr<CreateAccountOrderRequest>.Is(request)
+            .Map(ToCommand)
+            .Then(command => _sender.Send(command, cancellationToken))
+            .Map(ToResponse)
             .Match(HandleError, Ok);
-    }
+
+    public CreateAccountOrderCommand ToCommand(CreateAccountOrderRequest request) =>
+        _mapper.Map<CreateAccountOrderCommand>(request);
+
+    public CreateAccountOrderResponse ToResponse(OrderId orderId) =>
+        _mapper.Map<CreateAccountOrderResponse>(orderId);
 }
 
 public sealed record class CreateAccountOrderRequest
