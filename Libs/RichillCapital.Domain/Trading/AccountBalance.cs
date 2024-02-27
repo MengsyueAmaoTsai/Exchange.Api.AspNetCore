@@ -28,10 +28,7 @@ public sealed class AccountBalance : ValueObject
         AccountId accountId) =>
         initialDeposit.ToResult()
             .Ensure(AccountBalanceRules.NotNegative)
-            .Then(() => new AccountBalance(
-                currency,
-                initialDeposit,
-                accountId));
+            .Map(amount => new AccountBalance(currency, amount, accountId));
 
     protected override IEnumerable<object> GetAtomicValues()
     {
