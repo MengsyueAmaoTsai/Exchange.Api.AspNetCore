@@ -26,8 +26,7 @@ public sealed class AccountBalance : ValueObject
         Currency currency,
         decimal initialDeposit,
         AccountId accountId) =>
-        Result<decimal>
-            .Success(initialDeposit)
+        initialDeposit.ToResult()
             .Ensure(AccountBalanceRules.NotNegative)
             .Then(() => new AccountBalance(
                 currency,
