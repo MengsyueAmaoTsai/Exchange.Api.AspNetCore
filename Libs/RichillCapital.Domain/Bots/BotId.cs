@@ -16,7 +16,7 @@ public sealed class BotId : SingleValueObject<string>
         Result<string>.Success(id)
             .Ensure(BotIdRules.IsNotEmpty)
             .Ensure(BotIdRules.IsNotLongerThan)
-            .Map(value => new BotId(id));
+            .Then(value => new BotId(id));
 }
 
 internal static class BotIdRules

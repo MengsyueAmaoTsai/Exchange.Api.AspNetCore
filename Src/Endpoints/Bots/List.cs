@@ -29,7 +29,7 @@ public sealed class List(
         [FromQuery] ListBotsRequest request,
         CancellationToken cancellationToken = default) =>
         await Result<ListBotsRequest>.Success(request)
-            .Map(ToQuery)
+            .Then(ToQuery)
             .Then(query => _sender.Send(query, cancellationToken))
             .Map(ToResponse)
             .Match(Ok, HandleError);

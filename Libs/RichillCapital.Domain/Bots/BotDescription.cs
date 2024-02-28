@@ -16,7 +16,7 @@ public sealed class BotDescription : SingleValueObject<string>
         Result<string>.Success(description)
             .Ensure(BotDescriptionRules.IsNotEmpty)
             .Ensure(BotDescriptionRules.IsNotLongerThan)
-            .Map(value => new BotDescription(value));
+            .Then(value => new BotDescription(value));
 }
 
 internal static class BotDescriptionRules

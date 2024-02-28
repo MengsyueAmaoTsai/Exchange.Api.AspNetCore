@@ -16,7 +16,7 @@ public sealed class BotName : SingleValueObject<string>
         Result<string>.Success(name)
             .Ensure(BotNameRules.IsNotEmpty)
             .Ensure(BotNameRules.IsNotLongerThan)
-            .Map(value => new BotName(value));
+            .Then(value => new BotName(value));
 }
 
 internal static class BotNameRules

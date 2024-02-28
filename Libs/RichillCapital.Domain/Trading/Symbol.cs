@@ -16,7 +16,7 @@ public sealed class Symbol : SingleValueObject<string>
         .ToResult()
         .Ensure(NotEmpty, SymbolErrors.Empty)
         .Ensure(NotLongerThanMaxLength, SymbolErrors.MaxLengthExceeded)
-        .Map(symbol => new Symbol(symbol));
+        .Then(symbol => new Symbol(symbol));
 
     private static bool NotLongerThanMaxLength(string symbol) =>
         symbol.Length <= MaxLength;
