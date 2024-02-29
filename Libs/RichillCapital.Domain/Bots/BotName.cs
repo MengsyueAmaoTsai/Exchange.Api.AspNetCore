@@ -14,19 +14,18 @@ public sealed class BotName : SingleValueObject<string>
 
     public static Result<BotName> From(string name) =>
         Result<string>
-            .Ensure(
-                name,
-                [BotNameRules.IsNotEmpty, BotNameRules.IsNotLongerThan])
+            .Ensure(name, BotNameRules.Values)
             .Then(value => new BotName(value));
 }
 
 internal static class BotNameRules
 {
-    public static readonly (Func<string, bool> predicate, Error error) IsNotEmpty = (
-        name => !string.IsNullOrWhiteSpace(name),
-        Error.Invalid("Bot name cannot be empty."));
+    public static readonly (Func<string, bool> predicate, Error error)[] Values = [
+        (name => !string.IsNullOrWhiteSpace(name), Empty),
+        (name => name.Length <= BotName.MaxLength, TooLong)
+    ];
 
-    internal static readonly (Func<string, bool> predicate, Error error) IsNotLongerThan = (
-        name => name.Length <= BotName.MaxLength,
-        Error.Invalid($"Bot name cannot be longer than {BotName.MaxLength} characters."));
+    private static readonly Error Empty = Error.Invalid("Bot name cannot be empty.");
+    private static readonly Error TooLong = Error
+        .Invalid($"Bot name cannot be longer than {BotName.MaxLength} characters.");
 }

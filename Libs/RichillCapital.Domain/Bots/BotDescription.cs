@@ -14,19 +14,28 @@ public sealed class BotDescription : SingleValueObject<string>
 
     public static Result<BotDescription> From(string description) =>
         Result<string>
-            .Ensure(
-                description,
-                [BotDescriptionRules.IsNotEmpty, BotDescriptionRules.IsNotLongerThan])
+            .Ensure(description, BotDescriptionRules.Values)
             .Then(value => new BotDescription(value));
 }
 
 internal static class BotDescriptionRules
 {
-    public static readonly (Func<string, bool> predicate, Error error) IsNotEmpty = (
-        description => !string.IsNullOrWhiteSpace(description),
-        Error.Invalid("Bot description cannot be empty."));
+    public static readonly (Func<string, bool> predicate, Error error)[] Values = [
+        IsNotEmpty,
+        IsNotLongerThan
+    ];
 
-    internal static readonly (Func<string, bool> predicate, Error error) IsNotLongerThan = (
+    private static readonly Error Empty = Error.Invalid("Bot description cannot be empty.");
+    private static readonly Error TooLong = Error
+        .Invalid($"Bot description cannot be longer than {BotDescription.MaxLength} characters.");
+
+    private static readonly (Func<string, bool> predicate, Error error) IsNotEmpty = (
+        description => !string.IsNullOrWhiteSpace(description),
+        Empty
+    );
+
+    private static readonly (Func<string, bool> predicate, Error error) IsNotLongerThan = (
         description => description.Length <= BotDescription.MaxLength,
-        Error.Invalid($"Bot description cannot be longer than {BotDescription.MaxLength} characters."));
+        TooLong
+    );
 }
