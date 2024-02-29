@@ -34,15 +34,15 @@ public sealed class Create(
         CancellationToken cancellationToken = default) =>
         await ErrorOr<CreateBotRequest>
             .Is(request)
-            .Map(ToCommand)
+            .Then(MapToCommand)
             .Then(command => _sender.Send(command, cancellationToken))
-            .Map(ToResponse)
+            .Then(MapToResponse)
             .Match(HandleError, Ok);
 
-    private CreateBotCommand ToCommand(CreateBotRequest request) =>
+    private CreateBotCommand MapToCommand(CreateBotRequest request) =>
         _mapper.Map<CreateBotCommand>(request);
 
-    private CreateBotResponse ToResponse(BotId botId) =>
+    private CreateBotResponse MapToResponse(BotId botId) =>
         _mapper.Map<CreateBotResponse>(botId);
 }
 

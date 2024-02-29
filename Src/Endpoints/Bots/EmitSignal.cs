@@ -31,9 +31,9 @@ public sealed class EmitSignal(
         [FromRoute] EmitSignalRequest request,
         CancellationToken cancellationToken = default) =>
         await ErrorOr<EmitSignalRequest>.Is(request)
-            .Map(ToCommand)
+            .Then(ToCommand)
             .Then(command => _sender.Send(command, cancellationToken))
-            .Map(ToResponse)
+            .Then(ToResponse)
             .Match(HandleError, Ok);
 
     private EmitBotSignalCommand ToCommand(EmitSignalRequest request) =>

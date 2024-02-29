@@ -25,9 +25,9 @@ public sealed class GetById(ISender _sender) : AsyncEndpoint
         [FromRoute] GetBotByIdRequest request,
         CancellationToken cancellationToken = default) =>
         await ErrorOr<GetBotByIdRequest>.Is(request)
-            .Map(ToQuery)
+            .Then(ToQuery)
             .Then(query => _sender.Send(query, cancellationToken))
-            .Map(ToResponse)
+            .Then(ToResponse)
             .Match(HandleError, Ok);
 
     private GetBotByIdQuery ToQuery(GetBotByIdRequest request) =>

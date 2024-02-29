@@ -26,7 +26,7 @@ internal sealed class ListAccountOrdersQueryHandler(
             new AccountByIdWithOrdersSpecification(id.Value),
             cancellationToken);
 
-        return account.HasNoValue ?
+        return account.IsNull ?
             DomainErrors.Accounts.NotFound(id.Value).ToErrorOr<IEnumerable<OrderDto>>() :
             account.Value.Orders
                 .Select(OrderDto.From)

@@ -26,7 +26,7 @@ internal sealed class GetAccountByIdQueryHandler(
             new AccountByIdWithBalanceSpecification(accountId.Value),
             cancellationToken);
 
-        return account.HasNoValue ?
+        return account.IsNull ?
             DomainErrors.Accounts.NotFound(accountId.Value).ToErrorOr<AccountDto>() :
             AccountDto.From(account.Value).ToErrorOr();
     }

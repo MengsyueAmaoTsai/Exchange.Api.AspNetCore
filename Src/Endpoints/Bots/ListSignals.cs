@@ -29,9 +29,9 @@ public sealed class ListSignals(
         [FromRoute] ListBotSignalsRequest request,
         CancellationToken cancellationToken = default) =>
         await ErrorOr<ListBotSignalsRequest>.Is(request)
-            .Map(ToQuery)
+            .Then(ToQuery)
             .Then(query => _sender.Send(query, cancellationToken))
-            .Map(ToResponse)
+            .Then(ToResponse)
             .Match(HandleError, Ok);
 
     private ListBotSignalsQuery ToQuery(ListBotSignalsRequest request) =>

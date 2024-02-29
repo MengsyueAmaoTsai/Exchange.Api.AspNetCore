@@ -12,10 +12,12 @@ public sealed class AccountName : SingleValueObject<string>
     {
     }
 
-    public static ErrorOr<AccountName> From(string name) => ErrorOr<string>.Is(name)
-        .Ensure(AccountNameRules.IsNotEmpty)
-        .Ensure(AccountNameRules.IsNotLongerThan)
-        .Map(value => new AccountName(value));
+    public static Result<AccountName> From(string name) =>
+        Result<string>
+            .Ensure(
+                name,
+                [AccountNameRules.IsNotEmpty, AccountNameRules.IsNotLongerThan])
+            .Then(value => new AccountName(value));
 }
 
 internal static class AccountNameRules

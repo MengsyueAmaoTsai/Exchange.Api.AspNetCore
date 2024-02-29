@@ -47,7 +47,7 @@ public sealed class OrderMatchingService(
                                0,
                                0);
 
-                if (executionResult.IsError)
+                if (executionResult.HasError)
                 {
                     return;
                 }

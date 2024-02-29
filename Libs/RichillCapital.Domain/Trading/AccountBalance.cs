@@ -25,11 +25,19 @@ public sealed class AccountBalance : ValueObject
     public static Result<AccountBalance> Create(
         Currency currency,
         decimal initialDeposit,
-        AccountId accountId) =>
-        initialDeposit
-            .ToResult()
-            .Ensure(NotNegative)
-            .Then(amount => new AccountBalance(currency, amount, accountId));
+        AccountId accountId)
+    {
+        var validationResult = Result<decimal>
+            .Ensure(initialDeposit, value => value > 0, Error.Invalid("Initial deposit cannot be negative."));
+
+        if (validationResult.IsFailure)
+        {
+            return validationResult.Error
+                .ToResult<AccountBalance>();
+        }
+
+        return new AccountBalance(currency, initialDeposit, accountId).ToResult();
+    }
 
     protected override IEnumerable<object> GetAtomicValues()
     {

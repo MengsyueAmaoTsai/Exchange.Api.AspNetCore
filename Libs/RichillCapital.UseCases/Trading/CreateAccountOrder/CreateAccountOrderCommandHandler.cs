@@ -27,7 +27,7 @@ internal sealed class CreateAccountOrderCommandHandler(
             id.Value,
             cancellationToken);
 
-        if (account.HasNoValue)
+        if (account.IsNull)
         {
             return DomainErrors.Accounts
                 .NotFound(id.Value)
@@ -36,7 +36,7 @@ internal sealed class CreateAccountOrderCommandHandler(
 
         var tradeType = TradeType.FromName(command.TradeType);
 
-        if (tradeType.HasNoValue)
+        if (tradeType.IsNull)
         {
             return Error
                 .Invalid("Invalid trade type")
@@ -53,7 +53,7 @@ internal sealed class CreateAccountOrderCommandHandler(
 
         var orderType = OrderType.FromName(command.OrderType);
 
-        if (orderType.HasNoValue)
+        if (orderType.IsNull)
         {
             return Error
                 .Invalid("Invalid order type")
@@ -62,7 +62,7 @@ internal sealed class CreateAccountOrderCommandHandler(
 
         var timeInForce = TimeInForce.FromName(command.TimeInForce);
 
-        if (timeInForce.HasNoValue)
+        if (timeInForce.IsNull)
         {
             return Error
                 .Invalid("Invalid time in force")
@@ -79,7 +79,7 @@ internal sealed class CreateAccountOrderCommandHandler(
         _accountRepository.Update(account.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return orderId.IsError ?
+        return orderId.HasError ?
             orderId.Errors.ToErrorOr<OrderId>() :
             orderId.Value.ToErrorOr();
     }

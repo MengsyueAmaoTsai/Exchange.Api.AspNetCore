@@ -166,7 +166,7 @@ public sealed class Order : Entity<OrderId>
             AccountId,
             Id);
 
-        if (execution.IsError)
+        if (execution.HasError)
         {
             return execution.Errors.ToErrorOr<Execution>();
         }

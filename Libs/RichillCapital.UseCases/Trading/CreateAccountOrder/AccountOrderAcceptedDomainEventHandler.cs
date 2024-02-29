@@ -18,7 +18,7 @@ internal sealed class AccountOrderAcceptedDomainEventHandler(
     {
         var order = await _orderRepository.GetByIdAsync(domainEvent.OrderId, cancellationToken);
 
-        if (order.HasNoValue)
+        if (order.IsNull)
         {
             var error = DomainErrors.Orders.NotFound(domainEvent.OrderId);
             throw new InvalidOperationException(error.Message);

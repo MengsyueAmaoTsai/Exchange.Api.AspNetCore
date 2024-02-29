@@ -13,9 +13,10 @@ public sealed class BotDescription : SingleValueObject<string>
     }
 
     public static Result<BotDescription> From(string description) =>
-        Result<string>.Success(description)
-            .Ensure(BotDescriptionRules.IsNotEmpty)
-            .Ensure(BotDescriptionRules.IsNotLongerThan)
+        Result<string>
+            .Ensure(
+                description,
+                [BotDescriptionRules.IsNotEmpty, BotDescriptionRules.IsNotLongerThan])
             .Then(value => new BotDescription(value));
 }
 

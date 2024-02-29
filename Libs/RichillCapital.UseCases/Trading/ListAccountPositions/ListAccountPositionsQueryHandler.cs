@@ -27,7 +27,7 @@ internal sealed class ListAccountPositionsQueryHandler(
             new AccountByIdWithPositionsSpecification(id.Value),
             cancellationToken);
 
-        return account.HasNoValue ?
+        return account.IsNull ?
             DomainErrors.Accounts.NotFound(id.Value).ToErrorOr<IEnumerable<PositionDto>>() :
             account.Value.Positions
                 .Select(PositionDto.From)

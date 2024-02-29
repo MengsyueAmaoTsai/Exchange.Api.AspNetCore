@@ -17,7 +17,7 @@ internal sealed class ClosePositionCommandHandler(
     {
         var positionId = PositionId.From(command.PositionId);
 
-        if (positionId.IsError)
+        if (positionId.HasError)
         {
             return positionId.Errors.ToErrorOr<PositionId>();
         }
@@ -25,7 +25,7 @@ internal sealed class ClosePositionCommandHandler(
         var position = await _positionRepository
             .GetByIdAsync(positionId.Value, cancellationToken);
 
-        if (position.HasNoValue)
+        if (position.IsNull)
         {
             return DomainErrors.Positions
                 .NotFound(positionId.Value)

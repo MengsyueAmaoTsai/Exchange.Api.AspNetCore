@@ -16,9 +16,9 @@ public sealed class BotAccountsService(
         var prefix = "SIM";
         var accountName = AccountName.From($"{prefix}-{botId.Value}");
 
-        if (accountName.IsError)
+        if (accountName.IsFailure)
         {
-            return accountName.Errors.ToErrorOr<AccountId>();
+            return accountName.Error.ToErrorOr<AccountId>();
         }
 
         var account = Account.Create(

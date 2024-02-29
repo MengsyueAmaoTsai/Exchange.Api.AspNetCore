@@ -22,7 +22,7 @@ internal sealed class BotCreatedDomainEventHandler(
         var bot = await _botRepository
             .GetByIdAsync(domainEvent.BotId, cancellationToken);
 
-        if (bot.HasNoValue)
+        if (bot.IsNull)
         {
             var error = DomainErrors.Bots.NotFound(domainEvent.BotId);
             throw new InvalidOperationException(error.Message);
@@ -40,7 +40,7 @@ internal sealed class BotCreatedDomainEventHandler(
                 domainEvent.BotId,
                 cancellationToken);
 
-        if (errorOr.IsError)
+        if (errorOr.HasError)
         {
             throw new InvalidOperationException(errorOr.Errors.First().Message);
         }

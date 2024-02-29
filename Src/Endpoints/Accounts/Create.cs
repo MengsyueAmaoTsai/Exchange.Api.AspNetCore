@@ -2,8 +2,8 @@ using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
 
+using RichillCapital.Domain.Trading;
 using RichillCapital.Exchange.Api.Common;
-using RichillCapital.Exchange.Api.Extensions;
 using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Trading.CreateAccount;
 
@@ -23,22 +23,19 @@ public sealed class Create(ISender _sender) : AsyncEndpoint
         Tags = ["Accounts"])]
     public override async Task<ActionResult<CreateAccountResponse>> HandleAsync(
         [FromBody] CreateAccountRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var command = new CreateAccountCommand(
-            request.Name,
-            request.PositionMode,
-            request.Currency,
-            request.InitialDeposit);
-
-        var result = await _sender.Send(command, cancellationToken);
-
-        var response = new CreateAccountResponse(result.Value.Value);
-
-        return ErrorOr<CreateAccountResponse>
-            .Is(response)
+        CancellationToken cancellationToken = default) =>
+        await request
+            .ToErrorOr()
+            .Then(MapToCommand)
+            .Then(command => _sender.Send(command, cancellationToken))
+            .Then(MapToResponse)
             .Match(HandleError, Ok);
-    }
+
+    private CreateAccountCommand MapToCommand(CreateAccountRequest request) =>
+        new(request.Name, request.PositionMode, request.Currency, request.InitialDeposit);
+
+    private CreateAccountResponse MapToResponse(AccountId accountId) =>
+        new(accountId.Value);
 }
 
 public sealed record class CreateAccountRequest

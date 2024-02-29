@@ -23,26 +23,7 @@ public sealed class GetById(ISender _sender) : AsyncEndpoint
         Tags = ["Accounts"])]
     public override async Task<ActionResult<AccountWithBalancesResponse>> HandleAsync(
         [FromRoute] GetAccountByIdRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var query = new GetAccountByIdQuery(request.AccountId);
-
-        var result = await _sender.Send(query, cancellationToken);
-
-        var response = new AccountWithBalancesResponse(
-            result.Value.Id,
-            result.Value.Name,
-            result.Value.PositionMode,
-            result.Value.Currency,
-            result.Value.Balance
-                .Select(balance => new AccountBalanceResponse(
-                    balance.Currency,
-                    balance.Amount)));
-
-        return ErrorOr<AccountWithBalancesResponse>
-            .Is(response)
-            .Match(HandleError, Ok);
-    }
+        CancellationToken cancellationToken = default) => throw new NotImplementedException();
 }
 
 public sealed record class GetAccountByIdRequest

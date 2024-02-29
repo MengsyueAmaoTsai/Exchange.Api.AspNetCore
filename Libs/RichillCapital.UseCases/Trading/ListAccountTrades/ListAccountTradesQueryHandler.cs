@@ -26,7 +26,7 @@ internal sealed class ListAccountTradesQueryHandler(
             new AccountByIdWithTradesSpecification(id.Value),
             cancellationToken);
 
-        return account.HasNoValue ?
+        return account.IsNull ?
             DomainErrors.Accounts.NotFound(id.Value).ToErrorOr<IEnumerable<TradeDto>>() :
             account.Value.Trades
                 .Select(TradeDto.From)

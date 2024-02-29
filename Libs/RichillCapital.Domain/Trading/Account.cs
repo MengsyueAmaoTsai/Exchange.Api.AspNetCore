@@ -101,7 +101,7 @@ public sealed class Account : Entity<AccountId>
             timeInForce,
             Id);
 
-        if (order.IsError)
+        if (order.HasError)
         {
             return order.Errors.ToErrorOr<OrderId>();
         }
@@ -124,7 +124,7 @@ public sealed class Account : Entity<AccountId>
             execution.Tax,
             Id);
 
-        if (position.IsError)
+        if (position.HasError)
         {
             return position.Errors.ToErrorOr<PositionId>();
         }

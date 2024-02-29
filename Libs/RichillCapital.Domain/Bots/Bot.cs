@@ -57,7 +57,7 @@ public sealed class Bot : Entity<BotId>
             price,
             Id);
 
-        if (errorOrSignal.IsError)
+        if (errorOrSignal.HasError)
         {
             return errorOrSignal.Errors.ToErrorOr<Signal>();
         }

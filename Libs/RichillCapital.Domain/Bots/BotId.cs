@@ -13,10 +13,11 @@ public sealed class BotId : SingleValueObject<string>
     }
 
     public static Result<BotId> From(string id) =>
-        Result<string>.Success(id)
-            .Ensure(BotIdRules.IsNotEmpty)
-            .Ensure(BotIdRules.IsNotLongerThan)
-            .Then(value => new BotId(id));
+        Result<string>
+            .Ensure(
+                id,
+                [BotIdRules.IsNotEmpty, BotIdRules.IsNotLongerThan])
+            .Then(value => new BotId(value));
 }
 
 internal static class BotIdRules

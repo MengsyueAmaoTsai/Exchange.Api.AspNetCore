@@ -28,11 +28,7 @@ public sealed class List(
     public override async Task<ActionResult<IEnumerable<BotResponse>>> HandleAsync(
         [FromQuery] ListBotsRequest request,
         CancellationToken cancellationToken = default) =>
-        await Result<ListBotsRequest>.Success(request)
-            .Then(ToQuery)
-            .Then(query => _sender.Send(query, cancellationToken))
-            .Map(ToResponse)
-            .Match(Ok, HandleError);
+        throw new NotImplementedException();
 
     private ListBotsQuery ToQuery(ListBotsRequest request) =>
         _mapper.Map<ListBotsQuery>(request);

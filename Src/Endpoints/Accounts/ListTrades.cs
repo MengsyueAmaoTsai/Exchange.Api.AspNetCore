@@ -3,9 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Exchange.Api.Common;
-using RichillCapital.Exchange.Api.Extensions;
-using RichillCapital.SharedKernel.Monads;
-using RichillCapital.UseCases.Trading.ListAccountTrades;
 
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -23,29 +20,8 @@ public sealed class ListTrades(ISender _sender) : AsyncEndpoint
         Tags = ["Accounts"])]
     public override async Task<ActionResult<IEnumerable<TradeResponse>>> HandleAsync(
         [FromRoute] ListAccountTradesRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var query = new ListAccountTradesQuery(request.AccountId);
-
-        var tradesResult = await _sender.Send(query, cancellationToken);
-
-        var response = tradesResult.Value
-            .Select(trade => new TradeResponse(
-                trade.Side,
-                trade.Symbol,
-                trade.Quantity,
-                trade.EntryTime,
-                trade.EntryPrice,
-                trade.ExitTime,
-                trade.ExitPrice,
-                trade.Commission,
-                trade.Tax,
-                trade.Swap));
-
-        return Result<IEnumerable<TradeResponse>>
-            .Success(response)
-            .Match(Ok, HandleError);
-    }
+        CancellationToken cancellationToken = default) =>
+        throw new NotImplementedException();
 }
 
 public sealed record class ListAccountTradesRequest

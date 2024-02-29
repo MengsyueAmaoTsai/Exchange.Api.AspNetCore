@@ -26,7 +26,7 @@ internal sealed class ListBotSignalsQueryHandler(
             new BotByIdWithSignalsSpecification(id.Value),
             cancellationToken);
 
-        return bot.HasNoValue ?
+        return bot.IsNull ?
         DomainErrors.Bots.NotFound(id.Value).ToErrorOr<IEnumerable<SignalDto>>() :
         bot.Value.Signals
             .Select(SignalDto.From)

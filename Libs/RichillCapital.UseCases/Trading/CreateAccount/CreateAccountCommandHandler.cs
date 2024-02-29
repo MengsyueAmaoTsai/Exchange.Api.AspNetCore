@@ -19,9 +19,9 @@ internal sealed class CreateAccountCommandHandler(
     {
         var name = AccountName.From(command.Name);
 
-        if (name.IsError)
+        if (name.IsFailure)
         {
-            return name.Errors.ToErrorOr<AccountId>();
+            return name.Error.ToErrorOr<AccountId>();
         }
 
         if (await _accountRepository.AnyAsync(
@@ -35,7 +35,7 @@ internal sealed class CreateAccountCommandHandler(
 
         var positionMode = PositionMode.FromName(command.PositionMode);
 
-        if (positionMode.HasNoValue)
+        if (positionMode.IsNull)
         {
             return Error
                 .Invalid("Position mode is invalid")
@@ -44,7 +44,7 @@ internal sealed class CreateAccountCommandHandler(
 
         var currency = Currency.FromName(command.Currency);
 
-        if (currency.HasNoValue)
+        if (currency.IsNull)
         {
             return Error
                 .Invalid("Currency is invalid")

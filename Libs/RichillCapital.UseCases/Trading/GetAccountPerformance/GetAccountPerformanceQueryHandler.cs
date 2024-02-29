@@ -26,7 +26,7 @@ internal sealed class GetAccountPerformanceQueryHandler(
             new AccountByIdWithTradesSpecification(id.Value),
             cancellationToken);
 
-        return account.HasNoValue ?
+        return account.IsNull ?
             DomainErrors.Accounts.NotFound(id.Value).ToErrorOr<AccountPerformanceDto>() :
             AccountPerformanceDto
                 .From(AccountPerformance.GenerateFromClosedTrades(account.Value.Trades))

@@ -24,7 +24,7 @@ internal sealed class GetBotByIdQueryHandler(
 
         var bot = await _botRepository.GetByIdAsync(id.Value, cancellationToken);
 
-        return bot.HasNoValue ?
+        return bot.IsNull ?
             DomainErrors.Bots.NotFound(id.Value).ToErrorOr<BotDto>() :
             BotDto.From(bot.Value).ToErrorOr();
     }

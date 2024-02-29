@@ -12,17 +12,24 @@ public sealed class Symbol : SingleValueObject<string>
     {
     }
 
-    public static Result<Symbol> From(string symbol) => symbol
-        .ToResult()
-        .Ensure(NotEmpty, SymbolErrors.Empty)
-        .Ensure(NotLongerThanMaxLength, SymbolErrors.MaxLengthExceeded)
-        .Then(symbol => new Symbol(symbol));
+    public static Result<Symbol> From(string symbol) =>
+        Result<string>
+            .Ensure(symbol, SymbolRules.Values)
+            .Then(symbol => new Symbol(symbol));
 
     private static bool NotLongerThanMaxLength(string symbol) =>
         symbol.Length <= MaxLength;
 
     private static bool NotEmpty(string symbol) =>
         !string.IsNullOrWhiteSpace(symbol);
+}
+
+internal static class SymbolRules
+{
+    public static (Func<string, bool> ensure, Error error)[] Values = [
+        (value => !string.IsNullOrWhiteSpace(value), SymbolErrors.Empty),
+        (value => value.Length <= Symbol.MaxLength, SymbolErrors.MaxLengthExceeded),
+    ];
 }
 
 internal static class SymbolErrors

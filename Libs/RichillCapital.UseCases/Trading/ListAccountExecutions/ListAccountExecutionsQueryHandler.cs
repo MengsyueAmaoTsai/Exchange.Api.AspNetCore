@@ -26,7 +26,7 @@ internal sealed class ListAccountExecutionsQueryHandler(
             new AccountByIdWithExecutionsSpecification(id.Value),
             cancellationToken);
 
-        return account.HasNoValue ?
+        return account.IsNull ?
             DomainErrors.Accounts.NotFound(id.Value).ToErrorOr<IEnumerable<ExecutionDto>>() :
             account.Value.Executions
                 .Select(ExecutionDto.From)

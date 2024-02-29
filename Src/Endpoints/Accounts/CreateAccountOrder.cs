@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Domain.Trading;
 using RichillCapital.Exchange.Api.Common;
-using RichillCapital.Exchange.Api.Extensions;
 using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Trading.CreateAccountOrder;
 
@@ -30,15 +29,15 @@ public sealed class CreateAccountOrder(
         [FromRoute] CreateAccountOrderRequest request,
         CancellationToken cancellationToken = default) =>
         await ErrorOr<CreateAccountOrderRequest>.Is(request)
-            .Map(ToCommand)
+            .Then(MapToCommand)
             .Then(command => _sender.Send(command, cancellationToken))
-            .Map(ToResponse)
+            .Then(MapToResponse)
             .Match(HandleError, Ok);
 
-    public CreateAccountOrderCommand ToCommand(CreateAccountOrderRequest request) =>
+    public CreateAccountOrderCommand MapToCommand(CreateAccountOrderRequest request) =>
         _mapper.Map<CreateAccountOrderCommand>(request);
 
-    public CreateAccountOrderResponse ToResponse(OrderId orderId) =>
+    public CreateAccountOrderResponse MapToResponse(OrderId orderId) =>
         _mapper.Map<CreateAccountOrderResponse>(orderId);
 }
 

@@ -30,7 +30,7 @@ internal sealed class AccountOrderExecutedDomainEventHandler(
         var account = await _accountRepository
             .GetByIdAsync(execution.AccountId, cancellationToken);
 
-        if (account.HasNoValue)
+        if (account.IsNull)
         {
             var error = DomainErrors.Accounts.NotFound(execution.AccountId);
             throw new InvalidOperationException(error.Message);
@@ -45,7 +45,7 @@ internal sealed class AccountOrderExecutedDomainEventHandler(
             execution.Tax,
             account.Value.Id);
 
-        if (errorOr.IsError)
+        if (errorOr.HasError)
         {
             throw new InvalidOperationException(errorOr.Errors.First().Message);
         }

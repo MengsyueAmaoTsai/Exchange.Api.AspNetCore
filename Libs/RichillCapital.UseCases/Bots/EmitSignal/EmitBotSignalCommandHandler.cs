@@ -27,7 +27,7 @@ internal sealed class EmitBotSignalCommandHandler(
 
         var bot = await _botRepository.GetByIdAsync(botId.Value, cancellationToken);
 
-        if (bot.HasNoValue)
+        if (bot.IsNull)
         {
             return DomainErrors.Bots
                 .NotFound(botId.Value)
@@ -36,7 +36,7 @@ internal sealed class EmitBotSignalCommandHandler(
 
         var tradeType = TradeType.FromName(command.TradeType);
 
-        if (tradeType.HasNoValue)
+        if (tradeType.IsNull)
         {
             return Error
                 .Invalid($"Invalid trade type {command.TradeType}")
@@ -58,7 +58,7 @@ internal sealed class EmitBotSignalCommandHandler(
             command.Volume,
             command.Price);
 
-        if (signal.IsError)
+        if (signal.HasError)
         {
             return signal.Errors.ToErrorOr<BotId>();
         }
