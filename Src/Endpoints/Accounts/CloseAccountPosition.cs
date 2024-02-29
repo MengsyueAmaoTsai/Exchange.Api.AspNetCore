@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Exchange.Api.Common;
 
+using Swashbuckle.AspNetCore.Annotations;
+
 namespace RichillCapital.Exchange.Api.Endpoints.Accounts;
 
 public sealed class CloseAccountPosition(ISender _sender) : AsyncEndpoint
@@ -11,6 +13,11 @@ public sealed class CloseAccountPosition(ISender _sender) : AsyncEndpoint
     .WithActionResult<ClosePositionResponse>
 {
     [HttpGet("/api/accounts/{accountId}/positions/{positionId}/close")]
+    [SwaggerOperation(
+        Summary = "Close an account position",
+        Description = "Close an account position",
+        OperationId = "Accounts.CloseAccountPosition",
+        Tags = ["Accounts"])]
     public override async Task<ActionResult<ClosePositionResponse>> HandleAsync(
         [FromRoute] ClosePositionRequest request,
         CancellationToken cancellationToken = default) =>

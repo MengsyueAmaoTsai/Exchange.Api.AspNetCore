@@ -29,6 +29,7 @@ public static class DependencyInjection
         services.AddControllers();
         services.AddProblemDetails();
         services.AddHealthChecks();
+        services.AddMappings();
 
         return services;
     }

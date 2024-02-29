@@ -14,64 +14,62 @@ internal sealed class CreateBotCommandHandler(
         CreateBotCommand command,
         CancellationToken cancellationToken)
     {
-        var idResult = BotId.From(command.Id);
+        var botIdResult = await BotId
+            .From(command.Id)
+            .Ensure(NotDuplicateAsync, BotErrors.Duplicate);
 
-        if (idResult.IsFailure)
+        if (botIdResult.IsFailure)
         {
-            return idResult.Error.ToErrorOr<BotId>();
-        }
-
-        if (await _botRepository.AnyAsync(bot => bot.Id == idResult.Value, cancellationToken))
-        {
-            return BotErrors
-                .Duplicate(idResult.Value)
+            return botIdResult.Error
                 .ToErrorOr<BotId>();
         }
 
-        var nameResult = BotName.From(command.Name);
+        var botNameResult = await BotName
+            .From(command.Name)
+            .Ensure(NotDuplicateAsync, BotErrors.Duplicate);
 
-        if (nameResult.IsFailure)
+        if (botNameResult.IsFailure)
         {
-            return nameResult.Error
+            return botNameResult.Error
                 .ToErrorOr<BotId>();
         }
 
-        if (await _botRepository.AnyAsync(
-            bot => bot.Name == nameResult.Value,
-            cancellationToken))
+        var descriptionResult = BotDescription.From(command.Description);
+
+        if (descriptionResult.IsFailure)
         {
-            return BotErrors
-                .Duplicate(nameResult.Value)
+            return descriptionResult.Error
                 .ToErrorOr<BotId>();
         }
 
-        var description = BotDescription.From(command.Description);
+        var platformResult = TradingPlatform
+            .FromName(command.Platform)
+            .ToResult(BotErrors.TradingPlatformNotSupported(command.Platform));
 
-        if (description.IsFailure)
+        if (platformResult.IsFailure)
         {
-            return description.Error
+            return platformResult.Error
                 .ToErrorOr<BotId>();
         }
 
-        var platformMaybe = TradingPlatform.FromName(command.Platform);
+        // Create bot
+        var errorOrBot = Bot
+            .Create(
+                botIdResult.Value,
+                botNameResult.Value,
+                descriptionResult.Value,
+                platformResult.Value)
+            .Then(_botRepository.Add);
 
-        if (platformMaybe.IsNull)
-        {
-            return BotErrors
-                .TradingPlatformNotSupported(command.Platform)
-                .ToErrorOr<BotId>();
-        }
-
-        var errorOrBot = Bot.Create(
-            idResult.Value,
-            nameResult.Value,
-            description.Value,
-            platformMaybe.Value);
-
-        _botRepository.Add(errorOrBot.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return ErrorOr<BotId>.
-            Is(errorOrBot.Value.Id);
+        return errorOrBot
+            .Then(bot => bot.Id);
     }
+
+    private async Task<bool> NotDuplicateAsync(BotId id) =>
+        !await _botRepository.AnyAsync(bot => bot.Id == id);
+
+    private async Task<bool> NotDuplicateAsync(BotName name) =>
+        !await _botRepository.AnyAsync(bot => bot.Name == name);
 }

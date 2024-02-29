@@ -29,12 +29,6 @@ public sealed class CreateAccountOrder(
         [FromRoute] CreateAccountOrderRequest request,
         CancellationToken cancellationToken = default) =>
         throw new NotImplementedException();
-
-    public CreateAccountOrderCommand MapToCommand(CreateAccountOrderRequest request) =>
-        _mapper.Map<CreateAccountOrderCommand>(request);
-
-    public CreateAccountOrderResponse MapToResponse(OrderId orderId) =>
-        _mapper.Map<CreateAccountOrderResponse>(orderId);
 }
 
 public sealed record class CreateAccountOrderRequest

@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 
 using MapsterMapper;
 
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using RichillCapital.Domain.Bots;
 using RichillCapital.Exchange.Api.Common;
+using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Bots.Create;
 
 using Swashbuckle.AspNetCore.Annotations;
@@ -29,7 +32,11 @@ public sealed class Create(
     public override async Task<ActionResult<CreateBotResponse>> HandleAsync(
         [FromBody] CreateBotRequest request,
         CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        await request
+            .ToErrorOr()
+            .Then(MapToCommand)
+            .Then(command => _sender.Send(command, cancellationToken))
+            .Match(HandleError, Ok);
 
     private CreateBotCommand MapToCommand(CreateBotRequest request) =>
         _mapper.Map<CreateBotCommand>(request);
