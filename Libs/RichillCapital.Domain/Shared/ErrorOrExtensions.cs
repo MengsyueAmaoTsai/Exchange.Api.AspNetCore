@@ -16,20 +16,6 @@ public static partial class ErrorOrExtensions
         return errorOrResult;
     }
 
-    public static ErrorOr<TResult> Then<TValue, TResult>(
-        this ErrorOr<TValue> errorOr,
-        Func<TValue, TResult> factory)
-    {
-        if (errorOr.HasError)
-        {
-            return errorOr.Errors.ToErrorOr<TResult>();
-        }
-
-        var result = factory(errorOr.Value);
-
-        return result.ToErrorOr();
-    }
-
     public static async Task<ErrorOr<TResult>> Then<TValue, TResult>(
         this Task<ErrorOr<TValue>> errorOrTask,
         Func<TValue, TResult> factory)
@@ -56,18 +42,6 @@ public static partial class ErrorOrExtensions
         }
 
         return factory().ToErrorOr();
-    }
-
-    public static ErrorOr<TValue> Then<TValue>(this ErrorOr<TValue> errorOr, Action<TValue> action)
-    {
-        if (errorOr.HasError)
-        {
-            return errorOr.Errors.ToErrorOr<TValue>();
-        }
-
-        action(errorOr.Value);
-
-        return errorOr;
     }
 
     public static async Task<TResult> Match<TValue, TResult>(
