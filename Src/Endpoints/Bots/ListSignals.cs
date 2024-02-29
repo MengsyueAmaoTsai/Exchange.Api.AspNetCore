@@ -28,11 +28,7 @@ public sealed class ListSignals(
     public override async Task<ActionResult<IEnumerable<SignalResponse>>> HandleAsync(
         [FromRoute] ListBotSignalsRequest request,
         CancellationToken cancellationToken = default) =>
-        await ErrorOr<ListBotSignalsRequest>.Is(request)
-            .Then(ToQuery)
-            .Then(query => _sender.Send(query, cancellationToken))
-            .Then(ToResponse)
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
 
     private ListBotSignalsQuery ToQuery(ListBotSignalsRequest request) =>
         _mapper.Map<ListBotSignalsQuery>(request);

@@ -29,18 +29,14 @@ public sealed class Bot : Entity<BotId>
 
     public IReadOnlyList<Signal> Signals => _signals.AsReadOnly();
 
-    public static Bot Create(
+    public static ErrorOr<Bot> Create(
         BotId id,
         BotName name,
         BotDescription description,
-        TradingPlatform platform)
-    {
-        var bot = new Bot(id, name, description, platform);
-
-        bot.RegisterDomainEvent(new BotCreatedDomainEvent(id));
-
-        return bot;
-    }
+        TradingPlatform platform) =>
+        new Bot(id, name, description, platform)
+            .ToErrorOr()
+            .Then(bot => bot.RegisterDomainEvent(new BotCreatedDomainEvent(id)));
 
     public ErrorOr<Signal> EmitSignal(
         DateTimeOffset time,

@@ -62,16 +62,16 @@ internal sealed class CreateBotCommandHandler(
                 .ToErrorOr<BotId>();
         }
 
-        var bot = Bot.Create(
+        var errorOrBot = Bot.Create(
             idResult.Value,
             nameResult.Value,
             description.Value,
             platformMaybe.Value);
 
-        _botRepository.Add(bot);
+        _botRepository.Add(errorOrBot.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ErrorOr<BotId>.
-            Is(bot.Id);
+            Is(errorOrBot.Value.Id);
     }
 }

@@ -29,12 +29,7 @@ public sealed class EmitSignal(
         Tags = ["Bots"])]
     public override async Task<ActionResult<EmitSignalResponse>> HandleAsync(
         [FromRoute] EmitSignalRequest request,
-        CancellationToken cancellationToken = default) =>
-        await ErrorOr<EmitSignalRequest>.Is(request)
-            .Then(ToCommand)
-            .Then(command => _sender.Send(command, cancellationToken))
-            .Then(ToResponse)
-            .Match(HandleError, Ok);
+        CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
     private EmitBotSignalCommand ToCommand(EmitSignalRequest request) =>
         _mapper.Map<EmitBotSignalCommand>(request);

@@ -28,11 +28,7 @@ public sealed class CreateAccountOrder(
     public override async Task<ActionResult<CreateAccountOrderResponse>> HandleAsync(
         [FromRoute] CreateAccountOrderRequest request,
         CancellationToken cancellationToken = default) =>
-        await ErrorOr<CreateAccountOrderRequest>.Is(request)
-            .Then(MapToCommand)
-            .Then(command => _sender.Send(command, cancellationToken))
-            .Then(MapToResponse)
-            .Match(HandleError, Ok);
+        throw new NotImplementedException();
 
     public CreateAccountOrderCommand MapToCommand(CreateAccountOrderRequest request) =>
         _mapper.Map<CreateAccountOrderCommand>(request);
