@@ -47,25 +47,12 @@ public sealed class Bot : Entity<BotId>
         TradeType tradeType,
         Symbol symbol,
         decimal volume,
-        decimal price)
-    {
-        var errorOrSignal = Signal.Create(
-            time,
-            tradeType,
-            symbol,
-            volume,
-            price,
-            Id);
-
-        if (errorOrSignal.HasError)
-        {
-            return errorOrSignal.Errors.ToErrorOr<Signal>();
-        }
-
-        _signals.Add(errorOrSignal.Value);
-
-        RegisterDomainEvent(new BotSignalEmittedDomainEvent(Id));
-
-        return errorOrSignal;
-    }
+        decimal price) =>
+        Signal
+            .Create(time, tradeType, symbol, volume, price, Id)
+            .Then(signal =>
+            {
+                _signals.Add(signal);
+                RegisterDomainEvent(new BotSignalEmittedDomainEvent(Id));
+            });
 }
