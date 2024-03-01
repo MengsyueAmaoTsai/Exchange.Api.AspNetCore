@@ -7,8 +7,6 @@ namespace RichillCapital.Domain.Bots;
 
 public sealed class Bot : Entity<BotId>
 {
-    private static readonly IReadOnlyList<TradingPlatform> SupportedPlatforms = [.. TradingPlatform.Members];
-
     private readonly List<Signal> _signals = [];
 
     private Bot(
@@ -35,7 +33,16 @@ public sealed class Bot : Entity<BotId>
         BotName name,
         BotDescription description,
         Side side,
-        TradingPlatform platform) => throw new NotImplementedException();
+        TradingPlatform platform)
+    {
+        return new Bot(
+            id,
+            name,
+            description,
+            side,
+            platform)
+            .ToErrorOr();
+    }
     // ErrorOr<TradingPlatform>
     //     .Ensure(platform, IsSupported, BotErrors.TradingPlatformNotSupported)
     //     .Then(() => new Bot(
@@ -58,7 +65,4 @@ public sealed class Bot : Entity<BotId>
     //         _signals.Add(signal);
     //         RegisterDomainEvent(new BotSignalEmittedDomainEvent(Id));
     //     });
-
-    private static bool IsSupported(TradingPlatform platform) =>
-        SupportedPlatforms.Contains(platform);
 }

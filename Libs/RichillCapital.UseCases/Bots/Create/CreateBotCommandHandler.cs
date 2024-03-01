@@ -16,74 +16,67 @@ internal sealed class CreateBotCommandHandler(
         CreateBotCommand command,
         CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-        // var botIdResult = await BotId
-        //     .From(command.Id)
-        //     .Ensure(NotDuplicateAsync, BotErrors.Duplicate);
+        var idResult = BotId.From(command.Id);
 
-        // if (botIdResult.IsFailure)
-        // {
-        //     return botIdResult.Error
-        //         .ToErrorOr<BotId>();
-        // }
+        if (idResult.IsFailure)
+        {
+            return idResult.Error
+                .ToErrorOr<BotId>();
+        }
 
-        // var botNameResult = await BotName
-        //     .From(command.Name)
-        //     .Ensure(NotDuplicateAsync, BotErrors.Duplicate);
+        if (await _botRepository.AnyAsync(bot => bot.Id == idResult.Value))
+        {
+            return BotErrors.Duplicate(idResult.Value)
+                .ToErrorOr<BotId>();
+        }
 
-        // if (botNameResult.IsFailure)
-        // {
-        //     return botNameResult.Error
-        //         .ToErrorOr<BotId>();
-        // }
+        var nameResult = BotName.From(command.Name);
 
-        // var descriptionResult = BotDescription.From(command.Description);
+        if (nameResult.IsFailure)
+        {
+            return nameResult.Error
+                .ToErrorOr<BotId>();
+        }
 
-        // if (descriptionResult.IsFailure)
-        // {
-        //     return descriptionResult.Error
-        //         .ToErrorOr<BotId>();
-        // }
+        if (await _botRepository.AnyAsync(bot => bot.Name == nameResult.Value))
+        {
+            return BotErrors.Duplicate(nameResult.Value)
+                .ToErrorOr<BotId>();
+        }
 
-        // var sideResult = Side
-        //     .FromName(command.Side)
-        //     .ToResult(Error.Invalid("Side not supported."));
+        var descriptionResult = BotDescription.From(command.Description);
 
-        // if (sideResult.IsFailure)
-        // {
-        //     return sideResult.Error
-        //         .ToErrorOr<BotId>();
-        // }
+        if (descriptionResult.IsFailure)
+        {
+            return descriptionResult.Error
+                .ToErrorOr<BotId>();
+        }
 
-        // var platformResult = TradingPlatform
-        //     .FromName(command.Platform)
-        //     .ToResult(BotErrors.TradingPlatformNotSupported);
+        var maybeSide = Side.FromName(command.Side);
 
-        // if (platformResult.IsFailure)
-        // {
-        //     return platformResult.Error
-        //         .ToErrorOr<BotId>();
-        // }
+        if (maybeSide.IsNull)
+        {
+            return Error.Invalid("Side not supported.")
+                .ToErrorOr<BotId>();
+        }
 
-        // // Create bot
-        // var errorOrBot = Bot
-        //     .Create(
-        //         botIdResult.Value,
-        //         botNameResult.Value,
-        //         descriptionResult.Value,
-        //         sideResult.Value,
-        //         platformResult.Value)
-        //     .Then(_botRepository.Add);
+        var maybePlatform = TradingPlatform.FromName(command.Platform);
 
-        // await _unitOfWork.SaveChangesAsync(cancellationToken);
+        if (maybePlatform.IsNull)
+        {
+            return Error.Invalid("Trading platform not supported.")
+                .ToErrorOr<BotId>();
+        }
 
-        // return errorOrBot
-        //     .Then(bot => bot.Id);
+        return await Bot
+            .Create(
+                idResult.Value,
+                nameResult.Value,
+                descriptionResult.Value,
+                maybeSide.Value,
+                maybePlatform.Value)
+            .Then(_botRepository.Add)
+            .Then(() => _unitOfWork.SaveChangesAsync(cancellationToken))
+            .Then(bot => bot.Id);
     }
-
-    private async Task<bool> NotDuplicateAsync(BotId id) =>
-        !await _botRepository.AnyAsync(bot => bot.Id == id);
-
-    private async Task<bool> NotDuplicateAsync(BotName name) =>
-        !await _botRepository.AnyAsync(bot => bot.Name == name);
 }
