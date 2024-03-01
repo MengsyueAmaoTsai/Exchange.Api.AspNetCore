@@ -11,8 +11,8 @@ public abstract class Endpoint : ControllerBase
     protected virtual ActionResult HandleError(IEnumerable<Error> errors) =>
        !errors.Any() ?
            HandleError(Error.Null) :
-           errors.All(error => error.Type == ErrorType.Validation) ?
-               HandleErrors(errors) :
+           errors.All(IsValidationError) ?
+               HandleValidationErrors(errors) :
                HandleError(errors.First());
 
     protected virtual ActionResult HandleError(Error error)
@@ -57,7 +57,7 @@ public abstract class Endpoint : ControllerBase
             };
     }
 
-    private ActionResult HandleErrors(IEnumerable<Error> errors)
+    private ActionResult HandleValidationErrors(IEnumerable<Error> errors)
     {
         var modelStateDictionary = new ModelStateDictionary();
 
@@ -68,4 +68,7 @@ public abstract class Endpoint : ControllerBase
 
         return ValidationProblem(modelStateDictionary);
     }
+
+    private bool IsValidationError(Error error) =>
+        error.Type == ErrorType.Validation;
 }
