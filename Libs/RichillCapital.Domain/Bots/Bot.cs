@@ -33,10 +33,7 @@ public sealed class Bot : Entity<BotId>
         BotDescription description,
         TradingPlatform platform) =>
         ErrorOr<TradingPlatform>
-            .Ensure(
-                platform,
-                platform => SupportedPlatforms.Contains(platform),
-                Error.Invalid("The specified trading platform is not supported."))
+            .Ensure(platform, IsSupported, BotErrors.TradingPlatformNotSupported)
             .Then(() => new Bot(id, name, description, platform));
 
     public ErrorOr<Signal> EmitSignal(
@@ -52,4 +49,7 @@ public sealed class Bot : Entity<BotId>
                 _signals.Add(signal);
                 RegisterDomainEvent(new BotSignalEmittedDomainEvent(Id));
             });
+
+    private static bool IsSupported(TradingPlatform platform) =>
+        SupportedPlatforms.Contains(platform);
 }
