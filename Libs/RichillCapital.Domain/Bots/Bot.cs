@@ -7,6 +7,8 @@ namespace RichillCapital.Domain.Bots;
 
 public sealed class Bot : Entity<BotId>
 {
+    private static readonly IReadOnlyList<TradingPlatform> SupportedPlatforms = [.. TradingPlatform.Members];
+
     private readonly List<Signal> _signals = [];
 
     private Bot(
@@ -14,12 +16,8 @@ public sealed class Bot : Entity<BotId>
         BotName name,
         BotDescription description,
         TradingPlatform platform)
-        : base(id)
-    {
-        Name = name;
-        Description = description;
-        Platform = platform;
-    }
+        : base(id) =>
+        (Name, Description, Platform) = (name, description, platform);
 
     public BotName Name { get; private set; }
 
@@ -34,9 +32,12 @@ public sealed class Bot : Entity<BotId>
         BotName name,
         BotDescription description,
         TradingPlatform platform) =>
-        new Bot(id, name, description, platform)
-            .ToErrorOr()
-            .Then(bot => bot.RegisterDomainEvent(new BotCreatedDomainEvent(id)));
+        ErrorOr<TradingPlatform>
+            .Ensure(
+                platform,
+                platform => SupportedPlatforms.Contains(platform),
+                Error.Invalid("The specified trading platform is not supported."))
+            .Then(() => new Bot(id, name, description, platform));
 
     public ErrorOr<Signal> EmitSignal(
         DateTimeOffset time,
