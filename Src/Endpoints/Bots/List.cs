@@ -30,10 +30,10 @@ public sealed class List(
         CancellationToken cancellationToken = default) =>
         throw new NotImplementedException();
 
-    private ListBotsQuery ToQuery(ListBotsRequest request) =>
+    private ListBotsQuery MapToQuery(ListBotsRequest request) =>
         _mapper.Map<ListBotsQuery>(request);
 
-    private IEnumerable<BotResponse> ToResponse(IEnumerable<BotDto> bots) =>
+    private IEnumerable<BotResponse> MapToResponse(IEnumerable<BotDto> bots) =>
         _mapper.Map<IEnumerable<BotResponse>>(bots);
 }
 
