@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
 
 using MapsterMapper;
 
@@ -31,7 +29,17 @@ public sealed class Create(
         Tags = ["Bots"])]
     public override async Task<ActionResult<CreateBotResponse>> HandleAsync(
         [FromBody] CreateBotRequest request,
-        CancellationToken cancellationToken = default) => throw new NotImplementedException();
+        CancellationToken cancellationToken = default) =>
+        await request
+            .ToErrorOr()
+            .Then(MapToCommand)
+            .Then(command => _sender.Send(command, cancellationToken))
+            .Then(MapToResponse)
+            .Match(HandleError, Ok);
+
+    private CreateBotCommand MapToCommand(CreateBotRequest request) => _mapper.Map<CreateBotCommand>(request);
+
+    private CreateBotResponse MapToResponse(BotId id) => _mapper.Map<CreateBotResponse>(id);
 }
 
 public sealed record class CreateBotRequest
