@@ -12,21 +12,12 @@ public sealed class BotId : SingleValueObject<string>
     {
     }
 
-    public static Result<BotId> From(string id) =>
-        throw new NotImplementedException();
-    // Result<string>
-    //     .Ensure(id, BotIdRules.Values)
-    //     .Then(value => new BotId(value));
-}
+    public static Result<BotId> From(string id) => id.ToResult()
+        .Ensure(NotEmpty, Error.Invalid("Bot id cannot be empty."))
+        .Ensure(NotLongerThanMaxLength, Error.Invalid($"Bot id cannot be longer than {MaxLength} characters."))
+        .Then(id => new BotId(id));
 
-internal static class BotIdRules
-{
-    internal static readonly (Func<string, bool> predicate, Error error)[] Values = [
-        (id => !string.IsNullOrWhiteSpace(id), Empty),
-        (id => id.Length <= BotId.MaxLength, TooLong)
-    ];
+    private static bool NotEmpty(string id) => !string.IsNullOrWhiteSpace(id);
 
-    private static readonly Error Empty = Error.Invalid("Bot id cannot be empty.");
-    private static readonly Error TooLong = Error
-        .Invalid($"Bot id cannot be longer than {BotId.MaxLength} characters.");
+    private static bool NotLongerThanMaxLength(string id) => id.Length <= MaxLength;
 }

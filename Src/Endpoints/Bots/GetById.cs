@@ -1,3 +1,5 @@
+using MapsterMapper;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +13,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace RichillCapital.Exchange.Api.Endpoints.Bots;
 
-public sealed class GetById(ISender _sender) : AsyncEndpoint
+public sealed class GetById(
+    ISender _sender,
+    IMapper _mapper) : AsyncEndpoint
     .WithRequest<GetBotByIdRequest>
     .WithActionResult<BotResponse>
 {
@@ -24,13 +28,16 @@ public sealed class GetById(ISender _sender) : AsyncEndpoint
     public override async Task<ActionResult<BotResponse>> HandleAsync(
         [FromRoute] GetBotByIdRequest request,
         CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        await request
+            .ToErrorOr()
+            .Then(MapToQuery)
+            .Then(query => _sender.Send(query, cancellationToken))
+            .Then(MapToResponse)
+            .Match(HandleError, Ok);
 
-    private GetBotByIdQuery ToQuery(GetBotByIdRequest request) =>
-        new(request.BotId);
+    private GetBotByIdQuery MapToQuery(GetBotByIdRequest request) => _mapper.Map<GetBotByIdQuery>(request);
 
-    private BotResponse ToResponse(BotDto bot) =>
-        new(bot.Id, bot.Name, bot.Description, bot.Platform);
+    private BotResponse MapToResponse(BotDto bot) => _mapper.Map<BotResponse>(bot);
 }
 
 public sealed record class GetBotByIdRequest

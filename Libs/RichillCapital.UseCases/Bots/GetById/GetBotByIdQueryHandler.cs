@@ -1,6 +1,7 @@
 using RichillCapital.Domain;
 using RichillCapital.Domain.Bots;
 using RichillCapital.Domain.Common;
+using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Common;
 
@@ -14,18 +15,25 @@ internal sealed class GetBotByIdQueryHandler(
         GetBotByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var id = BotId.From(query.BotId);
+        var idResult = BotId.From(query.BotId);
 
-        if (id.IsFailure)
+        if (idResult.IsFailure)
         {
-            return id.Error
+            return idResult.Error
                 .ToErrorOr<BotDto>();
         }
 
-        var bot = await _botRepository.GetByIdAsync(id.Value, cancellationToken);
+        var maybeBot = await _botRepository.GetByIdAsync(idResult.Value, cancellationToken);
 
-        return bot.IsNull ?
-            DomainErrors.Bots.NotFound(id.Value).ToErrorOr<BotDto>() :
-            BotDto.From(bot.Value).ToErrorOr();
+        if (maybeBot.IsNull)
+        {
+            return NotFound(idResult.Value);
+        }
+
+        return BotDto.From(maybeBot.Value).ToErrorOr();
     }
+
+    private static ErrorOr<BotDto> NotFound(BotId id) =>
+        Error.NotFound($"Bot with id '{id}' was not found.")
+            .ToErrorOr<BotDto>();
 }

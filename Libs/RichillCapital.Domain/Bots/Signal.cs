@@ -41,11 +41,6 @@ public sealed class Signal : ValueObject
         decimal volume,
         decimal price,
         BotId botId) => throw new NotImplementedException();
-    // ErrorOr<decimal>
-    //     .Combine(
-    //         ErrorOr<decimal>.Ensure(volume, volume => volume > decimal.Zero, SignalErrors.InvalidVolume),
-    //         ErrorOr<decimal>.Ensure(price, price => price > decimal.Zero, SignalErrors.InvalidPrice))
-    //     .Then(() => new Signal(time, tradeType, symbol, volume, price, botId));
 
     protected override IEnumerable<object> GetAtomicValues()
     {
