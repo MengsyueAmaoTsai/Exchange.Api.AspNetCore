@@ -44,7 +44,7 @@ internal sealed class CreateBotCommandHandler(
 
         var platformResult = TradingPlatform
             .FromName(command.Platform)
-            .ToResult(BotErrors.TradingPlatformNotSupported(command.Platform));
+            .ToResult(BotErrors.TradingPlatformNotSupported);
 
         if (platformResult.IsFailure)
         {
