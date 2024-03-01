@@ -35,6 +35,6 @@ public sealed class BotAccountsService(
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ErrorOr<AccountId>
-            .Is(account.Value.Id);
+            .With(account.Value.Id);
     }
 }

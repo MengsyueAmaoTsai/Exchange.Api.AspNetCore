@@ -27,14 +27,14 @@ public sealed class AccountBalance : ValueObject
         decimal initialDeposit,
         AccountId accountId)
     {
-        var validationResult = Result<decimal>
-            .Ensure(initialDeposit, value => value > 0, Error.Invalid("Initial deposit cannot be negative."));
+        // var validationResult = Result<decimal>
+        //     .Ensure(initialDeposit, value => value > 0, Error.Invalid("Initial deposit cannot be negative."));
 
-        if (validationResult.IsFailure)
-        {
-            return validationResult.Error
-                .ToResult<AccountBalance>();
-        }
+        // if (validationResult.IsFailure)
+        // {
+        //     return validationResult.Error
+        //         .ToResult<AccountBalance>();
+        // }
 
         return new AccountBalance(currency, initialDeposit, accountId).ToResult();
     }

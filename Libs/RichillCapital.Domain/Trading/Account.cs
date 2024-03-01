@@ -83,7 +83,7 @@ public sealed class Account : Entity<AccountId>
 
         _balances.Add(balance.Value);
 
-        return Result.Success();
+        return Result.Success;
     }
 
     public ErrorOr<OrderId> CreateOrder(

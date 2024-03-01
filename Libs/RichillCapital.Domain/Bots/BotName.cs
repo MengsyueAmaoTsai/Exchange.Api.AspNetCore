@@ -12,10 +12,10 @@ public sealed class BotName : SingleValueObject<string>
     {
     }
 
-    public static Result<BotName> From(string name) =>
-        Result<string>
-            .Ensure(name, BotNameRules.Values)
-            .Then(value => new BotName(value));
+    public static Result<BotName> From(string name) => throw new NotImplementedException();
+    // Result<string>
+    //     .Ensure(name, BotNameRules.Values)
+    //     .Then(value => new BotName(value));
 }
 
 internal static class BotNameRules

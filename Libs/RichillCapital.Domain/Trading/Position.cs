@@ -68,8 +68,7 @@ public sealed class Position : Entity<PositionId>
             return PositionErrors.InvalidTax(tax).ToErrorOr<Position>();
         }
 
-        return ErrorOr<Position>
-            .Is(new Position(
+        return new Position(
                 PositionId.NewPositionId(),
                 side,
                 symbol,
@@ -78,7 +77,7 @@ public sealed class Position : Entity<PositionId>
                 commission,
                 tax,
                 decimal.Zero,
-                accountId));
+                accountId).ToErrorOr();
     }
 
     public void Close()

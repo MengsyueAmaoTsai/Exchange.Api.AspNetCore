@@ -101,8 +101,7 @@ public sealed partial class Trade : ValueObject
                 .ToErrorOr<Trade>();
         }
 
-        return ErrorOr<Trade>
-            .Is(new Trade(
+        return new Trade(
                 side,
                 symbol,
                 quantity,
@@ -113,7 +112,7 @@ public sealed partial class Trade : ValueObject
                 commission,
                 tax,
                 swap,
-                accountId));
+                accountId).ToErrorOr();
     }
 
     protected override IEnumerable<object> GetAtomicValues()

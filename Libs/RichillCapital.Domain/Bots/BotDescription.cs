@@ -13,9 +13,10 @@ public sealed class BotDescription : SingleValueObject<string>
     }
 
     public static Result<BotDescription> From(string description) =>
-        Result<string>
-            .Ensure(description, BotDescriptionRules.Values)
-            .Then(value => new BotDescription(value));
+        throw new NotImplementedException();
+    // Result<string>
+    //     .Ensure(description, BotDescriptionRules.Values)
+    //     .Then(value => new BotDescription(value));
 }
 
 internal static class BotDescriptionRules

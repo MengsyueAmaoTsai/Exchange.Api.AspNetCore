@@ -13,9 +13,10 @@ public sealed class BotId : SingleValueObject<string>
     }
 
     public static Result<BotId> From(string id) =>
-        Result<string>
-            .Ensure(id, BotIdRules.Values)
-            .Then(value => new BotId(value));
+        throw new NotImplementedException();
+    // Result<string>
+    //     .Ensure(id, BotIdRules.Values)
+    //     .Then(value => new BotId(value));
 }
 
 internal static class BotIdRules

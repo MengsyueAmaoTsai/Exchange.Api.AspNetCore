@@ -12,12 +12,12 @@ public sealed class AccountName : SingleValueObject<string>
     {
     }
 
-    public static Result<AccountName> From(string name) =>
-        Result<string>
-            .Ensure(
-                name,
-                [AccountNameRules.IsNotEmpty, AccountNameRules.IsNotLongerThan])
-            .Then(value => new AccountName(value));
+    public static Result<AccountName> From(string name) => throw new NotImplementedException();
+    // Result<string>
+    //     .Ensure(
+    //         name,
+    //         [AccountNameRules.IsNotEmpty, AccountNameRules.IsNotLongerThan])
+    //     .Then(value => new AccountName(value));
 }
 
 internal static class AccountNameRules

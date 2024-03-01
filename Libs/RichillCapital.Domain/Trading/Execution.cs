@@ -83,7 +83,7 @@ public sealed class Execution : ValueObject
                 .ToErrorOr<Execution>();
         }
 
-        return ErrorOr<Execution>.Is(new Execution(
+        return new Execution(
             DateTimeOffset.UtcNow,
             tradeType,
             symbol,
@@ -92,7 +92,7 @@ public sealed class Execution : ValueObject
             commission,
             tax,
             accountId,
-            orderId));
+            orderId).ToErrorOr();
     }
 
     protected override IEnumerable<object> GetAtomicValues()

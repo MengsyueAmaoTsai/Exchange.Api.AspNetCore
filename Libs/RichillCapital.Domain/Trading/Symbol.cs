@@ -12,10 +12,10 @@ public sealed class Symbol : SingleValueObject<string>
     {
     }
 
-    public static Result<Symbol> From(string symbol) =>
-        Result<string>
-            .Ensure(symbol, SymbolRules.Values)
-            .Then(symbol => new Symbol(symbol));
+    public static Result<Symbol> From(string symbol) => throw new NotImplementedException();
+    // Result<string>
+    //     .Ensure(symbol, SymbolRules.Values)
+    //     .Then(symbol => new Symbol(symbol));
 
     private static bool NotLongerThanMaxLength(string symbol) =>
         symbol.Length <= MaxLength;

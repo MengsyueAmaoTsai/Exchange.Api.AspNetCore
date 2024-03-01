@@ -66,6 +66,6 @@ internal sealed class EmitBotSignalCommandHandler(
         _botRepository.Update(bot.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return ErrorOr<BotId>.Is(bot.Value.Id);
+        return ErrorOr<BotId>.With(bot.Value.Id);
     }
 }

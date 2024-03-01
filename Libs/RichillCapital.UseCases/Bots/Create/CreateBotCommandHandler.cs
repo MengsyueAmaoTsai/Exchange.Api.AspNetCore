@@ -16,68 +16,69 @@ internal sealed class CreateBotCommandHandler(
         CreateBotCommand command,
         CancellationToken cancellationToken)
     {
-        var botIdResult = await BotId
-            .From(command.Id)
-            .Ensure(NotDuplicateAsync, BotErrors.Duplicate);
+        throw new NotImplementedException();
+        // var botIdResult = await BotId
+        //     .From(command.Id)
+        //     .Ensure(NotDuplicateAsync, BotErrors.Duplicate);
 
-        if (botIdResult.IsFailure)
-        {
-            return botIdResult.Error
-                .ToErrorOr<BotId>();
-        }
+        // if (botIdResult.IsFailure)
+        // {
+        //     return botIdResult.Error
+        //         .ToErrorOr<BotId>();
+        // }
 
-        var botNameResult = await BotName
-            .From(command.Name)
-            .Ensure(NotDuplicateAsync, BotErrors.Duplicate);
+        // var botNameResult = await BotName
+        //     .From(command.Name)
+        //     .Ensure(NotDuplicateAsync, BotErrors.Duplicate);
 
-        if (botNameResult.IsFailure)
-        {
-            return botNameResult.Error
-                .ToErrorOr<BotId>();
-        }
+        // if (botNameResult.IsFailure)
+        // {
+        //     return botNameResult.Error
+        //         .ToErrorOr<BotId>();
+        // }
 
-        var descriptionResult = BotDescription.From(command.Description);
+        // var descriptionResult = BotDescription.From(command.Description);
 
-        if (descriptionResult.IsFailure)
-        {
-            return descriptionResult.Error
-                .ToErrorOr<BotId>();
-        }
+        // if (descriptionResult.IsFailure)
+        // {
+        //     return descriptionResult.Error
+        //         .ToErrorOr<BotId>();
+        // }
 
-        var sideResult = Side
-            .FromName(command.Side)
-            .ToResult(Error.Invalid("Side not supported."));
+        // var sideResult = Side
+        //     .FromName(command.Side)
+        //     .ToResult(Error.Invalid("Side not supported."));
 
-        if (sideResult.IsFailure)
-        {
-            return sideResult.Error
-                .ToErrorOr<BotId>();
-        }
+        // if (sideResult.IsFailure)
+        // {
+        //     return sideResult.Error
+        //         .ToErrorOr<BotId>();
+        // }
 
-        var platformResult = TradingPlatform
-            .FromName(command.Platform)
-            .ToResult(BotErrors.TradingPlatformNotSupported);
+        // var platformResult = TradingPlatform
+        //     .FromName(command.Platform)
+        //     .ToResult(BotErrors.TradingPlatformNotSupported);
 
-        if (platformResult.IsFailure)
-        {
-            return platformResult.Error
-                .ToErrorOr<BotId>();
-        }
+        // if (platformResult.IsFailure)
+        // {
+        //     return platformResult.Error
+        //         .ToErrorOr<BotId>();
+        // }
 
-        // Create bot
-        var errorOrBot = Bot
-            .Create(
-                botIdResult.Value,
-                botNameResult.Value,
-                descriptionResult.Value,
-                sideResult.Value,
-                platformResult.Value)
-            .Then(_botRepository.Add);
+        // // Create bot
+        // var errorOrBot = Bot
+        //     .Create(
+        //         botIdResult.Value,
+        //         botNameResult.Value,
+        //         descriptionResult.Value,
+        //         sideResult.Value,
+        //         platformResult.Value)
+        //     .Then(_botRepository.Add);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        // await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return errorOrBot
-            .Then(bot => bot.Id);
+        // return errorOrBot
+        //     .Then(bot => bot.Id);
     }
 
     private async Task<bool> NotDuplicateAsync(BotId id) =>

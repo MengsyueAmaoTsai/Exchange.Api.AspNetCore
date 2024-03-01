@@ -74,7 +74,7 @@ public sealed class Order : Entity<OrderId>
                 .ToErrorOr<Order>();
         }
 
-        return ErrorOr<Order>.Is(new Order(
+        return new Order(
             DateTimeOffset.UtcNow,
             OrderId.NewOrderId(),
             tradeType,
@@ -84,7 +84,7 @@ public sealed class Order : Entity<OrderId>
             type,
             timeInForce,
             OrderStatus.New,
-            accountId));
+            accountId).ToErrorOr();
     }
 
     public Result Reject()
@@ -100,7 +100,7 @@ public sealed class Order : Entity<OrderId>
 
         RegisterDomainEvent(new AccountOrderRejectedDomainEvent(Id));
 
-        return Result.Success();
+        return Result.Success;
     }
 
     public Result Accept()
@@ -116,7 +116,7 @@ public sealed class Order : Entity<OrderId>
 
         RegisterDomainEvent(new AccountOrderAcceptedDomainEvent(Id));
 
-        return Result.Success();
+        return Result.Success;
     }
 
     public Result Cancel()
@@ -132,7 +132,7 @@ public sealed class Order : Entity<OrderId>
 
         RegisterDomainEvent(new AccountOrderCancelledDomainEvent(Id));
 
-        return Result.Success();
+        return Result.Success;
     }
 
     public ErrorOr<Execution> Execute(

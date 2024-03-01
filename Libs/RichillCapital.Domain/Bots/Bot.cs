@@ -35,29 +35,29 @@ public sealed class Bot : Entity<BotId>
         BotName name,
         BotDescription description,
         Side side,
-        TradingPlatform platform) =>
-        ErrorOr<TradingPlatform>
-            .Ensure(platform, IsSupported, BotErrors.TradingPlatformNotSupported)
-            .Then(() => new Bot(
-                id,
-                name,
-                description,
-                side,
-                platform));
+        TradingPlatform platform) => throw new NotImplementedException();
+    // ErrorOr<TradingPlatform>
+    //     .Ensure(platform, IsSupported, BotErrors.TradingPlatformNotSupported)
+    //     .Then(() => new Bot(
+    //         id,
+    //         name,
+    //         description,
+    //         side,
+    //         platform));
 
     public ErrorOr<Signal> EmitSignal(
         DateTimeOffset time,
         TradeType tradeType,
         Symbol symbol,
         decimal volume,
-        decimal price) =>
-        Signal
-            .Create(time, tradeType, symbol, volume, price, Id)
-            .Then(signal =>
-            {
-                _signals.Add(signal);
-                RegisterDomainEvent(new BotSignalEmittedDomainEvent(Id));
-            });
+        decimal price) => throw new NotImplementedException();
+    // Signal
+    //     .Create(time, tradeType, symbol, volume, price, Id)
+    //     .Then(signal =>
+    //     {
+    //         _signals.Add(signal);
+    //         RegisterDomainEvent(new BotSignalEmittedDomainEvent(Id));
+    //     });
 
     private static bool IsSupported(TradingPlatform platform) =>
         SupportedPlatforms.Contains(platform);

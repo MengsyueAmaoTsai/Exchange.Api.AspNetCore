@@ -20,12 +20,12 @@ public sealed class AccountId : SingleValueObject<string>
     {
     }
 
-    public static Result<AccountId> From(string id) =>
-        Result<string>
-            .Ensure(
-                id,
-                [IsNotEmpty, IsNotLongerThan])
-            .Then(value => new AccountId(value));
+    public static Result<AccountId> From(string id) => throw new NotImplementedException();
+    // Result<string>
+    //     .Ensure(
+    //         id,
+    //         [IsNotEmpty, IsNotLongerThan])
+    //     .Then(value => new AccountId(value));
 
     public static AccountId NewAccountId() => From(Guid.NewGuid().ToString()).Value;
 }
