@@ -1,5 +1,7 @@
 using RichillCapital.Domain.Bots;
 using RichillCapital.Domain.Common;
+using RichillCapital.Domain.Trading;
+using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Common;
 
@@ -42,6 +44,16 @@ internal sealed class CreateBotCommandHandler(
                 .ToErrorOr<BotId>();
         }
 
+        var sideResult = Side
+            .FromName(command.Side)
+            .ToResult(Error.Invalid("Side not supported."));
+
+        if (sideResult.IsFailure)
+        {
+            return sideResult.Error
+                .ToErrorOr<BotId>();
+        }
+
         var platformResult = TradingPlatform
             .FromName(command.Platform)
             .ToResult(BotErrors.TradingPlatformNotSupported);
@@ -58,6 +70,7 @@ internal sealed class CreateBotCommandHandler(
                 botIdResult.Value,
                 botNameResult.Value,
                 descriptionResult.Value,
+                sideResult.Value,
                 platformResult.Value)
             .Then(_botRepository.Add);
 

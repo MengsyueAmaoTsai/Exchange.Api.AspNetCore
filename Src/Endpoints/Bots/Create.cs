@@ -57,6 +57,9 @@ public sealed record class CreateBotRequest
     public string Description { get; init; } = string.Empty;
 
     [Required]
+    public string Side { get; init; } = string.Empty;
+
+    [Required]
     public string Platform { get; init; } = string.Empty;
 }
 

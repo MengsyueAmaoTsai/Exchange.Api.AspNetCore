@@ -15,13 +15,16 @@ public sealed class Bot : Entity<BotId>
         BotId id,
         BotName name,
         BotDescription description,
+        Side side,
         TradingPlatform platform)
         : base(id) =>
-        (Name, Description, Platform) = (name, description, platform);
+        (Name, Description, Side, Platform) = (name, description, side, platform);
 
     public BotName Name { get; private set; }
 
     public BotDescription Description { get; private set; }
+
+    public Side Side { get; private set; }
 
     public TradingPlatform Platform { get; private set; }
 
@@ -31,10 +34,16 @@ public sealed class Bot : Entity<BotId>
         BotId id,
         BotName name,
         BotDescription description,
+        Side side,
         TradingPlatform platform) =>
         ErrorOr<TradingPlatform>
             .Ensure(platform, IsSupported, BotErrors.TradingPlatformNotSupported)
-            .Then(() => new Bot(id, name, description, platform));
+            .Then(() => new Bot(
+                id,
+                name,
+                description,
+                side,
+                platform));
 
     public ErrorOr<Signal> EmitSignal(
         DateTimeOffset time,

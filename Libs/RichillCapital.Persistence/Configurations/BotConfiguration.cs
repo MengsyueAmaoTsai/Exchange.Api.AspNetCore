@@ -42,6 +42,12 @@ internal sealed class BotConfiguration : IEntityTypeConfiguration<Bot>
             .IsRequired();
 
         builder
+            .Property(bot => bot.Side)
+            .HasColumnName("side")
+            .HasEnumerationValueConversion()
+            .IsRequired();
+
+        builder
             .Property(bot => bot.Platform)
             .HasColumnName("platform")
             .HasEnumerationValueConversion()

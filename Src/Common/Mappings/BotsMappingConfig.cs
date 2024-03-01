@@ -22,6 +22,7 @@ public sealed partial class EndpointContractMapper(TypeAdapterConfig _config)
             .Map(command => command.Id, request => request.Id)
             .Map(command => command.Name, request => request.Name)
             .Map(command => command.Description, request => request.Description)
+            .Map(command => command.Side, request => request.Side)
             .Map(command => command.Platform, request => request.Platform);
 
         _config.NewConfig<BotId, CreateBotResponse>()
