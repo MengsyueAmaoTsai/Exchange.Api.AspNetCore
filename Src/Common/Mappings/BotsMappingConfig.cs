@@ -9,16 +9,9 @@ namespace RichillCapital.Common.Mappings;
 
 public sealed class BotsMappingConfig : IRegister
 {
-    public void Register(TypeAdapterConfig config) =>
-        config
-            .MapEndpointContracts().CreateBot()
-            .MapEndpointContracts().EmitBotSignal();
-}
-
-public static class TypeAdapterConfigExtensions
-{
-    public static EndpointContractMapper MapEndpointContracts(this TypeAdapterConfig config) =>
-        new(config);
+    public void Register(TypeAdapterConfig config) => config
+        .MapEndpointContracts().CreateBot()
+        .MapEndpointContracts().EmitBotSignal();
 }
 
 public sealed partial class EndpointContractMapper(TypeAdapterConfig _config)
