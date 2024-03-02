@@ -4,7 +4,6 @@ using RichillCapital.Domain;
 using RichillCapital.Domain.Bots;
 using RichillCapital.Domain.Bots.Events;
 using RichillCapital.Domain.Common;
-using RichillCapital.SharedKernel.Monads;
 using RichillCapital.UseCases.Common;
 
 namespace RichillCapital.UseCases.Bots.Create;
