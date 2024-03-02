@@ -11,15 +11,9 @@ internal sealed class ListBotsQueryHandler(
 {
     public async Task<Result<IEnumerable<BotDto>>> Handle(
         ListBotsQuery query,
-        CancellationToken cancellationToken)
-    {
-        var botsResult = await _botRepository.ListAsync(cancellationToken).ToResult();
-
-        if (botsResult.IsFailure)
-        {
-            return botsResult.Error.ToResult<IEnumerable<BotDto>>();
-        }
-
-        return botsResult.Value.Select(BotDto.From).ToResult();
-    }
+        CancellationToken cancellationToken) =>
+        await _botRepository.ListAsync(cancellationToken)
+            .ToResult()
+            .Then(bots => bots
+                .Select(BotDto.From));
 }
