@@ -68,15 +68,16 @@ internal sealed class CreateBotCommandHandler(
                 .ToErrorOr<BotId>();
         }
 
-        return await Bot
-            .Create(
-                idResult.Value,
-                nameResult.Value,
-                descriptionResult.Value,
-                maybeSide.Value,
-                maybePlatform.Value)
-            .Then(_botRepository.Add)
-            .Then(() => _unitOfWork.SaveChangesAsync(cancellationToken))
-            .Then(bot => bot.Id);
+        throw new NotImplementedException();
+        // return await Bot
+        //     .Create(
+        //         idResult.Value,
+        //         nameResult.Value,
+        //         descriptionResult.Value,
+        //         maybeSide.Value,
+        //         maybePlatform.Value)
+        //     .Then(_botRepository.Add)
+        //     .Then(() => _unitOfWork.SaveChangesAsync(cancellationToken))
+        //     .Then(bot => bot.Id);
     }
 }

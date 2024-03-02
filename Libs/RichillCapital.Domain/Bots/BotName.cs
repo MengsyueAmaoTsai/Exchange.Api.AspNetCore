@@ -12,10 +12,11 @@ public sealed class BotName : SingleValueObject<string>
     {
     }
 
-    public static Result<BotName> From(string name) => name.ToResult()
-        .Ensure(NotEmpty, Error.Invalid("Bot name cannot be empty."))
-        .Ensure(NotLongerThanMaxLength, Error.Invalid($"Bot name cannot be longer than {MaxLength} characters."))
-        .Then(name => new BotName(name));
+    public static Result<BotName> From(string name) => throw new NotFiniteNumberException();
+    // name.ToResult()
+    //     .Ensure(NotEmpty, Error.Invalid("Bot name cannot be empty."))
+    //     .Ensure(NotLongerThanMaxLength, Error.Invalid($"Bot name cannot be longer than {MaxLength} characters."))
+    //     .Then(name => new BotName(name));
 
     private static bool NotEmpty(string name) => !string.IsNullOrWhiteSpace(name);
 

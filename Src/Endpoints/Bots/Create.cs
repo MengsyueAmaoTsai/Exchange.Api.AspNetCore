@@ -31,15 +31,7 @@ public sealed class Create(
         [FromBody] CreateBotRequest request,
         CancellationToken cancellationToken = default)
     {
-        var errorOr = request
-            .ToErrorOr()
-            .Then(MapToCommand)
-            .Then(command => _sender.Send(command, cancellationToken))
-            .Then(id => MapToResponse(id));
-
-        //     .Then(command => _sender.Send(command, cancellationToken))
-        //     .Then(MapToResponse)
-        //     .Match(HandleError, Ok);
+        throw new NotImplementedException();
     }
 
     private CreateBotCommand MapToCommand(CreateBotRequest request) => _mapper.Map<CreateBotCommand>(request);
@@ -66,15 +58,3 @@ public sealed record class CreateBotRequest
 }
 
 public sealed record CreateBotResponse(string BotId);
-
-
-public static class T
-{
-    public static async Task<ErrorOr<TResult>> Then<TValue, TResult>(
-        this Task<ErrorOr<TValue>> errorOrTask,
-        Func<TValue, TResult> map)
-    {
-        var errorOr = await errorOrTask;
-        return errorOr.Then(map);
-    }
-}
