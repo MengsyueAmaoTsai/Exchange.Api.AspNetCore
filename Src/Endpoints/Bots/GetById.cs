@@ -27,13 +27,13 @@ public sealed class GetById(
         Tags = ["Bots"])]
     public override async Task<ActionResult<BotResponse>> HandleAsync(
         [FromRoute] GetBotByIdRequest request,
-        CancellationToken cancellationToken = default) => throw new NotImplementedException();
-    // await request
-    //     .ToErrorOr()
-    //     .Then(MapToQuery)
-    //     .Then(query => _sender.Send(query, cancellationToken))
-    //     .Then(MapToResponse)
-    //     .Match(HandleError, Ok);
+        CancellationToken cancellationToken = default) =>
+        await request
+            .ToErrorOr()
+            .Then(MapToQuery)
+            .Then(query => _sender.Send(query, cancellationToken))
+            .Then(MapToResponse)
+            .Match(HandleError, Ok);
 
     private GetBotByIdQuery MapToQuery(GetBotByIdRequest request) => _mapper.Map<GetBotByIdQuery>(request);
 
