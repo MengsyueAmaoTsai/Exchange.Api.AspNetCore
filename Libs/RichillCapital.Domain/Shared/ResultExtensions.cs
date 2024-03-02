@@ -14,11 +14,20 @@ public static partial class ResultExtensions
 
         var maybe = await maybeFactoryWithValueTask(result.Value);
 
-        if (maybe.IsNull)
+        return maybe.ToResult(errorFactoryWithValue(result.Value));
+    }
+
+    public static async Task<Result<TResult>> Then<TValue, TResult>(
+        this Result<TValue> result,
+        Func<TValue, Task<ErrorOr<TResult>>> errorOrFactoryWithValueTask)
+    {
+        if (result.IsFailure)
         {
-            return errorFactoryWithValue(result.Value).ToResult<TResult>();
+            return result.Error.ToResult<TResult>();
         }
 
-        return maybe.Value.ToResult();
+        var errorOr = await errorOrFactoryWithValueTask(result.Value);
+
+        return errorOr.ToResult();
     }
 }

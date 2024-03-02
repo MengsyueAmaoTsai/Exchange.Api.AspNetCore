@@ -2,7 +2,6 @@ namespace RichillCapital.SharedKernel.Monads;
 
 public static partial class ErrorOrExtensions
 {
-    // ----- Async
     public static async Task<ErrorOr<TResult>> Then<TValue, TResult>(
         this ErrorOr<TValue> errorOr,
         Func<TValue, Task<Maybe<TResult>>> maybeFactoryWithValueTask,
@@ -15,11 +14,20 @@ public static partial class ErrorOrExtensions
 
         var maybe = await maybeFactoryWithValueTask(errorOr.Value);
 
-        if (maybe.IsNull)
+        return maybe.ToErrorOr(errorFactoryWithValue(errorOr.Value));
+    }
+
+    public static async Task<ErrorOr<TResult>> Then<TValue, TResult>(
+        this ErrorOr<TValue> errorOr,
+        Func<TValue, Task<Result<TResult>>> resultFactoryWithValueTask)
+    {
+        if (errorOr.HasError)
         {
-            return errorFactoryWithValue(errorOr.Value).ToErrorOr<TResult>();
+            return errorOr.Errors.ToErrorOr<TResult>();
         }
 
-        return maybe.Value.ToErrorOr();
+        var result = await resultFactoryWithValueTask(errorOr.Value);
+
+        return result.ToErrorOr();
     }
 }
