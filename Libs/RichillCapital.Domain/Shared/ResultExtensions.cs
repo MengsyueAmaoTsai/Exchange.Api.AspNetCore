@@ -13,7 +13,10 @@ public static partial class ResultExtensions
 
         return result;
     }
-    public static Result<TValue> Then<TValue>(this Result<TValue> result, Action<TValue> actionWithValue)
+
+    public static Result<TValue> Then<TValue>(
+        this Result<TValue> result,
+        Action<TValue> actionWithValue)
     {
         if (result.IsFailure)
         {
@@ -24,7 +27,9 @@ public static partial class ResultExtensions
 
         return result;
     }
-    public static Result<TResult> Then<TValue, TResult>(this Result<TValue> result, Func<TResult> factory)
+    public static Result<TResult> Then<TValue, TResult>(
+        this Result<TValue> result,
+        Func<TResult> factory)
     {
         if (result.IsFailure)
         {
@@ -44,6 +49,18 @@ public static partial class ResultExtensions
         }
 
         return factoryWithValue(result.Value).ToResult();
+    }
+
+    public static Result<TResult> Then<TValue, TResult>(
+        this Result<TValue> result,
+        Func<TValue, Result<TResult>> resultFactoryWithValue)
+    {
+        if (result.IsFailure)
+        {
+            return result.Error.ToResult<TResult>();
+        }
+
+        return resultFactoryWithValue(result.Value);
     }
 
     // ----- Async

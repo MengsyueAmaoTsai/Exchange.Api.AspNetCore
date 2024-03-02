@@ -15,6 +15,11 @@ internal sealed class GetBotByIdQueryHandler(
         GetBotByIdQuery query,
         CancellationToken cancellationToken)
     {
+        Result<BotId> monad = query.BotId
+            .ToResult()
+            .Then(BotId.From);
+
+        // id.ToResult().Ensure(Exists, NotFound).Then(BotDto.From).ToErrorOr();
         var idResult = BotId.From(query.BotId);
 
         if (idResult.IsFailure)

@@ -51,6 +51,18 @@ public static partial class ErrorOrExtensions
         return factoryWithValue(result.Value).ToErrorOr();
     }
 
+    public static ErrorOr<TResult> Then<TValue, TResult>(
+        this ErrorOr<TValue> errorOr,
+        Func<TValue, ErrorOr<TResult>> errorOrFactoryWithValue)
+    {
+        if (errorOr.HasError)
+        {
+            return errorOr.Errors
+                .ToErrorOr<TResult>();
+        }
+
+        return errorOrFactoryWithValue(errorOr.Value);
+    }
 
     // ----- Async
     public static async Task<ErrorOr<TResult>> Then<TValue, TResult>(
