@@ -5,8 +5,14 @@ namespace RichillCapital.Domain.Bots;
 
 public sealed class BotByIdWithSignalsSpecification : Specification<Bot>
 {
-    public BotByIdWithSignalsSpecification(BotId botId) =>
+    public BotByIdWithSignalsSpecification(BotId botId)
+    {
+        BotId = botId;
+
         Query
             .Where(bot => bot.Id == botId)
             .Include(bot => bot.Signals);
+    }
+
+    public BotId BotId { get; private init; }
 }

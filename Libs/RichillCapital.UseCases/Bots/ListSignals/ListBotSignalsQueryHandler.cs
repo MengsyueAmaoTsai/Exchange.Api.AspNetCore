@@ -1,4 +1,3 @@
-using RichillCapital.Domain;
 using RichillCapital.Domain.Bots;
 using RichillCapital.Domain.Common;
 using RichillCapital.SharedKernel.Monads;
@@ -12,26 +11,15 @@ internal sealed class ListBotSignalsQueryHandler(
 {
     public async Task<ErrorOr<IEnumerable<SignalDto>>> Handle(
         ListBotSignalsQuery query,
-        CancellationToken cancellationToken)
-    {
-        var id = BotId.From(query.BotId);
-
-        if (id.IsFailure)
-        {
-            return id.Error
-                .ToErrorOr<IEnumerable<SignalDto>>();
-        }
-
-        var bot = await _botRepository.FirstOrDefaultAsync(
-            new BotByIdWithSignalsSpecification(id.Value),
-            cancellationToken);
-
-        return bot.IsNull ?
-        DomainErrors.Bots.NotFound(id.Value).ToErrorOr<IEnumerable<SignalDto>>() :
-        bot.Value.Signals
-            .Select(SignalDto.From)
-            .ToList()
-            .AsReadOnly()
-            .ToErrorOr<IEnumerable<SignalDto>>();
-    }
+        CancellationToken cancellationToken) =>
+        await query.BotId
+            .ToResult()
+            .Then(BotId.From)
+            .Then(id => new BotByIdWithSignalsSpecification(id))
+            .Then(
+                spec => _botRepository.FirstOrDefaultAsync(spec, cancellationToken),
+                spec => BotErrors.NotFound(spec.BotId))
+            .Then(bot => bot.Signals
+                .Select(SignalDto.From))
+            .ToErrorOr();
 }
