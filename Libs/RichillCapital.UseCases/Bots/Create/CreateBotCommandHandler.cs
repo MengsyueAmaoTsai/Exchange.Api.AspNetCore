@@ -14,57 +14,34 @@ internal sealed class CreateBotCommandHandler(
 {
     public async Task<ErrorOr<BotId>> Handle(
         CreateBotCommand command,
-        CancellationToken cancellationToken)
-    {
-        var idResult = BotId.From(command.Id);
-
-        if (idResult.IsFailure)
-        {
-            return idResult.Error
-                .ToErrorOr<BotId>();
-        }
-
-        if (await _botRepository.AnyAsync(bot => bot.Id == idResult.Value))
-        {
-            return BotErrors.Duplicate(idResult.Value)
-                .ToErrorOr<BotId>();
-        }
-
-        // validate name and then ensure it's unique
-        var nameResult = BotName.From(command.Name);
-
-        if (nameResult.IsFailure)
-        {
-            return nameResult.Error
-                .ToErrorOr<BotId>();
-        }
-
-        if (await _botRepository.AnyAsync(bot => bot.Name == nameResult.Value))
-        {
-            return BotErrors.Duplicate(nameResult.Value)
-                .ToErrorOr<BotId>();
-        }
-
-        var descriptionResult = BotDescription
-            .From(command.Description);
-
-        var errorOrSide = Side
-            .FromName(command.Side)
-            .ToErrorOr(Error.Invalid("Invalid side."));
-
-        var errorOrPlatform = TradingPlatform
-            .FromName(command.Platform)
-            .ToErrorOr(Error.Invalid("Invalid platform."));
-
-        return await Bot
-            .Create(
-                idResult.Value,
-                nameResult.Value,
-                descriptionResult.Value,
-                errorOrSide.Value,
-                errorOrPlatform.Value)
+        CancellationToken cancellationToken) =>
+        await Result<(BotId, BotName, BotDescription, Side, TradingPlatform)>
+            .Combine(
+                await BotId.From(command.Id).Ensure(NotDuplicate, BotErrors.Duplicate),
+                await BotName.From(command.Name).Ensure(NotDuplicate, BotErrors.Duplicate),
+                BotDescription.From(command.Description),
+                Side.FromName(command.Side).ToResult(Error.Invalid("Invalid side.")),
+                TradingPlatform.FromName(command.Platform).ToResult(Error.Invalid("Invalid platform.")))
+            .ToErrorOr()
+            .Then(CreateBot)
             .Then(_botRepository.Add)
-            .Then<Bot, int>(() => _unitOfWork.SaveChangesAsync(cancellationToken))
+            .Then(() => _unitOfWork.SaveChangesAsync(cancellationToken))
             .Then(bot => bot.Id);
-    }
+
+    private async Task<bool> NotDuplicate(BotId id) => !await _botRepository.AnyAsync(bot => bot.Id == id);
+
+    private async Task<bool> NotDuplicate(BotName name) => !await _botRepository.AnyAsync(bot => bot.Name == name);
+
+    private static ErrorOr<Bot> CreateBot((
+        BotId id,
+        BotName name,
+        BotDescription description,
+        Side side,
+        TradingPlatform platform) parameters) =>
+        Bot.Create(
+            parameters.id,
+            parameters.name,
+            parameters.description,
+            parameters.side,
+            parameters.platform);
 }
