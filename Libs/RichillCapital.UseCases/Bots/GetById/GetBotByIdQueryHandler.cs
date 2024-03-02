@@ -13,32 +13,14 @@ internal sealed class GetBotByIdQueryHandler(
 {
     public async Task<ErrorOr<BotDto>> Handle(
         GetBotByIdQuery query,
-        CancellationToken cancellationToken)
-    {
-        Result<BotId> monad = query.BotId
+        CancellationToken cancellationToken) =>
+        await query.BotId
             .ToResult()
-            .Then(BotId.From);
+            .Then(BotId.From)
+            .Then(GetBotAsync, BotErrors.NotFound)
+            .Then(BotDto.From)
+            .ToErrorOr();
 
-        // id.ToResult().Ensure(Exists, NotFound).Then(BotDto.From).ToErrorOr();
-        var idResult = BotId.From(query.BotId);
-
-        if (idResult.IsFailure)
-        {
-            return idResult.Error
-                .ToErrorOr<BotDto>();
-        }
-
-        var maybeBot = await _botRepository.GetByIdAsync(idResult.Value, cancellationToken);
-
-        if (maybeBot.IsNull)
-        {
-            return NotFound(idResult.Value);
-        }
-
-        return BotDto.From(maybeBot.Value).ToErrorOr();
-    }
-
-    private static ErrorOr<BotDto> NotFound(BotId id) =>
-        Error.NotFound($"Bot with id '{id}' was not found.")
-            .ToErrorOr<BotDto>();
+    private async Task<Maybe<Bot>> GetBotAsync(BotId id) =>
+        await _botRepository.GetByIdAsync(id, default);
 }
