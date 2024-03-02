@@ -30,6 +30,7 @@ internal sealed class CreateBotCommandHandler(
                 .ToErrorOr<BotId>();
         }
 
+        // validate name and then ensure it's unique
         var nameResult = BotName.From(command.Name);
 
         if (nameResult.IsFailure)
@@ -44,40 +45,26 @@ internal sealed class CreateBotCommandHandler(
                 .ToErrorOr<BotId>();
         }
 
-        var descriptionResult = BotDescription.From(command.Description);
+        var descriptionResult = BotDescription
+            .From(command.Description);
 
-        if (descriptionResult.IsFailure)
-        {
-            return descriptionResult.Error
-                .ToErrorOr<BotId>();
-        }
+        var errorOrSide = Side
+            .FromName(command.Side)
+            .ToErrorOr(Error.Invalid("Invalid side."));
 
-        var maybeSide = Side.FromName(command.Side);
+        var errorOrPlatform = TradingPlatform
+            .FromName(command.Platform)
+            .ToErrorOr(Error.Invalid("Invalid platform."));
 
-        if (maybeSide.IsNull)
-        {
-            return Error.Invalid("Side not supported.")
-                .ToErrorOr<BotId>();
-        }
-
-        var maybePlatform = TradingPlatform.FromName(command.Platform);
-
-        if (maybePlatform.IsNull)
-        {
-            return Error.Invalid("Trading platform not supported.")
-                .ToErrorOr<BotId>();
-        }
-
-        throw new NotImplementedException();
-        // return await Bot
-        //     .Create(
-        //         idResult.Value,
-        //         nameResult.Value,
-        //         descriptionResult.Value,
-        //         maybeSide.Value,
-        //         maybePlatform.Value)
-        //     .Then(_botRepository.Add)
-        //     .Then(() => _unitOfWork.SaveChangesAsync(cancellationToken))
-        //     .Then(bot => bot.Id);
+        return await Bot
+            .Create(
+                idResult.Value,
+                nameResult.Value,
+                descriptionResult.Value,
+                errorOrSide.Value,
+                errorOrPlatform.Value)
+            .Then(_botRepository.Add)
+            .Then<Bot, int>(() => _unitOfWork.SaveChangesAsync(cancellationToken))
+            .Then(bot => bot.Id);
     }
 }
