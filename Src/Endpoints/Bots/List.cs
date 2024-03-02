@@ -27,8 +27,10 @@ public sealed class List(
         Tags = ["Bots"])]
     public override async Task<ActionResult<IEnumerable<BotResponse>>> HandleAsync(
         [FromQuery] ListBotsRequest request,
-        CancellationToken cancellationToken = default) =>
+        CancellationToken cancellationToken = default)
+    {
         throw new NotImplementedException();
+    }
 
     private ListBotsQuery MapToQuery(ListBotsRequest request) =>
         _mapper.Map<ListBotsQuery>(request);
