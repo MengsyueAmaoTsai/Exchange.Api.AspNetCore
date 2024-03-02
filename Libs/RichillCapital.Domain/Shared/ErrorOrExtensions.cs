@@ -1,28 +1,83 @@
-using System.Formats.Asn1;
-
 namespace RichillCapital.SharedKernel.Monads;
 
 public static partial class ErrorOrExtensions
 {
-    public static async Task<ErrorOr<TResult>> Then<TValue, TResult>(
-        this Task<ErrorOr<TValue>> errorOrTask,
-        Func<TValue, Task<ErrorOr<TResult>>> factory)
+    public static ErrorOr<TValue> Then<TValue>(this ErrorOr<TValue> result, Action action)
     {
-        var errorOr = await errorOrTask;
+        if (result.HasError)
+        {
+            return result.Errors
+                .ToErrorOr<TValue>();
+        }
 
-        var errorOrResult = await factory(errorOr.Value);
+        action();
 
-        return errorOrResult;
+        return result;
+    }
+    public static ErrorOr<TValue> Then<TValue>(this ErrorOr<TValue> result, Action<TValue> actionWithValue)
+    {
+        if (result.HasError)
+        {
+            return result.Errors
+                .ToErrorOr<TValue>();
+        }
+
+        actionWithValue(result.Value);
+
+        return result;
+    }
+
+    public static ErrorOr<TResult> Then<TValue, TResult>(this ErrorOr<TValue> result, Func<TResult> factory)
+    {
+        if (result.HasError)
+        {
+            return result.Errors
+                .ToErrorOr<TResult>();
+        }
+
+        return factory().ToErrorOr();
+    }
+
+    public static ErrorOr<TResult> Then<TValue, TResult>(
+        this ErrorOr<TValue> result,
+        Func<TValue, TResult> factoryWithValue)
+    {
+        if (result.HasError)
+        {
+            return result.Errors
+                .ToErrorOr<TResult>();
+        }
+
+        return factoryWithValue(result.Value).ToErrorOr();
+    }
+
+
+    // ----- Async
+    public static async Task<ErrorOr<TResult>> Then<TValue, TResult>(
+        this ErrorOr<TValue> result,
+        Func<TValue, Task<ErrorOr<TResult>>> errorOrFactoryWithValueTask)
+    {
+        if (result.HasError)
+        {
+            return result.Errors.ToErrorOr<TResult>();
+        }
+
+        var resultResult = await errorOrFactoryWithValueTask(result.Value);
+
+        return resultResult;
     }
 
     public static async Task<ErrorOr<TResult>> Then<TValue, TResult>(
         this Task<ErrorOr<TValue>> errorOrTask,
-        Func<TValue, TResult> factory)
+        Func<TValue, TResult> factoryWithValue)
     {
-        var errorOr = await errorOrTask;
+        var result = await errorOrTask;
 
-        var result = factory(errorOr.Value);
+        if (result.HasError)
+        {
+            return result.Errors.ToErrorOr<TResult>();
+        }
 
-        return result.ToErrorOr();
+        return factoryWithValue(result.Value).ToErrorOr();
     }
 }

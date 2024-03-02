@@ -29,6 +29,13 @@ public sealed class List(
         [FromQuery] ListBotsRequest request,
         CancellationToken cancellationToken = default)
     {
+        var requestResult = await request
+            .ToResult()
+            .Then(MapToQuery)
+            .Then(query => _sender.Send(query, cancellationToken))
+            .Then(MapToResponse)
+            .Match(Ok, HandleError);
+
         throw new NotImplementedException();
     }
 
