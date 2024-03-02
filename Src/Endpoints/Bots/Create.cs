@@ -29,13 +29,19 @@ public sealed class Create(
         Tags = ["Bots"])]
     public override async Task<ActionResult<CreateBotResponse>> HandleAsync(
         [FromBody] CreateBotRequest request,
-        CancellationToken cancellationToken = default) =>
-        await request
-            .ToErrorOr()
+        CancellationToken cancellationToken = default)
+    {
+        var errorOr = request.ToErrorOr()
             .Then(MapToCommand)
-            .Then(command => _sender.Send(command, cancellationToken))
-            .Then(MapToResponse)
-            .Match(HandleError, Ok);
+            .Then(command => _sender.Send(command, cancellationToken));
+        throw new NotImplementedException();
+        // await request
+        //     .ToErrorOr()
+        //     .Then(MapToCommand)
+        //     .Then(command => _sender.Send(command, cancellationToken))
+        //     .Then(MapToResponse)
+        //     .Match(HandleError, Ok);
+    }
 
     private CreateBotCommand MapToCommand(CreateBotRequest request) => _mapper.Map<CreateBotCommand>(request);
 
