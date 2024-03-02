@@ -12,11 +12,11 @@ public sealed class BotId : SingleValueObject<string>
     {
     }
 
-    public static Result<BotId> From(string id) => throw new NotImplementedException();
-    // id.ToResult()
-    //     .Ensure(NotEmpty, Error.Invalid("Bot id cannot be empty."))
-    //     .Ensure(NotLongerThanMaxLength, Error.Invalid($"Bot id cannot be longer than {MaxLength} characters."))
-    //     .Then(id => new BotId(id));
+    public static Result<BotId> From(string id) =>
+        id.ToResult()
+            .Ensure(NotEmpty, Error.Invalid("Bot id cannot be empty."))
+            .Ensure(NotLongerThanMaxLength, Error.Invalid($"Bot id cannot be longer than {MaxLength} characters."))
+            .Then(id => new BotId(id));
 
     private static bool NotEmpty(string id) => !string.IsNullOrWhiteSpace(id);
 

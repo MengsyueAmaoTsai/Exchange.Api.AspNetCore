@@ -40,7 +40,46 @@ public sealed class Signal : ValueObject
         Symbol symbol,
         decimal volume,
         decimal price,
-        BotId botId) => throw new NotImplementedException();
+        BotId botId)
+    {
+        var errorOrTime = time.ToErrorOr().Ensure(
+            time => time <= DateTimeOffset.Now && time >= DateTimeOffset.Now.AddMinutes(-5),
+            Error.Invalid("Time cannot be in the future."));
+
+        if (errorOrTime.HasError)
+        {
+            return errorOrTime.Errors
+                .ToErrorOr<Signal>();
+        }
+
+        var errorOrVolume = volume.ToErrorOr().Ensure(
+            volume => volume > 0,
+            Error.Invalid("Volume must be greater than zero."));
+
+        if (errorOrVolume.HasError)
+        {
+            return errorOrVolume.Errors
+                .ToErrorOr<Signal>();
+        }
+
+        var errorOrPrice = price.ToErrorOr().Ensure(
+            price => price > 0,
+            Error.Invalid("Price must be greater than zero."));
+
+        if (errorOrPrice.HasError)
+        {
+            return errorOrPrice.Errors
+                .ToErrorOr<Signal>();
+        }
+
+        return new Signal(
+            time,
+            tradeType,
+            symbol,
+            volume,
+            price,
+            botId).ToErrorOr();
+    }
 
     protected override IEnumerable<object> GetAtomicValues()
     {
