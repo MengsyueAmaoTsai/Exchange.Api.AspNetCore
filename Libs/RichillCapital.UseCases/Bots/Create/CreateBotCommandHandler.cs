@@ -1,5 +1,6 @@
 using RichillCapital.Domain.Bots;
 using RichillCapital.Domain.Common;
+using RichillCapital.Domain.Shared;
 using RichillCapital.Domain.Trading;
 using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
@@ -15,11 +16,11 @@ internal sealed class CreateBotCommandHandler(
     public async Task<ErrorOr<BotId>> Handle(
         CreateBotCommand command,
         CancellationToken cancellationToken) =>
-        await Result<(BotId, BotName, BotDescription, Side, TradingPlatform)>
+        await Result<(BotId, BotName, NonEmptyDescription, Side, TradingPlatform)>
             .Combine(
                 await BotId.From(command.Id).Ensure(NotDuplicate, BotErrors.Duplicate),
                 await BotName.From(command.Name).Ensure(NotDuplicate, BotErrors.Duplicate),
-                BotDescription.From(command.Description),
+                NonEmptyDescription.From(command.Description),
                 Side.FromName(command.Side).ToResult(Error.Invalid("Invalid side.")),
                 TradingPlatform.FromName(command.Platform).ToResult(Error.Invalid("Invalid platform.")))
             .ToErrorOr()
@@ -35,7 +36,7 @@ internal sealed class CreateBotCommandHandler(
     private static ErrorOr<Bot> CreateBot((
         BotId id,
         BotName name,
-        BotDescription description,
+        NonEmptyDescription description,
         Side side,
         TradingPlatform platform) parameters) =>
         Bot.Create(

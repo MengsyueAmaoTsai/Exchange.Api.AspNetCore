@@ -1,3 +1,4 @@
+using RichillCapital.Domain.Shared;
 using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
 

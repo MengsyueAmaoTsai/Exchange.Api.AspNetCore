@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using RichillCapital.Domain.Bots;
+using RichillCapital.Domain.Shared;
 using RichillCapital.SharedKernel.EntityFrameworkCore;
 
 namespace RichillCapital.Persistence.Configurations;
@@ -35,10 +36,10 @@ internal sealed class BotConfiguration : IEntityTypeConfiguration<Bot>
         builder
             .Property(bot => bot.Description)
             .HasColumnName("description")
-            .HasMaxLength(BotDescription.MaxLength)
+            .HasMaxLength(NonEmptyDescription.MaxLength)
             .HasConversion(
                 botDescription => botDescription.Value,
-                value => BotDescription.From(value).Value)
+                value => NonEmptyDescription.From(value).Value)
             .IsRequired();
 
         builder

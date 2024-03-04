@@ -1,24 +1,20 @@
 using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
 
-namespace RichillCapital.Domain.Bots;
+namespace RichillCapital.Domain.Shared;
 
-public sealed class BotDescription : SingleValueObject<string>
+public sealed class NonEmptyDescription : Description
 {
-    public const int MaxLength = 1000;
-
-    private BotDescription(string value)
+    private NonEmptyDescription(string value)
         : base(value)
     {
     }
 
-    public static Result<BotDescription> From(string description) =>
+    public new static Result<NonEmptyDescription> From(string description) =>
         description.ToResult()
             .Ensure(NotEmpty, Error.Invalid("Bot description cannot be empty."))
             .Ensure(NotLongerThanMaxLength, Error.Invalid($"Bot description cannot be longer than {MaxLength} characters."))
-            .Then(description => new BotDescription(description));
+            .Then(description => new NonEmptyDescription(description));
 
     private static bool NotEmpty(string description) => !string.IsNullOrWhiteSpace(description);
-
-    private static bool NotLongerThanMaxLength(string description) => description.Length <= MaxLength;
 }

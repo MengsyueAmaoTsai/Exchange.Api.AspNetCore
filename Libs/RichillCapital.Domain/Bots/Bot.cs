@@ -1,4 +1,4 @@
-using RichillCapital.Domain.Bots.Events;
+using RichillCapital.Domain.Shared;
 using RichillCapital.Domain.Trading;
 using RichillCapital.SharedKernel;
 using RichillCapital.SharedKernel.Monads;
@@ -12,7 +12,7 @@ public sealed class Bot : Entity<BotId>
     private Bot(
         BotId id,
         BotName name,
-        BotDescription description,
+        NonEmptyDescription description,
         Side side,
         TradingPlatform platform)
         : base(id) =>
@@ -20,7 +20,7 @@ public sealed class Bot : Entity<BotId>
 
     public BotName Name { get; private set; }
 
-    public BotDescription Description { get; private set; }
+    public Description Description { get; private set; }
 
     public Side Side { get; private set; }
 
@@ -31,38 +31,30 @@ public sealed class Bot : Entity<BotId>
     public static ErrorOr<Bot> Create(
         BotId id,
         BotName name,
-        BotDescription description,
+        NonEmptyDescription description,
         Side side,
-        TradingPlatform platform)
-    {
-        return new Bot(
+        TradingPlatform platform) => new Bot(
             id,
             name,
             description,
             side,
             platform)
             .ToErrorOr();
-    }
-    // ErrorOr<TradingPlatform>
-    //     .Ensure(platform, IsSupported, BotErrors.TradingPlatformNotSupported)
-    //     .Then(() => new Bot(
-    //         id,
-    //         name,
-    //         description,
-    //         side,
-    //         platform));
 
     public ErrorOr<Signal> EmitSignal(
         DateTimeOffset time,
         TradeType tradeType,
         Symbol symbol,
         decimal volume,
-        decimal price) => throw new NotImplementedException();
-    // Signal
-    //     .Create(time, tradeType, symbol, volume, price, Id)
-    //     .Then(signal =>
-    //     {
-    //         _signals.Add(signal);
-    //         RegisterDomainEvent(new BotSignalEmittedDomainEvent(Id));
-    //     });
+        decimal price) =>
+        (time, tradeType, symbol, volume, price)
+            .ToResult()
+            .Then(tuple => Signal.Create(
+                tuple.time,
+                tuple.tradeType,
+                tuple.symbol,
+                tuple.volume,
+                tuple.price,
+                Id))
+            .ToErrorOr();
 }
