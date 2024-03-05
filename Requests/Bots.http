@@ -12,6 +12,7 @@ Content-Type: application/json
     "id": "test-33",
     "name": "test-33",
     "description": "Test http file",
+    "side": "Long",
     "platform": "MetaTrader5"
 }
 

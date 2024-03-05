@@ -38,7 +38,7 @@ internal sealed class BotConfiguration : IEntityTypeConfiguration<Bot>
             .HasColumnName("description")
             .HasMaxLength(NonEmptyDescription.MaxLength)
             .HasConversion(
-                botDescription => botDescription.Value,
+                description => description.Value,
                 value => NonEmptyDescription.From(value).Value)
             .IsRequired();
 

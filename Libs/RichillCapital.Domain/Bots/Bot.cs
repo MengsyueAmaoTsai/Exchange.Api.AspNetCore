@@ -20,7 +20,7 @@ public sealed class Bot : Entity<BotId>
 
     public BotName Name { get; private set; }
 
-    public Description Description { get; private set; }
+    public NonEmptyDescription Description { get; private set; }
 
     public Side Side { get; private set; }
 
