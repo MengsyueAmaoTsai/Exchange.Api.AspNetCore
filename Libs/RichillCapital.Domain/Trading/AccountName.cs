@@ -12,21 +12,13 @@ public sealed class AccountName : SingleValueObject<string>
     {
     }
 
-    public static Result<AccountName> From(string name) => throw new NotImplementedException();
-    // Result<string>
-    //     .Ensure(
-    //         name,
-    //         [AccountNameRules.IsNotEmpty, AccountNameRules.IsNotLongerThan])
-    //     .Then(value => new AccountName(value));
-}
-
-internal static class AccountNameRules
-{
-    public static readonly (Func<string, bool> predicate, Error error) IsNotEmpty = (
-        id => !string.IsNullOrWhiteSpace(id),
-        Error.Invalid("Account name cannot be empty."));
-
-    internal static readonly (Func<string, bool> predicate, Error error) IsNotLongerThan = (
-        id => id.Length <= AccountName.MaxLength,
-        Error.Invalid($"Account name cannot be longer than {AccountName.MaxLength} characters."));
+    public static Result<AccountName> From(string name) => name
+        .ToResult()
+        .Ensure(
+            value => !string.IsNullOrWhiteSpace(value),
+            Error.Invalid("Account name cannot be empty."))
+        .Ensure(
+            value => value.Length <= MaxLength,
+            Error.Invalid($"Account name cannot be longer than {MaxLength} characters."))
+        .Then(value => new AccountName(value));
 }

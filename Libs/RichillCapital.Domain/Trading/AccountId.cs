@@ -7,25 +7,20 @@ public sealed class AccountId : SingleValueObject<string>
 {
     public const int MaxLength = 36;
 
-    public static readonly (Func<string, bool> predicate, Error error) IsNotEmpty = (
-        id => !string.IsNullOrWhiteSpace(id),
-        Error.Invalid("Account id cannot be empty."));
-
-    internal static readonly (Func<string, bool> predicate, Error error) IsNotLongerThan = (
-        id => id.Length <= AccountId.MaxLength,
-        Error.Invalid($"Account id cannot be longer than {AccountId.MaxLength} characters."));
-
     private AccountId(string value)
         : base(value)
     {
     }
 
-    public static Result<AccountId> From(string id) => throw new NotImplementedException();
-    // Result<string>
-    //     .Ensure(
-    //         id,
-    //         [IsNotEmpty, IsNotLongerThan])
-    //     .Then(value => new AccountId(value));
+    public static Result<AccountId> From(string id) => id
+        .ToResult()
+        .Ensure(
+            id => !string.IsNullOrWhiteSpace(id),
+            Error.Invalid("Account id cannot be empty."))
+        .Ensure(
+            id => id.Length <= MaxLength,
+            Error.Invalid($"Account id cannot be longer than {MaxLength} characters."))
+        .Then(value => new AccountId(value));
 
     public static AccountId NewAccountId() => From(Guid.NewGuid().ToString()).Value;
 }
