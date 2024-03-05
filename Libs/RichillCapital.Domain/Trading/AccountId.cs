@@ -7,6 +7,10 @@ public sealed class AccountId : SingleValueObject<string>
 {
     public const int MaxLength = 36;
 
+    private const string MockPrefix = "MOC";
+    private const string SimulatedPrefix = "SIM";
+    private const char Separator = '-';
+
     private AccountId(string value)
         : base(value)
     {
@@ -22,7 +26,12 @@ public sealed class AccountId : SingleValueObject<string>
             Error.Invalid($"Account id cannot be longer than {MaxLength} characters."))
         .Then(value => new AccountId(value));
 
-    public static AccountId NewAccountId() => From(Guid.NewGuid().ToString()).Value;
+    public static AccountId NewMockAccountId() => NewWithPrefix(MockPrefix);
+
+    public static AccountId NewSimulatedAccountId() => NewWithPrefix(SimulatedPrefix);
+
+    private static AccountId NewWithPrefix(string prefix) =>
+        From(string.Join(Separator, prefix, Guid.NewGuid())).Value;
 }
 
 

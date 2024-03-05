@@ -1,3 +1,5 @@
+using MapsterMapper;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +13,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace RichillCapital.Exchange.Api.Endpoints.Accounts;
 
-public sealed class Create(ISender _sender) : AsyncEndpoint
+public sealed class Create(
+    ISender _sender,
+    IMapper _mapper) : AsyncEndpoint
     .WithRequest<CreateAccountRequest>
     .WithActionResult<CreateAccountResponse>
 {
@@ -32,10 +36,10 @@ public sealed class Create(ISender _sender) : AsyncEndpoint
             .Match(HandleError, Ok);
 
     private CreateAccountCommand MapToCommand(CreateAccountRequest request) =>
-        new(request.Name, request.PositionMode, request.Currency, request.InitialDeposit);
+        _mapper.Map<CreateAccountCommand>(request);
 
-    private CreateAccountResponse MapToResponse(AccountId accountId) =>
-        new(accountId.Value);
+    private CreateAccountResponse MapToResponse(AccountId id) =>
+        _mapper.Map<CreateAccountResponse>(id);
 }
 
 public sealed record class CreateAccountRequest
@@ -43,6 +47,8 @@ public sealed record class CreateAccountRequest
     public string Name { get; init; } = string.Empty;
 
     public string PositionMode { get; init; } = string.Empty;
+
+    public string Environment { get; init; } = string.Empty;
 
     public string Currency { get; init; } = string.Empty;
 

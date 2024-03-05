@@ -34,14 +34,7 @@ internal sealed class CreateAccountCommandHandler(
         }
 
         var positionMode = PositionMode.FromName(command.PositionMode);
-
-        if (positionMode.IsNull)
-        {
-            return Error
-                .Invalid("Position mode is invalid")
-                .ToErrorOr<AccountId>();
-        }
-
+        var environment = TradingEnvironment.FromName(command.Environment);
         var currency = Currency.FromName(command.Currency);
 
         if (currency.IsNull)
@@ -51,15 +44,16 @@ internal sealed class CreateAccountCommandHandler(
                 .ToErrorOr<AccountId>();
         }
 
+        var accountId = environment.Value == TradingEnvironment.Mock ?
+                AccountId.NewMockAccountId() :
+                AccountId.NewSimulatedAccountId();
+
         var account = Account.Create(
+            accountId,
             name.Value,
             positionMode.Value,
+            environment.Value,
             currency.Value);
-
-        if (account.IsFailure)
-        {
-            return account.Error.ToErrorOr<AccountId>();
-        }
 
         account.Value.WithBalance(currency.Value, command.InitialDeposit);
 

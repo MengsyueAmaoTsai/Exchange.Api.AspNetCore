@@ -39,6 +39,12 @@ internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
             .IsRequired();
 
         builder
+            .Property(account => account.Environment)
+            .HasColumnName("environment")
+            .HasEnumerationValueConversion()
+            .IsRequired();
+
+        builder
             .Property(account => account.Currency)
             .HasColumnName("currency")
             .HasEnumerationValueConversion()

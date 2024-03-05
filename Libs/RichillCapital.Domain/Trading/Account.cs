@@ -17,13 +17,16 @@ public sealed class Account : Entity<AccountId>
         AccountId id,
         AccountName name,
         PositionMode positionMode,
+        TradingEnvironment environment,
         Currency currency)
         : base(id) =>
-        (Name, PositionMode, Currency) = (name, positionMode, currency);
+        (Name, PositionMode, Environment, Currency) = (name, positionMode, environment, currency);
 
     public AccountName Name { get; private set; }
 
     public PositionMode PositionMode { get; private set; }
+
+    public TradingEnvironment Environment { get; private set; }
 
     public Currency Currency { get; private set; }
 
@@ -38,14 +41,17 @@ public sealed class Account : Entity<AccountId>
     public IReadOnlyList<Trade> Trades => _trades.AsReadOnly();
 
     public static Result<Account> Create(
+        AccountId id,
         AccountName name,
         PositionMode positionMode,
+        TradingEnvironment environment,
         Currency currency)
     {
         var account = new Account(
-            AccountId.NewAccountId(),
+            id,
             name,
             positionMode,
+            environment,
             currency);
 
         foreach (var member in Currency.Members)

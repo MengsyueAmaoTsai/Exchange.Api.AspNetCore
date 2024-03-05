@@ -21,20 +21,29 @@ public sealed class BotAccountsService(
             return accountName.Error.ToErrorOr<AccountId>();
         }
 
-        var account = Account.Create(
+        var mockAccount = Account.Create(
+            AccountId.NewMockAccountId(),
             accountName.Value,
             PositionMode.Hedging,
+            TradingEnvironment.Mock,
             Currency.TWD);
 
-        if (account.IsFailure)
+        if (mockAccount.IsFailure)
         {
-            return account.Error.ToErrorOr<AccountId>();
+            return mockAccount.Error.ToErrorOr<AccountId>();
         }
 
-        _accountRepository.Add(account.Value);
+        var simulatedAccount = Account.Create(
+            AccountId.NewSimulatedAccountId(),
+            accountName.Value,
+            PositionMode.Hedging,
+            TradingEnvironment.Simulated,
+            Currency.TWD);
+
+        _accountRepository.AddRange([mockAccount.Value, simulatedAccount.Value]);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ErrorOr<AccountId>
-            .With(account.Value.Id);
+            .With(mockAccount.Value.Id);
     }
 }
