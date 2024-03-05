@@ -59,34 +59,54 @@ public sealed class Order : Entity<OrderId>
         Symbol symbol,
         OrderType type,
         TimeInForce timeInForce,
-        AccountId accountId)
-    {
-        if (quantity <= 0)
-        {
-            return OrderErrors
-                .InvalidQuantity(quantity)
-                .ToErrorOr<Order>();
-        }
+        AccountId accountId) =>
+        (tradeType, quantity, symbol, type, timeInForce, accountId)
+            .ToErrorOr()
+            .Ensure(
+                tuple => tuple.quantity > 0,
+                Error.Invalid("Quantity must be greater than 0."))
+            .Ensure(
+                tuple => tuple.type == OrderType.Market && tuple.timeInForce == TimeInForce.Day,
+                Error.Invalid("Market orders cannot have time in force set to day."))
+            .Then(tuple => new Order(
+                DateTimeOffset.UtcNow,
+                OrderId.NewOrderId(),
+                tuple.tradeType,
+                tuple.quantity,
+                tuple.quantity,
+                tuple.symbol,
+                tuple.type,
+                tuple.timeInForce,
+                OrderStatus.New,
+                tuple.accountId));
 
-        if (type == OrderType.Market && timeInForce == TimeInForce.Day)
-        {
-            return Error
-                .Invalid("Market orders cannot have time in force set to day.")
-                .ToErrorOr<Order>();
-        }
-
-        return new Order(
-            DateTimeOffset.UtcNow,
-            OrderId.NewOrderId(),
-            tradeType,
-            quantity,
-            quantity,
-            symbol,
-            type,
-            timeInForce,
-            OrderStatus.New,
-            accountId).ToErrorOr();
-    }
+    public static ErrorOr<Order> History(
+        DateTimeOffset time,
+        TradeType tradeType,
+        decimal quantity,
+        Symbol symbol,
+        OrderType type,
+        TimeInForce timeInForce,
+        AccountId accountId) =>
+        (time, tradeType, quantity, symbol, type, timeInForce, accountId)
+            .ToErrorOr()
+            .Ensure(
+                tuple => tuple.quantity > 0,
+                Error.Invalid("Quantity must be greater than 0."))
+            .Ensure(
+                tuple => tuple.type == OrderType.Market && tuple.timeInForce == TimeInForce.Day,
+                Error.Invalid("Market orders cannot have time in force set to day."))
+            .Then(tuple => new Order(
+                tuple.time,
+                OrderId.NewOrderId(),
+                tuple.tradeType,
+                tuple.quantity,
+                tuple.quantity,
+                tuple.symbol,
+                tuple.type,
+                tuple.timeInForce,
+                OrderStatus.New,
+                tuple.accountId));
 
     public Result Reject()
     {
